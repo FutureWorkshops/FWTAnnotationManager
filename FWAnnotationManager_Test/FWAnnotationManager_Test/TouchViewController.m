@@ -1,28 +1,28 @@
 //
 //  ViewController.m
-//  FWPopoverHintView_Test
+//  FWTPopoverHintView_Test
 //
 //  Created by Marco Meschini on 8/6/12.
 //  Copyright (c) 2012 Futureworkshops. All rights reserved.
 //
 
 #import "TouchViewController.h"
-#import "FWAnnotationView.h"
-#import "FWDefaultAnnotationView.h"
+#import "FWTAnnotationView.h"
+#import "FWTDefaultAnnotationView.h"
 #import "StaticModel.h"
 
 @interface TouchViewController ()
 {
-    FWDefaultAnnotationView *_popoverView;
+    FWTDefaultAnnotationView *_popoverView;
     UIView *_touchPointView;
     
     UISegmentedControl *_segmentedControl;
-    FWPopoverArrowDirection _popoverArrowDirection;
+    FWTAnnotationArrowDirection _popoverArrowDirection;
 }
 
-@property (nonatomic, retain) FWDefaultAnnotationView *popoverView;
+@property (nonatomic, retain) FWTDefaultAnnotationView *popoverView;
 @property (nonatomic, retain) UISegmentedControl *segmentedControl;
-@property (nonatomic, assign) FWPopoverArrowDirection popoverArrowDirection;
+@property (nonatomic, assign) FWTAnnotationArrowDirection popoverArrowDirection;
 
 @end
 
@@ -71,13 +71,13 @@
     return self->_segmentedControl;
 }
 
-- (FWDefaultAnnotationView *)popoverView
+- (FWTDefaultAnnotationView *)popoverView
 {
     if (!self->_popoverView)
     {
-        self->_popoverView = [[FWDefaultAnnotationView alloc] init];
+        self->_popoverView = [[FWTDefaultAnnotationView alloc] init];
         self->_popoverView.contentSize = CGSizeMake(160.0f, 60.0f);
-        self->_popoverView.drawPathBlock = ^(CGContextRef ctx, FWAnnotationView *popOverView){
+        self->_popoverView.drawPathBlock = ^(CGContextRef ctx, FWTAnnotationView *popOverView){
             CGRect ctxRect = CGContextGetClipBoundingBox(ctx);
             
             UIEdgeInsets insets = popOverView.edgeInsets;
@@ -154,7 +154,7 @@
     if ([image isKindOfClass:[UIImage class]])
         self.popoverView.imageView.image = image;
     
-    [self.popoverView presentPopoverFromRect:_touchPointView.frame
+    [self.popoverView presentAnnotationFromRect:_touchPointView.frame
                                       inView:self.view
                      permittedArrowDirection:self.popoverArrowDirection // 
                                     animated:YES];

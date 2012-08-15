@@ -1,19 +1,19 @@
 //
-//  FWLabelPopoverView.m
-//  FWPopoverHintView
+//  FWTLabelPopoverView.m
+//  FWTPopoverHintView
 //
 //  Created by Marco Meschini on 8/8/12.
 //  Copyright (c) 2012 Futureworkshops. All rights reserved.
 //
 
-#import "FWDefaultAnnotationView.h"
+#import "FWTDefaultAnnotationView.h"
 
-@interface FWAnnotationView ()
-@property (nonatomic, readwrite) FWPopoverArrowDirection arrowDirection;
+@interface FWTAnnotationView ()
+@property (nonatomic, readwrite) FWTAnnotationArrowDirection arrowDirection;
 - (void)adjustEdgeInsets;
 @end
 
-@interface FWDefaultAnnotationView ()
+@interface FWTDefaultAnnotationView ()
 {
     BOOL _textLabelEnabled, _imageViewEnabled;
 }
@@ -22,7 +22,7 @@
 @property (nonatomic, assign) BOOL textLabelEnabled, imageViewEnabled;
 @end
 
-@implementation FWDefaultAnnotationView
+@implementation FWTDefaultAnnotationView
 @synthesize textLabel = _textLabel;
 @synthesize imageView = _imageView;
 @synthesize textLabelEnabled = _textLabelEnabled;
@@ -69,7 +69,6 @@
         imageViewFrame.size = self.imageView.image.size;
         self.imageView.frame = imageViewFrame;
     }
-    
 }
 
 #pragma mark - Getters
@@ -96,9 +95,9 @@
 }
 
 #pragma mark - Overrides
-- (void)presentPopoverFromRect:(CGRect)rect
+- (void)presentAnnotationFromRect:(CGRect)rect
                         inView:(UIView *)view
-       permittedArrowDirection:(FWPopoverArrowDirection)arrowDirection
+       permittedArrowDirection:(FWTAnnotationArrowDirection)arrowDirection
                       animated:(BOOL)animated
 {
     //
@@ -123,7 +122,7 @@
     newContentSize.height = MAX(newContentSize.height, size.height);
     self.contentSize = newContentSize;
     
-    [super presentPopoverFromRect:rect inView:view permittedArrowDirection:arrowDirection animated:animated];
+    [super presentAnnotationFromRect:rect inView:view permittedArrowDirection:arrowDirection animated:animated];
 }
 
 

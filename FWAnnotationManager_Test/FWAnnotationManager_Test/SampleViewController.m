@@ -1,13 +1,13 @@
 //
 //  SampleViewController.m
-//  FWPopoverHintView_Test
+//  FWTPopoverHintView_Test
 //
 //  Created by Marco Meschini on 8/8/12.
 //  Copyright (c) 2012 Futureworkshops. All rights reserved.
 //
 
 #import "SampleViewController.h"
-#import "FWDefaultAnnotationView.h"
+#import "FWTDefaultAnnotationView.h"
 #import "StaticModel.h"
 
 @interface SampleViewController ()
@@ -16,12 +16,10 @@
 }
 
 @property (nonatomic, retain) NSArray *popoverAnnotations;
-@property (nonatomic, retain) FWAnnotationManager *fwPopoverController;
+@property (nonatomic, retain) FWTAnnotationManager *fwPopoverController;
 @end
 
 @implementation SampleViewController
-@synthesize fwPopoverController = _fwPopoverController;
-@synthesize popoverAnnotations = _popoverAnnotations;
 
 - (void)dealloc
 {
@@ -92,7 +90,7 @@
         {
             self.fwPopoverController.view = self.view;
             
-            [self.fwPopoverController addPopoverAnnotations:[StaticModel popoverAnnotations]];
+            [self.fwPopoverController addAnnotations:[StaticModel popoverAnnotations]];
             
             self.navigationItem.rightBarButtonItem = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
                                                                                                     target:self
@@ -100,7 +98,7 @@
         }
         else
         {
-            [self.fwPopoverController removePopoverAnnotations:self.fwPopoverController.annotations];
+            [self.fwPopoverController removeAnnotations:self.fwPopoverController.annotations];
             self.navigationItem.rightBarButtonItem = nil;
         }
     }
@@ -108,23 +106,23 @@
     {
         self.fwPopoverController.view = self.view;
                 
-        FWAnnotation *pd = [[StaticModel popoverAnnotations] objectAtIndex:sc.selectedSegmentIndex];
+        FWTAnnotation *pd = [[StaticModel popoverAnnotations] objectAtIndex:sc.selectedSegmentIndex];
         if ([self.fwPopoverController.annotations containsObject:pd])
-            [self.fwPopoverController removePopoverAnnotation:pd];
+            [self.fwPopoverController removeAnnotation:pd];
         else
         {
             CGFloat savedDelay = pd.delay;
             pd.delay = .0f;
-            [self.fwPopoverController addPopoverAnnotation:pd];
+            [self.fwPopoverController addAnnotation:pd];
             pd.delay = savedDelay;
         }
     }
 }
 
 #pragma mark - Private
-- (FWDefaultAnnotationView *)defaultPopoverView
+- (FWTDefaultAnnotationView *)defaultPopoverView
 {
-    FWDefaultAnnotationView *_popoverView = [[[FWDefaultAnnotationView alloc] init] autorelease];
+    FWTDefaultAnnotationView *_popoverView = [[[FWTDefaultAnnotationView alloc] init] autorelease];
     
     //
     _popoverView.contentSize = CGSizeMake(160.0f, 60.0f);
@@ -168,36 +166,38 @@
 }
 
 #pragma mark - Getters
-- (FWAnnotationManager *)fwPopoverController
+- (FWTAnnotationManager *)fwPopoverController
 {
     if (!self->_fwPopoverController)
     {
-        self->_fwPopoverController = [[FWAnnotationManager alloc] init];
+        self->_fwPopoverController = [[FWTAnnotationManager alloc] init];
         self->_fwPopoverController.delegate = self;
     }
     
     return self->_fwPopoverController;
 }
 
-#pragma mark - FWAnnotationManagerDelegate
-- (FWAnnotationView *)popoverController:(FWAnnotationManager *)popoverController viewForAnnotation:(FWAnnotation *)annotation
+#pragma mark - FWTAnnotationManagerDelegate
+- (FWTAnnotationView *)annotationManager:(FWTAnnotationManager *)annotationManager viewForAnnotation:(FWTAnnotation *)annotation
 {
-    FWDefaultAnnotationView *_popoverView = [self defaultPopoverView];
+    FWTDefaultAnnotationView *_popoverView = [self defaultPopoverView];
     _popoverView.textLabel.text = annotation.text;
 
     return _popoverView;
 }
 
-- (void)popoverController:(FWAnnotationManager *)popoverController didTapPopoverView:(FWAnnotationView *)popoverView annotation:(FWAnnotation *)annotation
+- (void)annotationManager:(FWTAnnotationManager *)annotationManager
+     didTapAnnotationView:(FWTAnnotationView *)annotationView
+               annotation:(FWTAnnotation *)annotation
 {
-    if (popoverView)
+    if (annotationView)
     {
-        NSLog(@"popoverView:%@", popoverView);
-        [popoverController removePopoverAnnotation:annotation];
+        NSLog(@"annotationView:%@", annotationView);
+        [annotationManager removeAnnotation:annotation];
     }
     else
     {
-        [popoverController removePopoverAnnotations:popoverController.annotations];
+        [annotationManager removeAnnotations:annotationManager.annotations];
     }
 }
 

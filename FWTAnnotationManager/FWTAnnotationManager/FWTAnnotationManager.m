@@ -1,16 +1,16 @@
 //
-//  FWPopoverController.m
-//  FWPopoverHintView
+//  FWTPopoverController.m
+//  FWTPopoverHintView
 //
 //  Created by Marco Meschini on 8/8/12.
 //  Copyright (c) 2012 Futureworkshops. All rights reserved.
 //
 
-#import "FWAnnotationManager.h"
-#import "FWAnnotationView.h"
-#import "FWDefaultAnnotationView.h"
+#import "FWTAnnotationManager.h"
+#import "FWTAnnotationView.h"
+#import "FWTDefaultAnnotationView.h"
 
-@interface FWAnnotationManager ()
+@interface FWTAnnotationManager ()
 {
     NSInteger _presentAnimationsCounter;
     BOOL _animationsDisabled;
@@ -29,7 +29,7 @@
 - (void)handleGesture:(UIGestureRecognizer *)gesture;
 
 //  Private
-- (void)presentPopoverViewForPopoverDescriptor:(FWAnnotation *)annotation;
+- (void)presentPopoverViewForPopoverDescriptor:(FWTAnnotation *)annotation;
 - (void)registerToStatusBarOrientationNotifications;
 - (void)unregisterFromStatusBarOrientationNotifications;
 
@@ -38,7 +38,7 @@
 
 @end
 
-@implementation FWAnnotationManager
+@implementation FWTAnnotationManager
 @synthesize view = _view;
 @synthesize annotations = _annotations;
 @synthesize annotationsDictionary = _annotationsDictionary;
@@ -48,7 +48,7 @@
 @synthesize presentAnimationsCounter = _presentAnimationsCounter;
 @synthesize animationsDisabled = _animationsDisabled;
 @synthesize registeredToStatusBarOrientationNotification = _registeredToStatusBarOrientationNotification;
-@synthesize removePopoverAnnotationsWithRandomDelay = _removePopoverAnnotationsWithRandomDelay;
+@synthesize removeAnnotationsWithRandomDelay = _removeAnnotationsWithRandomDelay;
 
 - (void)dealloc
 {
@@ -63,20 +63,20 @@
 }
 
 #pragma mark - Setters
-- (void)setDelegate:(id<FWAnnotationManagerDelegate>)delegate
+- (void)setDelegate:(id<FWTAnnotationManagerDelegate>)delegate
 {
     if (self->_delegate != delegate)
     {
         self->_delegate = delegate;
         if (self->_delegate)
         {
-            _delegateHas.viewForAnnotation = [self->_delegate respondsToSelector:@selector(popoverController:viewForAnnotation:)];
-            _delegateHas.didTapPopoverView = [self->_delegate respondsToSelector:@selector(popoverController:didTapPopoverView:annotation:)];
+            _delegateHas.viewForAnnotation = [self->_delegate respondsToSelector:@selector(annotationManager:viewForAnnotation:)];
+            _delegateHas.didTapAnnotationView = [self->_delegate respondsToSelector:@selector(annotationManager:didTapAnnotationView:annotation:)];
         }
         else
         {
             _delegateHas.viewForAnnotation = NO;
-            _delegateHas.didTapPopoverView = NO;
+            _delegateHas.didTapAnnotationView = NO;
         }
     }
 }
@@ -120,24 +120,24 @@
 #pragma mark - Actions
 - (void)handleGesture:(UIGestureRecognizer *)gesture
 {
-    if (_delegateHas.didTapPopoverView)
+    if (_delegateHas.didTapAnnotationView)
     {
         CGPoint point = [gesture locationInView:gesture.view];
-        FWAnnotationView *_popoverView = [self viewAtPoint:point];
-        FWAnnotation *_annotation = [self annotationForView:_popoverView];
-        [self.delegate popoverController:self didTapPopoverView:_popoverView annotation:_annotation];
+        FWTAnnotationView *_popoverView = [self viewAtPoint:point];
+        FWTAnnotation *_annotation = [self annotationForView:_popoverView];
+        [self.delegate annotationManager:self didTapAnnotationView:_popoverView annotation:_annotation];
     }
 }
 
 #pragma mark - Private
-- (void)presentPopoverViewForPopoverDescriptor:(FWAnnotation *)annotation
+- (void)presentPopoverViewForPopoverDescriptor:(FWTAnnotation *)annotation
 {
-    FWAnnotationView *_popoverView = [self viewForAnnotation:annotation];
-    FWPopoverViewCompletionBlock currentCompletionBlock = NULL;
+    FWTAnnotationView *_popoverView = [self viewForAnnotation:annotation];
+    FWTAnnotationViewCompletionBlock currentCompletionBlock = NULL;
     if (_popoverView.presentCompletionBlock)
         currentCompletionBlock = _popoverView.presentCompletionBlock;
     
-    FWPopoverViewCompletionBlock completionBlock = ^(BOOL finished){
+    FWTAnnotationViewCompletionBlock completionBlock = ^(BOOL finished){
       if (currentCompletionBlock)
           currentCompletionBlock(finished);
         
@@ -159,7 +159,7 @@
     
     BOOL animated = self.animationsDisabled ? YES : annotation.animated;
     
-    [_popoverView presentPopoverFromRect:rect
+    [_popoverView presentAnnotationFromRect:rect
                                   inView:self.contentView
                  permittedArrowDirection:annotation.arrowDirection
                                 animated:animated];
@@ -196,7 +196,7 @@
 {
     NSArray *arrayCopy = [NSArray arrayWithArray:self.annotations];
     [arrayCopy enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-        FWAnnotationView *_popoverView = [self viewForAnnotation:obj];
+        FWTAnnotationView *_popoverView = [self viewForAnnotation:obj];
         if (_popoverView)
         {
             [self.annotations removeObject:obj];
@@ -206,7 +206,7 @@
     }];
     
     self.animationsDisabled = YES;
-    [self addPopoverAnnotations:arrayCopy];
+    [self addAnnotations:arrayCopy];
     self.animationsDisabled = NO;
 }
 
@@ -218,7 +218,7 @@
 }
 
 #pragma mark - Public
-- (void)addPopoverAnnotation:(FWAnnotation *)annotation
+- (void)addAnnotation:(FWTAnnotation *)annotation
 {
     if (!self.contentView.superview)
         [self.view addSubview:self.contentView];
@@ -232,11 +232,11 @@
     
     self.contentView.frame = self.view.bounds;
     
-    FWAnnotationView *_popoverView = nil;
+    FWTAnnotationView *_popoverView = nil;
     if (_delegateHas.viewForAnnotation)
-        _popoverView = [self.delegate popoverController:self viewForAnnotation:annotation];
+        _popoverView = [self.delegate annotationManager:self viewForAnnotation:annotation];
     else
-        _popoverView = [[[FWAnnotationView alloc] init] autorelease];
+        _popoverView = [[[FWTAnnotationView alloc] init] autorelease];
     
     //
     [self.annotations addObject:annotation];
@@ -256,23 +256,23 @@
                afterDelay:delay];
 }
 
-- (void)addPopoverAnnotations:(NSArray *)annotations
+- (void)addAnnotations:(NSArray *)annotations
 {
     [annotations enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-        [self addPopoverAnnotation:obj];
+        [self addAnnotation:obj];
     }];
 }
 
-- (void)removePopoverAnnotation:(FWAnnotation *)annotation
+- (void)removeAnnotation:(FWTAnnotation *)annotation
 {
-    FWAnnotationView *_popoverView = [self viewForAnnotation:annotation];
+    FWTAnnotationView *_popoverView = [self viewForAnnotation:annotation];
     if (_popoverView)
     {
-        FWPopoverViewCompletionBlock currentDismissCompletionBlock = NULL;
+        FWTAnnotationViewCompletionBlock currentDismissCompletionBlock = NULL;
         if (_popoverView.dismissCompletionBlock)
             currentDismissCompletionBlock = _popoverView.dismissCompletionBlock;
         
-        FWPopoverViewCompletionBlock completionBlock = ^(BOOL finished){
+        FWTAnnotationViewCompletionBlock completionBlock = ^(BOOL finished){
             if (currentDismissCompletionBlock)
                 currentDismissCompletionBlock(finished);
             
@@ -295,42 +295,42 @@
     }
 }
 
-- (void)removePopoverAnnotations:(NSArray *)annotations
+- (void)removeAnnotations:(NSArray *)annotations
 {    
     NSArray *arrayCopy = [NSArray arrayWithArray:annotations];
     [arrayCopy enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-        if (self.removePopoverAnnotationsWithRandomDelay)
+        if (self.removeAnnotationsWithRandomDelay)
         {
             NSInteger random = arc4random()%220;
             CGFloat delay = (CGFloat)random/1000.0f;
             [self performSelector:@selector(removePopoverAnnotation:) withObject:obj afterDelay:delay];
         }
         else
-            [self removePopoverAnnotation:obj];
+            [self removeAnnotation:obj];
     }];
 }
 
 - (void)cancel
 {
     [NSObject cancelPreviousPerformRequestsWithTarget:self];
-    [self.annotations enumerateObjectsUsingBlock:^(FWAnnotation *annotation, NSUInteger idx, BOOL *stop) {
-        FWAnnotationView *_popoverView = [self viewForAnnotation:annotation];
+    [self.annotations enumerateObjectsUsingBlock:^(FWTAnnotation *annotation, NSUInteger idx, BOOL *stop) {
+        FWTAnnotationView *_popoverView = [self viewForAnnotation:annotation];
         [_popoverView removeFromSuperview];
     }];
     [self.contentView removeFromSuperview];
 }
 
-- (FWAnnotationView *)viewForAnnotation:(FWAnnotation *)annotation
+- (FWTAnnotationView *)viewForAnnotation:(FWTAnnotation *)annotation
 {
-    FWAnnotationView *_popoverView = [self.annotationsDictionary objectForKey:[annotation description]];
+    FWTAnnotationView *_popoverView = [self.annotationsDictionary objectForKey:[annotation description]];
     return _popoverView;
 }
 
-- (FWAnnotationView *)viewAtPoint:(CGPoint)point
+- (FWTAnnotationView *)viewAtPoint:(CGPoint)point
 {
-    __block FWAnnotationView *toReturn = nil;
-    [self.annotations enumerateObjectsUsingBlock:^(FWAnnotation *annotation, NSUInteger idx, BOOL *stop) {
-        FWAnnotationView *_popoverView = [self viewForAnnotation:annotation];
+    __block FWTAnnotationView *toReturn = nil;
+    [self.annotations enumerateObjectsUsingBlock:^(FWTAnnotation *annotation, NSUInteger idx, BOOL *stop) {
+        FWTAnnotationView *_popoverView = [self viewForAnnotation:annotation];
         if (CGRectContainsPoint(_popoverView.frame, point))
         {
             toReturn = _popoverView;
@@ -341,11 +341,11 @@
     return toReturn;
 }
 
-- (FWAnnotation *)annotationForView:(FWAnnotationView *)view
+- (FWTAnnotation *)annotationForView:(FWTAnnotationView *)view
 {
-    __block FWAnnotation *toReturn = nil;
-    [self.annotations enumerateObjectsUsingBlock:^(FWAnnotation *annotation, NSUInteger idx, BOOL *stop) {
-        FWAnnotationView *_popoverView = [self viewForAnnotation:annotation];
+    __block FWTAnnotation *toReturn = nil;
+    [self.annotations enumerateObjectsUsingBlock:^(FWTAnnotation *annotation, NSUInteger idx, BOOL *stop) {
+        FWTAnnotationView *_popoverView = [self viewForAnnotation:annotation];
         if (_popoverView == view)
         {
             toReturn = annotation;

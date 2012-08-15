@@ -1,6 +1,6 @@
 //
 //  ViewController.h
-//  FWPopoverHintView_Test
+//  FWTPopoverHintView_Test
 //
 //  Created by Marco Meschini on 8/6/12.
 //  Copyright (c) 2012 Futureworkshops. All rights reserved.
