@@ -1,0 +1,313 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		E4C452ED15DB9C8C00DD1A0F /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4C452EC15DB9C8C00DD1A0F /* UIKit.framework */; };
+		E4C452EF15DB9C8C00DD1A0F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4C452EE15DB9C8C00DD1A0F /* Foundation.framework */; };
+		E4C452F115DB9C8C00DD1A0F /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4C452F015DB9C8C00DD1A0F /* CoreGraphics.framework */; };
+		E4C452F715DB9C8C00DD1A0F /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = E4C452F515DB9C8C00DD1A0F /* InfoPlist.strings */; };
+		E4C452F915DB9C8C00DD1A0F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = E4C452F815DB9C8C00DD1A0F /* main.m */; };
+		E4C452FD15DB9C8C00DD1A0F /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E4C452FC15DB9C8C00DD1A0F /* AppDelegate.m */; };
+		E4C4530415DB9D0000DD1A0F /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4C4530315DB9D0000DD1A0F /* QuartzCore.framework */; };
+		E4C4530615DB9D1500DD1A0F /* libFWAnnotationManager.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E4C4530515DB9D1500DD1A0F /* libFWAnnotationManager.a */; };
+		E4C4531B15DB9E2700DD1A0F /* SamplePickerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E4C4531415DB9E2700DD1A0F /* SamplePickerViewController.m */; };
+		E4C4531C15DB9E2700DD1A0F /* SampleViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E4C4531615DB9E2700DD1A0F /* SampleViewController.m */; };
+		E4C4531D15DB9E2700DD1A0F /* StaticModel.m in Sources */ = {isa = PBXBuildFile; fileRef = E4C4531815DB9E2700DD1A0F /* StaticModel.m */; };
+		E4C4531E15DB9E2700DD1A0F /* TouchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E4C4531A15DB9E2700DD1A0F /* TouchViewController.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		E4C452E815DB9C8C00DD1A0F /* FWAnnotationManager_Test.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FWAnnotationManager_Test.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E4C452EC15DB9C8C00DD1A0F /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		E4C452EE15DB9C8C00DD1A0F /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		E4C452F015DB9C8C00DD1A0F /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		E4C452F415DB9C8C00DD1A0F /* FWAnnotationManager_Test-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "FWAnnotationManager_Test-Info.plist"; sourceTree = "<group>"; };
+		E4C452F615DB9C8C00DD1A0F /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		E4C452F815DB9C8C00DD1A0F /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		E4C452FA15DB9C8C00DD1A0F /* FWAnnotationManager_Test-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FWAnnotationManager_Test-Prefix.pch"; sourceTree = "<group>"; };
+		E4C452FB15DB9C8C00DD1A0F /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		E4C452FC15DB9C8C00DD1A0F /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		E4C4530315DB9D0000DD1A0F /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		E4C4530515DB9D1500DD1A0F /* libFWAnnotationManager.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libFWAnnotationManager.a; path = "../../../Library/Developer/Xcode/DerivedData/FWAnnotationManager-cztimiboqgjiohavmderaugiqnvb/Build/Products/Debug-iphoneos/libFWAnnotationManager.a"; sourceTree = "<group>"; };
+		E4C4531315DB9E2700DD1A0F /* SamplePickerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SamplePickerViewController.h; sourceTree = "<group>"; };
+		E4C4531415DB9E2700DD1A0F /* SamplePickerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SamplePickerViewController.m; sourceTree = "<group>"; };
+		E4C4531515DB9E2700DD1A0F /* SampleViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SampleViewController.h; sourceTree = "<group>"; };
+		E4C4531615DB9E2700DD1A0F /* SampleViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SampleViewController.m; sourceTree = "<group>"; };
+		E4C4531715DB9E2700DD1A0F /* StaticModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StaticModel.h; sourceTree = "<group>"; };
+		E4C4531815DB9E2700DD1A0F /* StaticModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StaticModel.m; sourceTree = "<group>"; };
+		E4C4531915DB9E2700DD1A0F /* TouchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TouchViewController.h; sourceTree = "<group>"; };
+		E4C4531A15DB9E2700DD1A0F /* TouchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TouchViewController.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		E4C452E515DB9C8C00DD1A0F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E4C4530615DB9D1500DD1A0F /* libFWAnnotationManager.a in Frameworks */,
+				E4C4530415DB9D0000DD1A0F /* QuartzCore.framework in Frameworks */,
+				E4C452ED15DB9C8C00DD1A0F /* UIKit.framework in Frameworks */,
+				E4C452EF15DB9C8C00DD1A0F /* Foundation.framework in Frameworks */,
+				E4C452F115DB9C8C00DD1A0F /* CoreGraphics.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		E4C452DD15DB9C8C00DD1A0F = {
+			isa = PBXGroup;
+			children = (
+				E4C452F215DB9C8C00DD1A0F /* FWAnnotationManager_Test */,
+				E4C452EB15DB9C8C00DD1A0F /* Frameworks */,
+				E4C452E915DB9C8C00DD1A0F /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		E4C452E915DB9C8C00DD1A0F /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				E4C452E815DB9C8C00DD1A0F /* FWAnnotationManager_Test.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		E4C452EB15DB9C8C00DD1A0F /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				E4C4530515DB9D1500DD1A0F /* libFWAnnotationManager.a */,
+				E4C4530315DB9D0000DD1A0F /* QuartzCore.framework */,
+				E4C452EC15DB9C8C00DD1A0F /* UIKit.framework */,
+				E4C452EE15DB9C8C00DD1A0F /* Foundation.framework */,
+				E4C452F015DB9C8C00DD1A0F /* CoreGraphics.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		E4C452F215DB9C8C00DD1A0F /* FWAnnotationManager_Test */ = {
+			isa = PBXGroup;
+			children = (
+				E4C452FB15DB9C8C00DD1A0F /* AppDelegate.h */,
+				E4C452FC15DB9C8C00DD1A0F /* AppDelegate.m */,
+				E4C4531315DB9E2700DD1A0F /* SamplePickerViewController.h */,
+				E4C4531415DB9E2700DD1A0F /* SamplePickerViewController.m */,
+				E4C4531515DB9E2700DD1A0F /* SampleViewController.h */,
+				E4C4531615DB9E2700DD1A0F /* SampleViewController.m */,
+				E4C4531915DB9E2700DD1A0F /* TouchViewController.h */,
+				E4C4531A15DB9E2700DD1A0F /* TouchViewController.m */,
+				E4C4531715DB9E2700DD1A0F /* StaticModel.h */,
+				E4C4531815DB9E2700DD1A0F /* StaticModel.m */,
+				E4C452F315DB9C8C00DD1A0F /* Supporting Files */,
+			);
+			path = FWAnnotationManager_Test;
+			sourceTree = "<group>";
+		};
+		E4C452F315DB9C8C00DD1A0F /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				E4C452F415DB9C8C00DD1A0F /* FWAnnotationManager_Test-Info.plist */,
+				E4C452F515DB9C8C00DD1A0F /* InfoPlist.strings */,
+				E4C452F815DB9C8C00DD1A0F /* main.m */,
+				E4C452FA15DB9C8C00DD1A0F /* FWAnnotationManager_Test-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		E4C452E715DB9C8C00DD1A0F /* FWAnnotationManager_Test */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E4C4530015DB9C8C00DD1A0F /* Build configuration list for PBXNativeTarget "FWAnnotationManager_Test" */;
+			buildPhases = (
+				E4C452E415DB9C8C00DD1A0F /* Sources */,
+				E4C452E515DB9C8C00DD1A0F /* Frameworks */,
+				E4C452E615DB9C8C00DD1A0F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = FWAnnotationManager_Test;
+			productName = FWAnnotationManager_Test;
+			productReference = E4C452E815DB9C8C00DD1A0F /* FWAnnotationManager_Test.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		E4C452DF15DB9C8C00DD1A0F /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0440;
+				ORGANIZATIONNAME = "Marco Meschini";
+			};
+			buildConfigurationList = E4C452E215DB9C8C00DD1A0F /* Build configuration list for PBXProject "FWAnnotationManager_Test" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = E4C452DD15DB9C8C00DD1A0F;
+			productRefGroup = E4C452E915DB9C8C00DD1A0F /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				E4C452E715DB9C8C00DD1A0F /* FWAnnotationManager_Test */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		E4C452E615DB9C8C00DD1A0F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E4C452F715DB9C8C00DD1A0F /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		E4C452E415DB9C8C00DD1A0F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E4C452F915DB9C8C00DD1A0F /* main.m in Sources */,
+				E4C452FD15DB9C8C00DD1A0F /* AppDelegate.m in Sources */,
+				E4C4531B15DB9E2700DD1A0F /* SamplePickerViewController.m in Sources */,
+				E4C4531C15DB9E2700DD1A0F /* SampleViewController.m in Sources */,
+				E4C4531D15DB9E2700DD1A0F /* StaticModel.m in Sources */,
+				E4C4531E15DB9E2700DD1A0F /* TouchViewController.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		E4C452F515DB9C8C00DD1A0F /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				E4C452F615DB9C8C00DD1A0F /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		E4C452FE15DB9C8C00DD1A0F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/../FWAnnotationManager/FWAnnotationManager/\"/**";
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)/../FWAnnotationManager/FWAnnotationManager/\"/**";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		E4C452FF15DB9C8C00DD1A0F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/../FWAnnotationManager/FWAnnotationManager/\"/**";
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)/../FWAnnotationManager/FWAnnotationManager/\"/**";
+				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		E4C4530115DB9C8C00DD1A0F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "FWAnnotationManager_Test/FWAnnotationManager_Test-Prefix.pch";
+				INFOPLIST_FILE = "FWAnnotationManager_Test/FWAnnotationManager_Test-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../../../Library/Developer/Xcode/DerivedData/FWAnnotationManager-cztimiboqgjiohavmderaugiqnvb/Build/Products/Debug-iphoneos\"",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		E4C4530215DB9C8C00DD1A0F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "FWAnnotationManager_Test/FWAnnotationManager_Test-Prefix.pch";
+				INFOPLIST_FILE = "FWAnnotationManager_Test/FWAnnotationManager_Test-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../../../Library/Developer/Xcode/DerivedData/FWAnnotationManager-cztimiboqgjiohavmderaugiqnvb/Build/Products/Debug-iphoneos\"",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		E4C452E215DB9C8C00DD1A0F /* Build configuration list for PBXProject "FWAnnotationManager_Test" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E4C452FE15DB9C8C00DD1A0F /* Debug */,
+				E4C452FF15DB9C8C00DD1A0F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E4C4530015DB9C8C00DD1A0F /* Build configuration list for PBXNativeTarget "FWAnnotationManager_Test" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E4C4530115DB9C8C00DD1A0F /* Debug */,
+				E4C4530215DB9C8C00DD1A0F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = E4C452DF15DB9C8C00DD1A0F /* Project object */;
+}

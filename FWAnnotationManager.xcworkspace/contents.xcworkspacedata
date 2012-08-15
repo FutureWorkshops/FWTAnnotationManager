@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workspace
+   version = "1.0">
+   <FileRef
+      location = "group:FWAnnotationManager/FWAnnotationManager.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:FWAnnotationManager_Test/FWAnnotationManager_Test.xcodeproj">
+   </FileRef>
+</Workspace>
