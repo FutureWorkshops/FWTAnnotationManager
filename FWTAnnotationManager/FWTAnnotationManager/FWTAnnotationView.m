@@ -1,19 +1,19 @@
 //
-//  FWPopoverHintView.m
-//  FWPopoverHintView
+//  FWTPopoverHintView.m
+//  FWTPopoverHintView
 //
 //  Created by Marco Meschini on 7/12/12.
 //  Copyright (c) 2012 Futureworkshops. All rights reserved.
 //
 
-#import "FWAnnotationView.h"
+#import "FWTAnnotationView.h"
 
-@interface FWAnnotationView ()
+@interface FWTAnnotationView ()
 {
     UIImageView *_backgroundImageView;
 }
 @property (nonatomic, retain)  UIImageView *backgroundImageView;
-@property (nonatomic, readwrite) FWPopoverArrowDirection arrowDirection;
+@property (nonatomic, readwrite) FWTAnnotationArrowDirection arrowDirection;
 @property (nonatomic, readwrite, retain) UIBezierPath *bezierPath;
 @property (nonatomic, readwrite, retain) UIView *contentView;
 
@@ -21,37 +21,13 @@
 - (void)adjustEdgeInsets;
 - (UIImage *)resizableBackgroundImageForSize:(CGSize)size;
 - (CGFloat)arrowOffsetForDeltaX:(CGFloat)dX deltaY:(CGFloat)dY direction:(NSInteger)direction;
-- (CGPoint)midPointForRect:(CGRect)rect popoverSize:(CGSize)popoverSize arrowDirection:(FWPopoverArrowDirection)arrowDirections;
+- (CGPoint)midPointForRect:(CGRect)rect popoverSize:(CGSize)popoverSize arrowDirection:(FWTAnnotationArrowDirection)arrowDirections;
 
 @end
 
-@implementation FWAnnotationView
+@implementation FWTAnnotationView
 @synthesize backgroundImageView = _backgroundImageView;
-@synthesize edgeInsets = _edgeInsets;
-@synthesize desiredEdgeInsets = _desiredEdgeInsets;
-@synthesize contentSize = _contentSize;
-@synthesize shadowBlur = _shadowBlur;
-@synthesize shadowOffset = _shadowOffset;
-@synthesize shadowColor = _shadowColor;
-@synthesize cornerRadius = _cornerRadius;
-@synthesize arrowDirection = _arrowDirection;
-@synthesize arrowSize = _arrowSize;
-@synthesize arrowOffset = _arrowOffset;
-@synthesize arrowCornerOffset = _arrowCornerOffset;
-@synthesize bezierPath = _bezierPath;
-@synthesize bezierPathColorFill = _bezierPathColorFill;
-@synthesize bezierPathColorStroke = _bezierPathColorStroke;
-@synthesize bezierPathLineWidth = _bezierPathLineWidth;
-@synthesize drawPathBlock = _drawPathBlock;
-@synthesize prepareToAnimationsBlock = _prepareToAnimationsBlock;
-@synthesize presentAnimationsBlock = _presentAnimationsBlock;
-@synthesize dismissAnimationsBlock = _dismissAnimationsBlock;
-@synthesize presentCompletionBlock = _presentCompletionBlock;
-@synthesize dismissCompletionBlock = _dismissCompletionBlock;
-@synthesize animationDuration = _animationDuration;
 @synthesize contentView = _contentView;
-@synthesize contentViewEdgeInsets = _contentViewEdgeInsets;
-@synthesize adjustPositionInSuperviewEnabled = _adjustPositionInSuperviewEnabled;
 
 - (void)dealloc
 {
@@ -87,7 +63,7 @@
         
         self.cornerRadius = 6.0f;
         
-        self.arrowDirection = FWAnnotationArrowDirectionUp;
+        self.arrowDirection = FWTAnnotationArrowDirectionUp;
         self.arrowSize = CGSizeMake(10.0f, 10.0f);
         self.arrowOffset = .0f;
         self.arrowCornerOffset = .0f;
@@ -155,13 +131,13 @@
     UIEdgeInsets currentInsets = self.edgeInsets;
     CGFloat dY = self.arrowSize.height;
     
-    if (self.arrowDirection & FWAnnotationArrowDirectionUp)
+    if (self.arrowDirection & FWTAnnotationArrowDirectionUp)
         currentInsets.top += dY;
-    else if (self.arrowDirection & FWAnnotationArrowDirectionLeft)
+    else if (self.arrowDirection & FWTAnnotationArrowDirectionLeft)
         currentInsets.left += dY;
-    else if (self.arrowDirection & FWAnnotationArrowDirectionRight)
+    else if (self.arrowDirection & FWTAnnotationArrowDirectionRight)
         currentInsets.right += dY;
-    else if (self.arrowDirection & FWAnnotationArrowDirectionDown)
+    else if (self.arrowDirection & FWTAnnotationArrowDirectionDown)
         currentInsets.bottom += dY;
     
     self.edgeInsets = currentInsets;
@@ -172,13 +148,13 @@
     //
     UIEdgeInsets capInsets = UIEdgeInsetsZero;
     CGSize contextSize = size;
-    if (self.arrowDirection & FWAnnotationArrowDirectionUp || self.arrowDirection & FWAnnotationArrowDirectionDown)
+    if (self.arrowDirection & FWTAnnotationArrowDirectionUp || self.arrowDirection & FWTAnnotationArrowDirectionDown)
     {
         contextSize.height = (self.cornerRadius * 2) + self.edgeInsets.top + self.edgeInsets.bottom + 1.0f;
         capInsets = UIEdgeInsetsMake(self.edgeInsets.top + self.cornerRadius, .0f, self.edgeInsets.bottom + self.cornerRadius, .0f);
     }
     
-    if (self.arrowDirection & FWAnnotationArrowDirectionLeft || self.arrowDirection & FWAnnotationArrowDirectionRight)
+    if (self.arrowDirection & FWTAnnotationArrowDirectionLeft || self.arrowDirection & FWTAnnotationArrowDirectionRight)
     {
         contextSize.width = (self.cornerRadius * 2) + self.edgeInsets.left + self.edgeInsets.right + 1.0f;
         capInsets = UIEdgeInsetsMake(.0f, self.edgeInsets.left + self.cornerRadius, .0f, self.edgeInsets.right + self.cornerRadius);
@@ -211,13 +187,13 @@
     CGFloat maxArrowOffset = .0f;
     
     CGFloat arrowOffset = .0f;
-    if (self.arrowDirection & FWAnnotationArrowDirectionUp || self.arrowDirection & FWAnnotationArrowDirectionDown)
+    if (self.arrowDirection & FWTAnnotationArrowDirectionUp || self.arrowDirection & FWTAnnotationArrowDirectionDown)
     {
         arrowOffset = direction*dX;
         maxArrowOffset = availableHalfRectSize.width - self.cornerRadius;
     }
     
-    if (self.arrowDirection & FWAnnotationArrowDirectionLeft || self.arrowDirection & FWAnnotationArrowDirectionRight)
+    if (self.arrowDirection & FWTAnnotationArrowDirectionLeft || self.arrowDirection & FWTAnnotationArrowDirectionRight)
     {
         arrowOffset = direction*dY;
         maxArrowOffset = availableHalfRectSize.height - self.cornerRadius;
@@ -229,29 +205,29 @@
     return arrowOffset;
 }
 
-- (CGPoint)midPointForRect:(CGRect)rect popoverSize:(CGSize)popoverSize arrowDirection:(FWPopoverArrowDirection)arrowDirections
+- (CGPoint)midPointForRect:(CGRect)rect popoverSize:(CGSize)popoverSize arrowDirection:(FWTAnnotationArrowDirection)arrowDirections
 {
     CGPoint midPoint = CGPointMake(CGRectGetMidX(rect), CGRectGetMidY(rect));
     
-    if (self.arrowDirection & FWAnnotationArrowDirectionUp)
+    if (self.arrowDirection & FWTAnnotationArrowDirectionUp)
         midPoint.x -= (popoverSize.width * .5f + self.arrowCornerOffset);
     
-    if (self.arrowDirection & FWAnnotationArrowDirectionDown)
+    if (self.arrowDirection & FWTAnnotationArrowDirectionDown)
     {
         midPoint.x -= (popoverSize.width * .5f + self.arrowCornerOffset);
         midPoint.y -= popoverSize.height;
     }
     
-    if (self.arrowDirection & FWAnnotationArrowDirectionLeft)
+    if (self.arrowDirection & FWTAnnotationArrowDirectionLeft)
         midPoint.y -= (popoverSize.height * .5f + self.arrowCornerOffset);
     
-    if (self.arrowDirection & FWAnnotationArrowDirectionRight)
+    if (self.arrowDirection & FWTAnnotationArrowDirectionRight)
     {
         midPoint.x -= popoverSize.width;
         midPoint.y -= (popoverSize.height * .5f + self.arrowCornerOffset);
     }
     
-    if (self.arrowDirection & FWAnnotationArrowDirectionNone)
+    if (self.arrowDirection & FWTAnnotationArrowDirectionNone)
     {
         midPoint.x -= popoverSize.width * .5f;
         midPoint.y -= popoverSize.height * .5f;
@@ -270,7 +246,6 @@
     {
         CGRect intersection = CGRectIntersection(view.bounds, frame);
 
-        
         CGFloat frameWidth = frame.size.width;
         CGFloat frameHeight = frame.size.height;
         if (intersection.size.width != frameWidth)
@@ -298,7 +273,7 @@
     }
     
     //
-    self.frame = frame;
+    self.frame = CGRectIntegral(frame);
     
     //
     if (self.adjustPositionInSuperviewEnabled)
@@ -306,9 +281,9 @@
 }
 
 #pragma mark - Public
-- (void)presentPopoverFromRect:(CGRect)rect
+- (void)presentAnnotationFromRect:(CGRect)rect
                         inView:(UIView *)view
-       permittedArrowDirection:(FWPopoverArrowDirection)arrowDirection
+       permittedArrowDirection:(FWTAnnotationArrowDirection)arrowDirection
                       animated:(BOOL)animated
 {
     //
@@ -353,14 +328,6 @@
     }
 }
 
-
-//- (void)presentPopoverFromBarButtonItem:(UIBarButtonItem *)item
-//               permittedArrowDirections:(FWPopoverArrowDirection)arrowDirections
-//                               animated:(BOOL)animated
-//{
-//    
-//}
-
 - (void)dismissPopoverAnimated:(BOOL)animated
 {
     //
@@ -400,7 +367,7 @@
     UIBezierPath *bp = [UIBezierPath bezierPath];
     [bp moveToPoint:a];
     [bp addQuadCurveToPoint:b controlPoint:CGPointMake(a.x, a.y - radius)];
-    if (self.arrowDirection & FWAnnotationArrowDirectionUp)
+    if (self.arrowDirection & FWTAnnotationArrowDirectionUp)
     {
         CGPoint a0 = CGPointMake(b.x + (availableHalfRectSize.width - halfArrowWidth) + self.arrowOffset, b.y);
         CGPoint a1 = CGPointMake(b.x + availableHalfRectSize.width + self.arrowOffset + self.arrowCornerOffset, b.y - arrowSize.height);
@@ -413,7 +380,7 @@
     
     [bp addLineToPoint:c];
     [bp addQuadCurveToPoint:d controlPoint:CGPointMake(c.x + radius, c.y)];
-    if (self.arrowDirection & FWAnnotationArrowDirectionRight)
+    if (self.arrowDirection & FWTAnnotationArrowDirectionRight)
     {
         CGPoint a0 = CGPointMake(d.x, d.y + (availableHalfRectSize.height - halfArrowWidth) + self.arrowOffset);
         CGPoint a1 = CGPointMake(d.x + arrowSize.height, d.y + availableHalfRectSize.height + self.arrowOffset + self.arrowCornerOffset);
@@ -426,7 +393,7 @@
     
     [bp addLineToPoint:e];
     [bp addQuadCurveToPoint:f controlPoint:CGPointMake(e.x, e.y + radius)];
-    if (self.arrowDirection & FWAnnotationArrowDirectionDown)
+    if (self.arrowDirection & FWTAnnotationArrowDirectionDown)
     {
         CGPoint a0 = CGPointMake(f.x - (availableHalfRectSize.width - halfArrowWidth) + self.arrowOffset, f.y);
         CGPoint a1 = CGPointMake(f.x - (availableHalfRectSize.width) + self.arrowOffset + self.arrowCornerOffset, f.y + arrowSize.height);
@@ -439,7 +406,7 @@
     
     [bp addLineToPoint:g];
     [bp addQuadCurveToPoint:h controlPoint:CGPointMake(g.x - radius, g.y)];
-    if (self.arrowDirection & FWAnnotationArrowDirectionLeft)
+    if (self.arrowDirection & FWTAnnotationArrowDirectionLeft)
     {
         CGPoint a0 = CGPointMake(h.x, h.y - (availableHalfRectSize.height - halfArrowWidth) + self.arrowOffset);
         CGPoint a1 = CGPointMake(h.x - arrowSize.height, h.y - availableHalfRectSize.height + self.arrowOffset + self.arrowCornerOffset);

@@ -1,14 +1,14 @@
 //
-//  FWPopoverDescriptor.m
-//  FWPopoverHintView
+//  FWTPopoverDescriptor.m
+//  FWTPopoverHintView
 //
 //  Created by Marco Meschini on 8/8/12.
 //  Copyright (c) 2012 Futureworkshops. All rights reserved.
 //
 
-#import "FWAnnotation.h"
+#import "FWTAnnotation.h"
 
-@implementation FWAnnotation
+@implementation FWTAnnotation
 @synthesize text = _text;
 @synthesize presentingRectPortrait = _presentingRectPortrait;
 @synthesize presentingRectLandscape = _presentingRectLandscape;
@@ -27,7 +27,7 @@
 {
     if ((self = [super init]))
     {
-        self.arrowDirection = FWAnnotationArrowDirectionNone;
+        self.arrowDirection = FWTAnnotationArrowDirectionNone;
         self.delay = .0f;
         self.desiredSize = CGSizeZero;
     }

@@ -1,6 +1,6 @@
 //
 //  SamplePickerViewController.m
-//  FWGridTableViewController_Test
+//  FWTGridTableViewController_Test
 //
 //  Created by Marco Meschini on 7/17/12.
 //  Copyright (c) 2012 Futureworkshops. All rights reserved.

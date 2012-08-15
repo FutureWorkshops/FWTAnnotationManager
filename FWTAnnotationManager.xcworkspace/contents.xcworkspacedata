@@ -2,7 +2,7 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:FWAnnotationManager/FWAnnotationManager.xcodeproj">
+      location = "group:FWTAnnotationManager/FWTAnnotationManager.xcodeproj">
    </FileRef>
    <FileRef
       location = "group:FWAnnotationManager_Test/FWAnnotationManager_Test.xcodeproj">

@@ -1,14 +1,14 @@
 //
-//  FWLabelPopoverView.h
-//  FWPopoverHintView
+//  FWTLabelPopoverView.h
+//  FWTPopoverHintView
 //
 //  Created by Marco Meschini on 8/8/12.
 //  Copyright (c) 2012 Futureworkshops. All rights reserved.
 //
 
-#import "FWAnnotationView.h"
+#import "FWTAnnotationView.h"
 
-@interface FWDefaultAnnotationView : FWAnnotationView
+@interface FWTDefaultAnnotationView : FWTAnnotationView
 {
     UILabel *_textLabel;
     UIImageView *_imageView;
