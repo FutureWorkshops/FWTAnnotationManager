@@ -27,7 +27,7 @@
 {
     if ((self = [super init]))
     {
-        self.arrowDirection = FWPopoverArrowDirectionNone;
+        self.arrowDirection = FWAnnotationArrowDirectionNone;
         self.delay = .0f;
         self.desiredSize = CGSizeZero;
     }

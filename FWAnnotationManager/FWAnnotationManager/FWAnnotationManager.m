@@ -133,11 +133,11 @@
 - (void)presentPopoverViewForPopoverDescriptor:(FWAnnotation *)annotation
 {
     FWAnnotationView *_popoverView = [self viewForAnnotation:annotation];
-    FWPopoverViewCompletionBlock currentCompletionBlock = NULL;
+    FWAnnotationViewCompletionBlock currentCompletionBlock = NULL;
     if (_popoverView.presentCompletionBlock)
         currentCompletionBlock = _popoverView.presentCompletionBlock;
     
-    FWPopoverViewCompletionBlock completionBlock = ^(BOOL finished){
+    FWAnnotationViewCompletionBlock completionBlock = ^(BOOL finished){
       if (currentCompletionBlock)
           currentCompletionBlock(finished);
         
@@ -268,11 +268,11 @@
     FWAnnotationView *_popoverView = [self viewForAnnotation:annotation];
     if (_popoverView)
     {
-        FWPopoverViewCompletionBlock currentDismissCompletionBlock = NULL;
+        FWAnnotationViewCompletionBlock currentDismissCompletionBlock = NULL;
         if (_popoverView.dismissCompletionBlock)
             currentDismissCompletionBlock = _popoverView.dismissCompletionBlock;
         
-        FWPopoverViewCompletionBlock completionBlock = ^(BOOL finished){
+        FWAnnotationViewCompletionBlock completionBlock = ^(BOOL finished){
             if (currentDismissCompletionBlock)
                 currentDismissCompletionBlock(finished);
             

@@ -9,21 +9,21 @@
 #import <UIKit/UIKit.h>
 
 enum {
-    FWPopoverArrowDirectionNone = 1UL << 0,
-    FWPopoverArrowDirectionUp = 1UL << 1,
-    FWPopoverArrowDirectionDown = 1UL << 2,
-    FWPopoverArrowDirectionLeft = 1UL << 3,
-    FWPopoverArrowDirectionRight = 1UL << 4,
-//    FWPopoverArrowDirectionAny = FWPopoverArrowDirectionUp | FWPopoverArrowDirectionDown | FWPopoverArrowDirectionLeft | FWPopoverArrowDirectionRight,
-//    FWPopoverArrowDirectionUnknown = NSUIntegerMax,
+    FWAnnotationArrowDirectionNone = 1UL << 0,
+    FWAnnotationArrowDirectionUp = 1UL << 1,
+    FWAnnotationArrowDirectionDown = 1UL << 2,
+    FWAnnotationArrowDirectionLeft = 1UL << 3,
+    FWAnnotationArrowDirectionRight = 1UL << 4,
+//    FWAnnotationArrowDirectionAny = FWAnnotationArrowDirectionUp | FWAnnotationArrowDirectionDown | FWAnnotationArrowDirectionLeft | FWAnnotationArrowDirectionRight,
+//    FWAnnotationArrowDirectionUnknown = NSUIntegerMax,
 };
 typedef NSUInteger FWPopoverArrowDirection;
 
 @class FWAnnotationView;
-typedef void (^FWPopoverViewDrawBezierPathBlock)(CGContextRef, FWAnnotationView *);
-typedef void (^FWPopoverViewPrepareToAnimationsBlock)(void);
-typedef void (^FWPopoverViewAnimationsBlock)(void);
-typedef void (^FWPopoverViewCompletionBlock)(BOOL finished);
+typedef void (^FWAnnotationViewDrawBezierPathBlock)(CGContextRef, FWAnnotationView *);
+typedef void (^FWAnnotationViewPrepareToAnimationsBlock)(void);
+typedef void (^FWAnnotationViewAnimationsBlock)(void);
+typedef void (^FWAnnotationViewCompletionBlock)(BOOL finished);
 
 @interface FWAnnotationView : UIView
 {
@@ -46,10 +46,10 @@ typedef void (^FWPopoverViewCompletionBlock)(BOOL finished);
     UIColor *_bezierPathColorFill, *_bezierPathColorStroke;
     CGFloat _bezierPathLineWidth;
     
-    FWPopoverViewDrawBezierPathBlock _drawPathBlock;
-    FWPopoverViewPrepareToAnimationsBlock _prepareToAnimationsBlock;
-    FWPopoverViewAnimationsBlock _presentAnimationsBlock, _dismissAnimationsBlock;
-    FWPopoverViewCompletionBlock _presentCompletionBlock, _dismissCompletionBlock;
+    FWAnnotationViewDrawBezierPathBlock _drawPathBlock;
+    FWAnnotationViewPrepareToAnimationsBlock _prepareToAnimationsBlock;
+    FWAnnotationViewAnimationsBlock _presentAnimationsBlock, _dismissAnimationsBlock;
+    FWAnnotationViewCompletionBlock _presentCompletionBlock, _dismissCompletionBlock;
     
     CGFloat _animationDuration;
     
@@ -78,10 +78,10 @@ typedef void (^FWPopoverViewCompletionBlock)(BOOL finished);
 @property (nonatomic, retain) UIColor *bezierPathColorFill, *bezierPathColorStroke;
 @property (nonatomic, assign) CGFloat bezierPathLineWidth;
 
-@property (nonatomic, copy) FWPopoverViewDrawBezierPathBlock drawPathBlock;
-@property (nonatomic, copy) FWPopoverViewPrepareToAnimationsBlock prepareToAnimationsBlock;
-@property (nonatomic, copy) FWPopoverViewAnimationsBlock presentAnimationsBlock, dismissAnimationsBlock;
-@property (nonatomic, copy) FWPopoverViewCompletionBlock presentCompletionBlock, dismissCompletionBlock;
+@property (nonatomic, copy) FWAnnotationViewDrawBezierPathBlock drawPathBlock;
+@property (nonatomic, copy) FWAnnotationViewPrepareToAnimationsBlock prepareToAnimationsBlock;
+@property (nonatomic, copy) FWAnnotationViewAnimationsBlock presentAnimationsBlock, dismissAnimationsBlock;
+@property (nonatomic, copy) FWAnnotationViewCompletionBlock presentCompletionBlock, dismissCompletionBlock;
 
 @property (nonatomic, assign) CGFloat animationDuration;
 

@@ -87,7 +87,7 @@
         
         self.cornerRadius = 6.0f;
         
-        self.arrowDirection = FWPopoverArrowDirectionUp;
+        self.arrowDirection = FWAnnotationArrowDirectionUp;
         self.arrowSize = CGSizeMake(10.0f, 10.0f);
         self.arrowOffset = .0f;
         self.arrowCornerOffset = .0f;
@@ -155,13 +155,13 @@
     UIEdgeInsets currentInsets = self.edgeInsets;
     CGFloat dY = self.arrowSize.height;
     
-    if (self.arrowDirection & FWPopoverArrowDirectionUp)
+    if (self.arrowDirection & FWAnnotationArrowDirectionUp)
         currentInsets.top += dY;
-    else if (self.arrowDirection & FWPopoverArrowDirectionLeft)
+    else if (self.arrowDirection & FWAnnotationArrowDirectionLeft)
         currentInsets.left += dY;
-    else if (self.arrowDirection & FWPopoverArrowDirectionRight)
+    else if (self.arrowDirection & FWAnnotationArrowDirectionRight)
         currentInsets.right += dY;
-    else if (self.arrowDirection & FWPopoverArrowDirectionDown)
+    else if (self.arrowDirection & FWAnnotationArrowDirectionDown)
         currentInsets.bottom += dY;
     
     self.edgeInsets = currentInsets;
@@ -172,13 +172,13 @@
     //
     UIEdgeInsets capInsets = UIEdgeInsetsZero;
     CGSize contextSize = size;
-    if (self.arrowDirection & FWPopoverArrowDirectionUp || self.arrowDirection & FWPopoverArrowDirectionDown)
+    if (self.arrowDirection & FWAnnotationArrowDirectionUp || self.arrowDirection & FWAnnotationArrowDirectionDown)
     {
         contextSize.height = (self.cornerRadius * 2) + self.edgeInsets.top + self.edgeInsets.bottom + 1.0f;
         capInsets = UIEdgeInsetsMake(self.edgeInsets.top + self.cornerRadius, .0f, self.edgeInsets.bottom + self.cornerRadius, .0f);
     }
     
-    if (self.arrowDirection & FWPopoverArrowDirectionLeft || self.arrowDirection & FWPopoverArrowDirectionRight)
+    if (self.arrowDirection & FWAnnotationArrowDirectionLeft || self.arrowDirection & FWAnnotationArrowDirectionRight)
     {
         contextSize.width = (self.cornerRadius * 2) + self.edgeInsets.left + self.edgeInsets.right + 1.0f;
         capInsets = UIEdgeInsetsMake(.0f, self.edgeInsets.left + self.cornerRadius, .0f, self.edgeInsets.right + self.cornerRadius);
@@ -211,13 +211,13 @@
     CGFloat maxArrowOffset = .0f;
     
     CGFloat arrowOffset = .0f;
-    if (self.arrowDirection & FWPopoverArrowDirectionUp || self.arrowDirection & FWPopoverArrowDirectionDown)
+    if (self.arrowDirection & FWAnnotationArrowDirectionUp || self.arrowDirection & FWAnnotationArrowDirectionDown)
     {
         arrowOffset = direction*dX;
         maxArrowOffset = availableHalfRectSize.width - self.cornerRadius;
     }
     
-    if (self.arrowDirection & FWPopoverArrowDirectionLeft || self.arrowDirection & FWPopoverArrowDirectionRight)
+    if (self.arrowDirection & FWAnnotationArrowDirectionLeft || self.arrowDirection & FWAnnotationArrowDirectionRight)
     {
         arrowOffset = direction*dY;
         maxArrowOffset = availableHalfRectSize.height - self.cornerRadius;
@@ -233,25 +233,25 @@
 {
     CGPoint midPoint = CGPointMake(CGRectGetMidX(rect), CGRectGetMidY(rect));
     
-    if (self.arrowDirection & FWPopoverArrowDirectionUp)
+    if (self.arrowDirection & FWAnnotationArrowDirectionUp)
         midPoint.x -= (popoverSize.width * .5f + self.arrowCornerOffset);
     
-    if (self.arrowDirection & FWPopoverArrowDirectionDown)
+    if (self.arrowDirection & FWAnnotationArrowDirectionDown)
     {
         midPoint.x -= (popoverSize.width * .5f + self.arrowCornerOffset);
         midPoint.y -= popoverSize.height;
     }
     
-    if (self.arrowDirection & FWPopoverArrowDirectionLeft)
+    if (self.arrowDirection & FWAnnotationArrowDirectionLeft)
         midPoint.y -= (popoverSize.height * .5f + self.arrowCornerOffset);
     
-    if (self.arrowDirection & FWPopoverArrowDirectionRight)
+    if (self.arrowDirection & FWAnnotationArrowDirectionRight)
     {
         midPoint.x -= popoverSize.width;
         midPoint.y -= (popoverSize.height * .5f + self.arrowCornerOffset);
     }
     
-    if (self.arrowDirection & FWPopoverArrowDirectionNone)
+    if (self.arrowDirection & FWAnnotationArrowDirectionNone)
     {
         midPoint.x -= popoverSize.width * .5f;
         midPoint.y -= popoverSize.height * .5f;
@@ -400,7 +400,7 @@
     UIBezierPath *bp = [UIBezierPath bezierPath];
     [bp moveToPoint:a];
     [bp addQuadCurveToPoint:b controlPoint:CGPointMake(a.x, a.y - radius)];
-    if (self.arrowDirection & FWPopoverArrowDirectionUp)
+    if (self.arrowDirection & FWAnnotationArrowDirectionUp)
     {
         CGPoint a0 = CGPointMake(b.x + (availableHalfRectSize.width - halfArrowWidth) + self.arrowOffset, b.y);
         CGPoint a1 = CGPointMake(b.x + availableHalfRectSize.width + self.arrowOffset + self.arrowCornerOffset, b.y - arrowSize.height);
@@ -413,7 +413,7 @@
     
     [bp addLineToPoint:c];
     [bp addQuadCurveToPoint:d controlPoint:CGPointMake(c.x + radius, c.y)];
-    if (self.arrowDirection & FWPopoverArrowDirectionRight)
+    if (self.arrowDirection & FWAnnotationArrowDirectionRight)
     {
         CGPoint a0 = CGPointMake(d.x, d.y + (availableHalfRectSize.height - halfArrowWidth) + self.arrowOffset);
         CGPoint a1 = CGPointMake(d.x + arrowSize.height, d.y + availableHalfRectSize.height + self.arrowOffset + self.arrowCornerOffset);
@@ -426,7 +426,7 @@
     
     [bp addLineToPoint:e];
     [bp addQuadCurveToPoint:f controlPoint:CGPointMake(e.x, e.y + radius)];
-    if (self.arrowDirection & FWPopoverArrowDirectionDown)
+    if (self.arrowDirection & FWAnnotationArrowDirectionDown)
     {
         CGPoint a0 = CGPointMake(f.x - (availableHalfRectSize.width - halfArrowWidth) + self.arrowOffset, f.y);
         CGPoint a1 = CGPointMake(f.x - (availableHalfRectSize.width) + self.arrowOffset + self.arrowCornerOffset, f.y + arrowSize.height);
@@ -439,7 +439,7 @@
     
     [bp addLineToPoint:g];
     [bp addQuadCurveToPoint:h controlPoint:CGPointMake(g.x - radius, g.y)];
-    if (self.arrowDirection & FWPopoverArrowDirectionLeft)
+    if (self.arrowDirection & FWAnnotationArrowDirectionLeft)
     {
         CGPoint a0 = CGPointMake(h.x, h.y - (availableHalfRectSize.height - halfArrowWidth) + self.arrowOffset);
         CGPoint a1 = CGPointMake(h.x - arrowSize.height, h.y - availableHalfRectSize.height + self.arrowOffset + self.arrowCornerOffset);
