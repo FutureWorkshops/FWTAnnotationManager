@@ -192,7 +192,6 @@
 {
     if (annotationView)
     {
-        NSLog(@"annotationView:%@", annotationView);
         [annotationManager removeAnnotation:annotation];
     }
     else
