@@ -270,6 +270,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "FWAnnotationManager_Test/FWAnnotationManager_Test-Prefix.pch";
 				INFOPLIST_FILE = "FWAnnotationManager_Test/FWAnnotationManager_Test-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/../../../Library/Developer/Xcode/DerivedData/FWTAnnotationManager-gghhyqjsyyxoenarybvmghuxcdfy/Build/Products/Debug-iphoneos\"",
@@ -285,6 +286,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "FWAnnotationManager_Test/FWAnnotationManager_Test-Prefix.pch";
 				INFOPLIST_FILE = "FWAnnotationManager_Test/FWAnnotationManager_Test-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/../../../Library/Developer/Xcode/DerivedData/FWTAnnotationManager-gghhyqjsyyxoenarybvmghuxcdfy/Build/Products/Debug-iphoneos\"",
