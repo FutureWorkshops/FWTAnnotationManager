@@ -11,6 +11,7 @@
 
 @interface FWTAnnotation : NSObject
 {
+    NSString *_guid;
     NSString *_text;
     CGRect _presentingRectPortrait, _presentingRectLandscape;
     FWTAnnotationArrowDirection _arrowDirection;
@@ -19,6 +20,7 @@
     CGSize _desiredSize;
 }
 
+@property (nonatomic, readonly, retain) NSString *guid;
 @property (nonatomic, retain) NSString *text;
 @property (nonatomic, assign) CGRect presentingRectPortrait, presentingRectLandscape;
 @property (nonatomic, assign) FWTAnnotationArrowDirection arrowDirection;

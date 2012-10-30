@@ -155,9 +155,9 @@
         self.popoverView.imageView.image = image;
     
     [self.popoverView presentAnnotationFromRect:_touchPointView.frame
-                                      inView:self.view
-                     permittedArrowDirection:self.popoverArrowDirection // 
-                                    animated:YES];
+                                         inView:self.view
+                        permittedArrowDirection:self.popoverArrowDirection //
+                                       animated:YES];
     
     //
     [self.view bringSubviewToFront:_touchPointView];

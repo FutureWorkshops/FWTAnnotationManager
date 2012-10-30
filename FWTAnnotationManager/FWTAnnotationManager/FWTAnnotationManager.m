@@ -195,12 +195,12 @@
 - (void)updatePopoverAnnotationsToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
 {
     NSArray *arrayCopy = [NSArray arrayWithArray:self.annotations];
-    [arrayCopy enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-        FWTAnnotationView *_popoverView = [self viewForAnnotation:obj];
+    [arrayCopy enumerateObjectsUsingBlock:^(FWTAnnotation *annotation, NSUInteger idx, BOOL *stop) {
+        FWTAnnotationView *_popoverView = [self viewForAnnotation:annotation];
         if (_popoverView)
         {
-            [self.annotations removeObject:obj];
-            [self.annotationsDictionary removeObjectForKey:[obj description]];
+            [self.annotations removeObject:annotation];
+            [self.annotationsDictionary removeObjectForKey:annotation.guid];
             [_popoverView removeFromSuperview];
         }
     }];
@@ -242,7 +242,7 @@
     [self.annotations addObject:annotation];
     
     //
-    [self.annotationsDictionary setObject:_popoverView forKey:[annotation description]];
+    [self.annotationsDictionary setObject:_popoverView forKey:annotation.guid];
     
     //
     self.presentAnimationsCounter = self.annotations.count;
@@ -277,7 +277,7 @@
                 currentDismissCompletionBlock(finished);
             
             [self.annotations removeObject:annotation];
-            [self.annotationsDictionary removeObjectForKey:[annotation description]];
+            [self.annotationsDictionary removeObjectForKey:annotation.guid];
             
             [_popoverView removeFromSuperview];
             
@@ -322,7 +322,7 @@
 
 - (FWTAnnotationView *)viewForAnnotation:(FWTAnnotation *)annotation
 {
-    FWTAnnotationView *_popoverView = [self.annotationsDictionary objectForKey:[annotation description]];
+    FWTAnnotationView *_popoverView = [self.annotationsDictionary objectForKey:annotation.guid];
     return _popoverView;
 }
 
