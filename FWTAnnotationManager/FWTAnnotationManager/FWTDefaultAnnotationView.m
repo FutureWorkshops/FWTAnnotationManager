@@ -35,10 +35,23 @@
     [super dealloc];
 }
 
+- (id)initWithFrame:(CGRect)frame
+{
+    if ((self = [super initWithFrame:frame]))
+    {
+        self.contentViewEdgeInsets = UIEdgeInsetsMake(5.0f, 5.0f, 5.0f, 5.0f);
+    }
+    
+    return self;
+}
+
 - (void)layoutSubviews
 {
     [super layoutSubviews];
-        
+    
+    CGRect avalaibleRect = UIEdgeInsetsInsetRect(self.bounds, self.edgeInsets);
+    self.contentView.frame = UIEdgeInsetsInsetRect(avalaibleRect, self.contentViewEdgeInsets);
+    
     //
     if (self.textLabelEnabled)
     {

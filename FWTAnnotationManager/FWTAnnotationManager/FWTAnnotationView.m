@@ -7,6 +7,7 @@
 //
 
 #import "FWTAnnotationView.h"
+#import <QuartzCore/QuartzCore.h>
 
 @interface FWTAnnotationView ()
 {
@@ -16,10 +17,12 @@
 @property (nonatomic, readwrite) FWTAnnotationArrowDirection arrowDirection;
 @property (nonatomic, readwrite, retain) UIBezierPath *bezierPath;
 @property (nonatomic, readwrite, retain) UIView *contentView;
+@property (nonatomic, readwrite, retain) FWTAnnotationBackgroundImageHelper *backgroundImageHelper;
+@property (nonatomic, readwrite, retain) FWTAnnotationArrow *arrow;
 
 //  Private
 - (void)adjustEdgeInsets;
-- (UIImage *)resizableBackgroundImageForSize:(CGSize)size;
+//- (UIImage *)resizableBackgroundImageForSize:(CGSize)size;
 - (CGFloat)arrowOffsetForDeltaX:(CGFloat)dX deltaY:(CGFloat)dY direction:(NSInteger)direction;
 - (CGPoint)midPointForRect:(CGRect)rect popoverSize:(CGSize)popoverSize arrowDirection:(FWTAnnotationArrowDirection)arrowDirections;
 
@@ -28,13 +31,17 @@
 @implementation FWTAnnotationView
 @synthesize backgroundImageView = _backgroundImageView;
 @synthesize contentView = _contentView;
+@synthesize backgroundImageHelper = _backgroundImageHelper;
+@synthesize arrow = _arrow;
 
 - (void)dealloc
 {
+    self.arrow = nil;
+    self.backgroundImageHelper = nil;
     self.contentView = nil;
-    self.bezierPathColorStroke = nil;
-    self.bezierPathColorFill = nil;
-    self.shadowColor = nil;
+//    self.bezierPathColorStroke = nil;
+//    self.bezierPathColorFill = nil;
+//    self.shadowColor = nil;
     self.bezierPath = nil;
     self.drawPathBlock = nil;
     self.prepareToAnimationsBlock = nil;
@@ -56,25 +63,13 @@
         self.edgeInsets = self.edgeInsets;
         
         self.contentSize = CGSizeZero;
-        
-        self.shadowBlur = 8.0f;
-        self.shadowOffset = CGSizeMake(.0f, 2.0f);
-        self.shadowColor = [[UIColor blackColor] colorWithAlphaComponent:.75f];
-        
-        self.cornerRadius = 6.0f;
-        
+
+        //
         self.arrowDirection = FWTAnnotationArrowDirectionUp;
-        self.arrowSize = CGSizeMake(10.0f, 10.0f);
-        self.arrowOffset = .0f;
-        self.arrowCornerOffset = .0f;
         
-        self.bezierPathColorFill = [[UIColor blackColor] colorWithAlphaComponent:.5f];
-        self.bezierPathColorStroke = [UIColor blackColor];
-        self.bezierPathLineWidth = 1.0f;
-        
-        self.contentViewEdgeInsets = UIEdgeInsetsZero;
-        
+        //
         self.adjustPositionInSuperviewEnabled = YES;
+        
         
         self.prepareToAnimationsBlock = ^{ self.alpha = .0f; };
         self.presentAnimationsBlock = ^{ self.alpha = 1.0f; };
@@ -83,6 +78,8 @@
         self.dismissCompletionBlock = NULL;
         
         self.animationDuration = .2f;
+        
+//        self.layer.borderWidth = 1.0f;
     }
     
     return self;
@@ -92,17 +89,18 @@
 {
     [super layoutSubviews];
     
+    //
     if (!self.backgroundImageView.superview)
         [self addSubview:self.backgroundImageView];
-    
+
     self.backgroundImageView.frame = self.bounds;
     
-    
+    //
     if (!self.contentView.superview)
         [self addSubview:self.contentView];
     
     CGRect avalaibleRect = UIEdgeInsetsInsetRect(self.bounds, self.edgeInsets);
-    self.contentView.frame = UIEdgeInsetsInsetRect(avalaibleRect, self.contentViewEdgeInsets);
+    self.contentView.frame = avalaibleRect;
 }
 
 #pragma mark - Getters
@@ -110,7 +108,10 @@
 {
     if (!self->_backgroundImageView)
         self->_backgroundImageView = [[UIImageView alloc] init];
-        
+    
+    self->_backgroundImageView.layer.borderWidth = 1.0f;
+    self->_backgroundImageView.layer.borderColor = [UIColor redColor].CGColor;
+    
     return self->_backgroundImageView;
 }
 
@@ -119,17 +120,33 @@
     if (!self->_contentView)
         self->_contentView = [[UIView alloc] init];
     
-//    self->_contentView.layer.borderWidth = 1.0f;
-//    self->_contentView.layer.borderColor = [UIColor greenColor].CGColor;
+    self->_contentView.layer.borderWidth = 1.0f;
+    self->_contentView.layer.borderColor = [UIColor greenColor].CGColor;
     
     return self->_contentView;
+}
+
+- (FWTAnnotationBackgroundImageHelper *)backgroundImageHelper
+{
+    if (!self->_backgroundImageHelper)
+        self->_backgroundImageHelper = [[FWTAnnotationBackgroundImageHelper alloc] initWithAnnotationView:self];
+    
+    return self->_backgroundImageHelper;
+}
+
+- (FWTAnnotationArrow *)arrow
+{
+    if (!self->_arrow)
+        self->_arrow = [[FWTAnnotationArrow alloc] init];
+    
+    return self->_arrow;
 }
 
 #pragma mark - Private
 - (void)adjustEdgeInsets
 {
     UIEdgeInsets currentInsets = self.edgeInsets;
-    CGFloat dY = self.arrowSize.height;
+    CGFloat dY = self.arrow.arrowSize.height;
     
     if (self.arrowDirection & FWTAnnotationArrowDirectionUp)
         currentInsets.top += dY;
@@ -143,60 +160,25 @@
     self.edgeInsets = currentInsets;
 }
 
-- (UIImage *)resizableBackgroundImageForSize:(CGSize)size
-{
-    //
-    UIEdgeInsets capInsets = UIEdgeInsetsZero;
-    CGSize contextSize = size;
-    if (self.arrowDirection & FWTAnnotationArrowDirectionUp || self.arrowDirection & FWTAnnotationArrowDirectionDown)
-    {
-        contextSize.height = (self.cornerRadius * 2) + self.edgeInsets.top + self.edgeInsets.bottom + 1.0f;
-        capInsets = UIEdgeInsetsMake(self.edgeInsets.top + self.cornerRadius, .0f, self.edgeInsets.bottom + self.cornerRadius, .0f);
-    }
-    
-    if (self.arrowDirection & FWTAnnotationArrowDirectionLeft || self.arrowDirection & FWTAnnotationArrowDirectionRight)
-    {
-        contextSize.width = (self.cornerRadius * 2) + self.edgeInsets.left + self.edgeInsets.right + 1.0f;
-        capInsets = UIEdgeInsetsMake(.0f, self.edgeInsets.left + self.cornerRadius, .0f, self.edgeInsets.right + self.cornerRadius);
-    }
-    
-    //
-    CGSize ctxSize = contextSize;
-    CGRect rect = CGRectMake(.0f, .0f, ctxSize.width, ctxSize.height);
-    
-    //
-    UIEdgeInsets insets = self.edgeInsets;
-    CGRect shapeBounds = UIEdgeInsetsInsetRect(rect, insets);
-    
-    //
-    self.bezierPath = [self bezierPathForRect:shapeBounds];
-    
-    //
-    UIImage *image = [self backgroundImageForSize:ctxSize];
-    
-    return [image resizableImageWithCapInsets:capInsets];
-    
-//    return image;
-}
-
 - (CGFloat)arrowOffsetForDeltaX:(CGFloat)dX deltaY:(CGFloat)dY direction:(NSInteger)direction
 {
     //
     CGRect shapeBounds = UIEdgeInsetsInsetRect(self.bounds, self.edgeInsets);
-    CGSize availableHalfRectSize = CGSizeMake((shapeBounds.size.width-2*self.cornerRadius)*.5f, (shapeBounds.size.height-2*self.cornerRadius)*.5f);
+    CGFloat cornerRadius = self.backgroundImageHelper.cornerRadius;
+    CGSize availableHalfRectSize = CGSizeMake((shapeBounds.size.width-2*cornerRadius)*.5f, (shapeBounds.size.height-2*cornerRadius)*.5f);
     CGFloat maxArrowOffset = .0f;
     
     CGFloat arrowOffset = .0f;
     if (self.arrowDirection & FWTAnnotationArrowDirectionUp || self.arrowDirection & FWTAnnotationArrowDirectionDown)
     {
         arrowOffset = direction*dX;
-        maxArrowOffset = availableHalfRectSize.width - self.cornerRadius;
+        maxArrowOffset = availableHalfRectSize.width - cornerRadius;
     }
     
     if (self.arrowDirection & FWTAnnotationArrowDirectionLeft || self.arrowDirection & FWTAnnotationArrowDirectionRight)
     {
         arrowOffset = direction*dY;
-        maxArrowOffset = availableHalfRectSize.height - self.cornerRadius;
+        maxArrowOffset = availableHalfRectSize.height - cornerRadius;
     }
     
     if (abs(arrowOffset) > maxArrowOffset)
@@ -210,21 +192,21 @@
     CGPoint midPoint = CGPointMake(CGRectGetMidX(rect), CGRectGetMidY(rect));
     
     if (self.arrowDirection & FWTAnnotationArrowDirectionUp)
-        midPoint.x -= (popoverSize.width * .5f + self.arrowCornerOffset);
+        midPoint.x -= (popoverSize.width * .5f + self.arrow.arrowCornerOffset);
     
     if (self.arrowDirection & FWTAnnotationArrowDirectionDown)
     {
-        midPoint.x -= (popoverSize.width * .5f + self.arrowCornerOffset);
+        midPoint.x -= (popoverSize.width * .5f + self.arrow.arrowCornerOffset);
         midPoint.y -= popoverSize.height;
     }
     
     if (self.arrowDirection & FWTAnnotationArrowDirectionLeft)
-        midPoint.y -= (popoverSize.height * .5f + self.arrowCornerOffset);
+        midPoint.y -= (popoverSize.height * .5f + self.arrow.arrowCornerOffset);
     
     if (self.arrowDirection & FWTAnnotationArrowDirectionRight)
     {
         midPoint.x -= popoverSize.width;
-        midPoint.y -= (popoverSize.height * .5f + self.arrowCornerOffset);
+        midPoint.y -= (popoverSize.height * .5f + self.arrow.arrowCornerOffset);
     }
     
     if (self.arrowDirection & FWTAnnotationArrowDirectionNone)
@@ -277,14 +259,14 @@
     
     //
     if (self.adjustPositionInSuperviewEnabled)
-        self.arrowOffset = [self arrowOffsetForDeltaX:dX deltaY:dY direction:direction];
+        self.arrow.arrowOffset = [self arrowOffsetForDeltaX:dX deltaY:dY direction:direction];
 }
 
 #pragma mark - Public
 - (void)presentAnnotationFromRect:(CGRect)rect
-                        inView:(UIView *)view
-       permittedArrowDirection:(FWTAnnotationArrowDirection)arrowDirection
-                      animated:(BOOL)animated
+                           inView:(UIView *)view
+          permittedArrowDirection:(FWTAnnotationArrowDirection)arrowDirection
+                         animated:(BOOL)animated
 {
     //
     self.arrowDirection = arrowDirection;
@@ -298,12 +280,10 @@
     CGRect frame = CGRectZero;
     frame.origin = midPoint;
     frame.size = self.contentSize;
-    
-    //
     [self adjustAndSetFrame:frame inSuperview:view];
     
     //
-    self.backgroundImageView.image = [self resizableBackgroundImageForSize:self.contentSize];
+    self.backgroundImageView.image = [self.backgroundImageHelper resizableBackgroundImageForSize:self.contentSize];
     
     //
     [self setNeedsLayout];
@@ -337,134 +317,5 @@
                      animations:self.dismissAnimationsBlock
                      completion:self.dismissCompletionBlock];
 }
-
-- (UIBezierPath *)bezierPathForRect:(CGRect)rect
-{
-    CGFloat radius = self.cornerRadius;
-    
-    //
-    //      b           c
-    //  a                   d
-    //
-    //  h                   e
-    //      g           f
-    //
-    CGPoint a = CGPointMake(rect.origin.x, rect.origin.y + radius);
-    CGPoint b = CGPointMake(a.x + radius, a.y - radius);
-    CGPoint c = CGPointMake(a.x + rect.size.width - radius, rect.origin.y);
-    CGPoint d = CGPointMake(c.x + radius, c.y + radius);
-    CGPoint e = CGPointMake(a.x + rect.size.width, rect.origin.y + rect.size.height - radius);
-    CGPoint f = CGPointMake(e.x - radius, e.y + radius);
-    CGPoint g = CGPointMake(a.x + radius, rect.origin.y + rect.size.height);
-    CGPoint h = CGPointMake(g.x - radius, g.y - radius);
-    
-    //
-    CGSize arrowSize = self.arrowSize;
-    CGFloat halfArrowWidth = arrowSize.width*.5f;
-    CGSize availableHalfRectSize = CGSizeMake((rect.size.width-2*radius)*.5f, (rect.size.height-2*radius)*.5f);
-    
-    //
-    UIBezierPath *bp = [UIBezierPath bezierPath];
-    [bp moveToPoint:a];
-    [bp addQuadCurveToPoint:b controlPoint:CGPointMake(a.x, a.y - radius)];
-    if (self.arrowDirection & FWTAnnotationArrowDirectionUp)
-    {
-        CGPoint a0 = CGPointMake(b.x + (availableHalfRectSize.width - halfArrowWidth) + self.arrowOffset, b.y);
-        CGPoint a1 = CGPointMake(b.x + availableHalfRectSize.width + self.arrowOffset + self.arrowCornerOffset, b.y - arrowSize.height);
-        CGPoint a2 = CGPointMake(b.x + (availableHalfRectSize.width + halfArrowWidth) + self.arrowOffset, b.y);
-        
-        [bp addLineToPoint:a0];
-        [bp addLineToPoint:a1];
-        [bp addLineToPoint:a2];
-    }
-    
-    [bp addLineToPoint:c];
-    [bp addQuadCurveToPoint:d controlPoint:CGPointMake(c.x + radius, c.y)];
-    if (self.arrowDirection & FWTAnnotationArrowDirectionRight)
-    {
-        CGPoint a0 = CGPointMake(d.x, d.y + (availableHalfRectSize.height - halfArrowWidth) + self.arrowOffset);
-        CGPoint a1 = CGPointMake(d.x + arrowSize.height, d.y + availableHalfRectSize.height + self.arrowOffset + self.arrowCornerOffset);
-        CGPoint a2 = CGPointMake(d.x, d.y + (availableHalfRectSize.height + halfArrowWidth) + self.arrowOffset);
-        
-        [bp addLineToPoint:a0];
-        [bp addLineToPoint:a1];
-        [bp addLineToPoint:a2];
-    }
-    
-    [bp addLineToPoint:e];
-    [bp addQuadCurveToPoint:f controlPoint:CGPointMake(e.x, e.y + radius)];
-    if (self.arrowDirection & FWTAnnotationArrowDirectionDown)
-    {
-        CGPoint a0 = CGPointMake(f.x - (availableHalfRectSize.width - halfArrowWidth) + self.arrowOffset, f.y);
-        CGPoint a1 = CGPointMake(f.x - (availableHalfRectSize.width) + self.arrowOffset + self.arrowCornerOffset, f.y + arrowSize.height);
-        CGPoint a2 = CGPointMake(f.x - (availableHalfRectSize.width + halfArrowWidth) + self.arrowOffset, f.y);
-        
-        [bp addLineToPoint:a0];
-        [bp addLineToPoint:a1];
-        [bp addLineToPoint:a2];
-    }
-    
-    [bp addLineToPoint:g];
-    [bp addQuadCurveToPoint:h controlPoint:CGPointMake(g.x - radius, g.y)];
-    if (self.arrowDirection & FWTAnnotationArrowDirectionLeft)
-    {
-        CGPoint a0 = CGPointMake(h.x, h.y - (availableHalfRectSize.height - halfArrowWidth) + self.arrowOffset);
-        CGPoint a1 = CGPointMake(h.x - arrowSize.height, h.y - availableHalfRectSize.height + self.arrowOffset + self.arrowCornerOffset);
-        CGPoint a2 = CGPointMake(h.x, h.y - (availableHalfRectSize.height + halfArrowWidth) + self.arrowOffset);
-        
-        [bp addLineToPoint:a0];
-        [bp addLineToPoint:a1];
-        [bp addLineToPoint:a2];
-    }
-    
-    [bp closePath];
-    
-    return bp;
-}
-
-- (UIImage *)backgroundImageForSize:(CGSize)size
-{
-    //
-    UIGraphicsBeginImageContextWithOptions(size, NO, .0f);
-    CGContextRef ctx = UIGraphicsGetCurrentContext();
-    
-    //  join with a rounded end
-    CGContextSetLineJoin(ctx, kCGLineJoinRound);
-    
-    //  fill with a solid to get good shadow - then clear inside
-    CGContextSaveGState(ctx);
-    CGContextSetFillColorWithColor(ctx, [UIColor blackColor].CGColor);
-    CGContextSetShadowWithColor(ctx, self.shadowOffset, self.shadowBlur, self.shadowColor.CGColor);
-    CGContextAddPath(ctx, self.bezierPath.CGPath);
-    CGContextDrawPath(ctx, kCGPathFill);
-    CGContextRestoreGState(ctx);
-    CGContextSaveGState(ctx);
-    [self.bezierPath addClip];
-    [[UIColor clearColor] setFill];
-    UIRectFill(CGContextGetClipBoundingBox(ctx));
-    CGContextRestoreGState(ctx);
-    
-    //  fill with the right color now
-    CGContextSetFillColorWithColor(ctx, self.bezierPathColorFill.CGColor);
-    CGContextAddPath(ctx, self.bezierPath.CGPath);
-    CGContextDrawPath(ctx, kCGPathFill);
-    
-    //
-    if (self.drawPathBlock)
-        self.drawPathBlock(ctx, self);
-    
-    //  stroke the border
-    CGContextSetStrokeColorWithColor(ctx, self.bezierPathColorStroke.CGColor);
-    CGContextSetLineWidth(ctx, self.bezierPathLineWidth);
-    CGContextAddPath(ctx, self.bezierPath.CGPath);
-    CGContextDrawPath(ctx, kCGPathStroke);
-    
-    //
-    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    
-    return image;
-}
-
 
 @end

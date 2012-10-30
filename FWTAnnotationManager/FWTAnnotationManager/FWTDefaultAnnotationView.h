@@ -14,6 +14,8 @@
     UIImageView *_imageView;
 }
 
+@property (nonatomic, assign) UIEdgeInsets contentViewEdgeInsets;
+
 @property (nonatomic, readonly, retain) UILabel *textLabel;
 @property (nonatomic, readonly, retain) UIImageView *imageView;
 

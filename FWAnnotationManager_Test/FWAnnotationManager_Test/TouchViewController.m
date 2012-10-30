@@ -77,28 +77,26 @@
     {
         self->_popoverView = [[FWTDefaultAnnotationView alloc] init];
         self->_popoverView.contentSize = CGSizeMake(160.0f, 60.0f);
-        self->_popoverView.drawPathBlock = ^(CGContextRef ctx, FWTAnnotationView *popOverView){
-            CGRect ctxRect = CGContextGetClipBoundingBox(ctx);
-            
-            UIEdgeInsets insets = popOverView.edgeInsets;
-            CGRect shapeBounds = UIEdgeInsetsInsetRect(ctxRect, insets);
-            
-            //  clip to current path
-            CGContextSaveGState(ctx);
-            [popOverView.bezierPath addClip];
-            
-            //  stroke a thick inner border
-            CGRect innerShapeBounds = CGRectInset(shapeBounds, 2.0f, 2.0f);
-            UIBezierPath *innerBezierPath = [popOverView bezierPathForRect:innerShapeBounds];
-            CGContextSetStrokeColorWithColor(ctx, [UIColor whiteColor].CGColor);
-            CGContextSetLineWidth(ctx, 6.0f);
-            CGContextSetBlendMode(ctx, kCGBlendModeSoftLight);
-            CGContextAddPath(ctx, innerBezierPath.CGPath);
-            CGContextDrawPath(ctx, kCGPathStroke);
-            CGContextRestoreGState(ctx);
-        };
-        
-        self->_popoverView.contentViewEdgeInsets = UIEdgeInsetsMake(5.0f, 5.0f, 5.0f, 5.0f);
+//        self->_popoverView.drawPathBlock = ^(CGContextRef ctx, FWTAnnotationView *popOverView){
+//            CGRect ctxRect = CGContextGetClipBoundingBox(ctx);
+//            
+//            UIEdgeInsets insets = popOverView.edgeInsets;
+//            CGRect shapeBounds = UIEdgeInsetsInsetRect(ctxRect, insets);
+//            
+//            //  clip to current path
+//            CGContextSaveGState(ctx);
+//            [popOverView.bezierPath addClip];
+//            
+//            //  stroke a thick inner border
+//            CGRect innerShapeBounds = CGRectInset(shapeBounds, 2.0f, 2.0f);
+//            UIBezierPath *innerBezierPath = [popOverView bezierPathForRect:innerShapeBounds];
+//            CGContextSetStrokeColorWithColor(ctx, [UIColor whiteColor].CGColor);
+//            CGContextSetLineWidth(ctx, 6.0f);
+//            CGContextSetBlendMode(ctx, kCGBlendModeSoftLight);
+//            CGContextAddPath(ctx, innerBezierPath.CGPath);
+//            CGContextDrawPath(ctx, kCGPathStroke);
+//            CGContextRestoreGState(ctx);
+//        };
         
         self->_popoverView.textLabel.textAlignment = UITextAlignmentCenter;
         self->_popoverView.textLabel.backgroundColor = [UIColor clearColor];

@@ -126,11 +126,10 @@
     
     //
     _popoverView.contentSize = CGSizeMake(160.0f, 60.0f);
-    _popoverView.contentViewEdgeInsets = UIEdgeInsetsMake(5.0f, 5.0f, 5.0f, 5.0f);
     
     //
-    _popoverView.arrowCornerOffset = 10.0f;
-    _popoverView.arrowOffset = 10.0f;
+    _popoverView.arrow.arrowCornerOffset = 10.0f;
+    _popoverView.arrow.arrowOffset = 10.0f;
     //    _popoverView.animationDuration = .35f;
     
     //
