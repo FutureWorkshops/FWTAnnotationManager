@@ -83,7 +83,7 @@ typedef NSUInteger AxisType;
 }
 
 #pragma mark - Private
-- (UIBezierPath *)_bezierPathForRect:(CGRect)rect //cornerRadius:(CGFloat)cornerRadius arrowSize:(CGSize)arrowSize direction:(FWTAnnotationArrowDirection)arrowDirection
+- (UIBezierPath *)_bezierPathForRect:(CGRect)rect
 {
     CGFloat radius = self.cornerRadius;
     
@@ -110,20 +110,22 @@ typedef NSUInteger AxisType;
     CGSize arrowSize = self.annotationView.arrow.arrowSize;
     CGFloat halfArrowWidth = arrowSize.width*.5f;
     CGSize availableHalfRectSize = CGSizeMake((rect.size.width-2*radius)*.5f, (rect.size.height-2*radius)*.5f);
-    void(^AppendArrowBlock)(UIBezierPath *, FWTAnnotationArrowDirection, CGPoint, NSInteger, AxisType) = ^(UIBezierPath *bezierPath, FWTAnnotationArrowDirection arrowDirection, CGPoint point, NSInteger sign, AxisType axisType) {
+    CGFloat ao = self.annotationView.arrow.arrowOffset;
+    CGFloat ao_aco = self.annotationView.arrow.arrowOffset + self.annotationView.arrow.arrowCornerOffset;
+    void(^AppendArrowBlock)(UIBezierPath *, CGPoint, NSInteger, AxisType) = ^(UIBezierPath *bezierPath, CGPoint point, NSInteger sign, AxisType axisType) {
         
         CGPoint a0, a1, a2;
         if (axisType == AxisTypeHorizontal)
         {
-            a0 = CGPointMake(point.x + sign*(availableHalfRectSize.width - halfArrowWidth), point.y);
-            a1 = CGPointMake(point.x + sign*(availableHalfRectSize.width), point.y - sign*(arrowSize.height));
-            a2 = CGPointMake(point.x + sign*(availableHalfRectSize.width + halfArrowWidth), point.y);
+            a0 = CGPointMake(point.x + sign*(availableHalfRectSize.width - halfArrowWidth) + ao, point.y);
+            a1 = CGPointMake(point.x + sign*(availableHalfRectSize.width) + ao_aco, point.y - sign*(arrowSize.height));
+            a2 = CGPointMake(point.x + sign*(availableHalfRectSize.width + halfArrowWidth) + ao, point.y);
         }
         else
         {
-            a0 = CGPointMake(point.x, point.y + sign*(availableHalfRectSize.height - halfArrowWidth));
-            a1 = CGPointMake(point.x + sign*(arrowSize.height), point.y + sign*(availableHalfRectSize.height));
-            a2 = CGPointMake(point.x, point.y + sign*(availableHalfRectSize.height + halfArrowWidth));
+            a0 = CGPointMake(point.x, point.y + sign*(availableHalfRectSize.height - halfArrowWidth) + ao);
+            a1 = CGPointMake(point.x + sign*(arrowSize.height), point.y + sign*(availableHalfRectSize.height) + ao_aco);
+            a2 = CGPointMake(point.x, point.y + sign*(availableHalfRectSize.height + halfArrowWidth) + ao);
         }
         
         [bezierPath addLineToPoint:a0];
@@ -136,19 +138,19 @@ typedef NSUInteger AxisType;
     [bp moveToPoint:a];
     [bp addQuadCurveToPoint:b controlPoint:ab];
     if (arrowDirection == FWTAnnotationArrowDirectionUp)
-        AppendArrowBlock(bp, arrowDirection, b, 1, AxisTypeHorizontal);
+        AppendArrowBlock(bp, b, 1, AxisTypeHorizontal);
     [bp addLineToPoint:c];
     [bp addQuadCurveToPoint:d controlPoint:cd];
     if (arrowDirection == FWTAnnotationArrowDirectionRight)
-        AppendArrowBlock(bp, arrowDirection, d, 1, AxisTypeVertical);
+        AppendArrowBlock(bp, d, 1, AxisTypeVertical);
     [bp addLineToPoint:e];
     [bp addQuadCurveToPoint:f controlPoint:ef];
     if (arrowDirection == FWTAnnotationArrowDirectionDown)
-        AppendArrowBlock(bp, arrowDirection, f, -1, AxisTypeHorizontal);
+        AppendArrowBlock(bp, f, -1, AxisTypeHorizontal);
     [bp addLineToPoint:g];
     [bp addQuadCurveToPoint:h controlPoint:gh];
     if (arrowDirection == FWTAnnotationArrowDirectionLeft)
-        AppendArrowBlock(bp, arrowDirection, h, -1, AxisTypeVertical);
+        AppendArrowBlock(bp, h, -1, AxisTypeVertical);
     [bp closePath];
     
     return bp;
