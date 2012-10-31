@@ -9,12 +9,15 @@
 #import <UIKit/UIKit.h>
 #import "FWTAnnotationArrow.h"
 #import "FWTAnnotationBackgroundHelper.h"
+#import "FWTAnnotationAnimationHelper.h"
 
 @class FWTAnnotationView;
+@protocol FWTAnnotationViewDelegate <NSObject>
+@optional
+- (void)annotationViewDidPresent:(FWTAnnotationView *)annotationView;
+- (void)annotationViewDidDismiss:(FWTAnnotationView *)annotationView;
+@end
 
-typedef void (^FWTAnnotationViewPrepareToAnimationsBlock)(void);
-typedef void (^FWTAnnotationViewAnimationsBlock)(void);
-typedef void (^FWTAnnotationViewCompletionBlock)(BOOL finished);
 
 @interface FWTAnnotationView : UIView
 
@@ -22,13 +25,11 @@ typedef void (^FWTAnnotationViewCompletionBlock)(BOOL finished);
 @property (nonatomic, assign) CGSize contentSize;
 @property (nonatomic, assign) BOOL adjustPositionInSuperviewEnabled;
 
-@property (nonatomic, copy) FWTAnnotationViewPrepareToAnimationsBlock prepareToAnimationsBlock;
-@property (nonatomic, copy) FWTAnnotationViewAnimationsBlock presentAnimationsBlock, dismissAnimationsBlock;
-@property (nonatomic, copy) FWTAnnotationViewCompletionBlock presentCompletionBlock, dismissCompletionBlock;
-@property (nonatomic, assign) CGFloat animationDuration;
-
 @property (nonatomic, retain) FWTAnnotationBackgroundHelper *backgroundHelper;
 @property (nonatomic, retain) FWTAnnotationArrow *arrow;
+@property (nonatomic, retain) FWTAnnotationAnimationHelper *animationHelper;
+
+@property (nonatomic, assign) id<FWTAnnotationViewDelegate> delegate;
 
 //
 - (void)presentAnnotationFromRect:(CGRect)rect

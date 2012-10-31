@@ -17,7 +17,6 @@
     FWTAnnotationArrowDirection _arrowDirection;
     NSTimeInterval _delay;
     BOOL _animated;
-    CGSize _desiredSize;
 }
 
 @property (nonatomic, readonly, retain) NSString *guid;
@@ -26,5 +25,5 @@
 @property (nonatomic, assign) FWTAnnotationArrowDirection arrowDirection;
 @property (nonatomic, assign) NSTimeInterval delay;
 @property (nonatomic, assign) BOOL animated;
-@property (nonatomic, assign) CGSize desiredSize;
+
 @end

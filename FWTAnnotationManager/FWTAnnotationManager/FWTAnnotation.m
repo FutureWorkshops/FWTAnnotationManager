@@ -28,7 +28,6 @@
         self.guid = [[self class] _GUID];
         self.arrowDirection = FWTAnnotationArrowDirectionNone;
         self.delay = .0f;
-        self.desiredSize = CGSizeZero;
     }
     
     return self;

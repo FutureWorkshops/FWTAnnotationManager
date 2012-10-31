@@ -133,22 +133,22 @@
 - (void)presentPopoverViewForPopoverDescriptor:(FWTAnnotation *)annotation
 {
     FWTAnnotationView *_popoverView = [self viewForAnnotation:annotation];
-    FWTAnnotationViewCompletionBlock currentCompletionBlock = NULL;
-    if (_popoverView.presentCompletionBlock)
-        currentCompletionBlock = _popoverView.presentCompletionBlock;
-    
-    FWTAnnotationViewCompletionBlock completionBlock = ^(BOOL finished){
-      if (currentCompletionBlock)
-          currentCompletionBlock(finished);
-        
-        self.presentAnimationsCounter--;
-        if (self.presentAnimationsCounter == 0)
-        {
-            self.tapGestureRecognizer.enabled = YES;
-        }
-    };
-    
-    _popoverView.presentCompletionBlock = completionBlock;
+//    FWTAnnotationViewCompletionBlock currentCompletionBlock = NULL;
+//    if (_popoverView.presentCompletionBlock)
+//        currentCompletionBlock = _popoverView.presentCompletionBlock;
+//    
+//    FWTAnnotationViewCompletionBlock completionBlock = ^(BOOL finished){
+//      if (currentCompletionBlock)
+//          currentCompletionBlock(finished);
+//        
+//        self.presentAnimationsCounter--;
+//        if (self.presentAnimationsCounter == 0)
+//        {
+//            self.tapGestureRecognizer.enabled = YES;
+//        }
+//    };
+//    
+//    _popoverView.presentCompletionBlock = completionBlock;
     
     CGRect rect = CGRectZero;
     UIInterfaceOrientation orientation = [UIApplication sharedApplication].statusBarOrientation;
@@ -268,28 +268,28 @@
     FWTAnnotationView *_popoverView = [self viewForAnnotation:annotation];
     if (_popoverView)
     {
-        FWTAnnotationViewCompletionBlock currentDismissCompletionBlock = NULL;
-        if (_popoverView.dismissCompletionBlock)
-            currentDismissCompletionBlock = _popoverView.dismissCompletionBlock;
-        
-        FWTAnnotationViewCompletionBlock completionBlock = ^(BOOL finished){
-            if (currentDismissCompletionBlock)
-                currentDismissCompletionBlock(finished);
-            
-            [self.annotations removeObject:annotation];
-            [self.annotationsDictionary removeObjectForKey:annotation.guid];
-            
-            [_popoverView removeFromSuperview];
-            
-            if (self.annotations.count == 0)
-            {
-                [self.contentView removeFromSuperview];
-                
-                [self unregisterFromStatusBarOrientationNotifications];
-            }
-        };
-        
-        _popoverView.dismissCompletionBlock = completionBlock;
+//        FWTAnnotationViewCompletionBlock currentDismissCompletionBlock = NULL;
+//        if (_popoverView.dismissCompletionBlock)
+//            currentDismissCompletionBlock = _popoverView.dismissCompletionBlock;
+//        
+//        FWTAnnotationViewCompletionBlock completionBlock = ^(BOOL finished){
+//            if (currentDismissCompletionBlock)
+//                currentDismissCompletionBlock(finished);
+//            
+//            [self.annotations removeObject:annotation];
+//            [self.annotationsDictionary removeObjectForKey:annotation.guid];
+//            
+//            [_popoverView removeFromSuperview];
+//            
+//            if (self.annotations.count == 0)
+//            {
+//                [self.contentView removeFromSuperview];
+//                
+//                [self unregisterFromStatusBarOrientationNotifications];
+//            }
+//        };
+//        
+//        _popoverView.dismissCompletionBlock = completionBlock;
         
         [_popoverView dismissPopoverAnimated:annotation.animated];
     }

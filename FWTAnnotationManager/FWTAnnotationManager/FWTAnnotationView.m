@@ -14,6 +14,13 @@
 @end
 
 @interface FWTAnnotationView ()
+{
+    struct
+    {
+        BOOL didPresent: 1;
+        BOOL didDismiss: 1;
+    } _delegateHas;
+}
 
 @property (nonatomic, retain)  UIImageView *backgroundImageView;
 @property (nonatomic, readwrite, retain) UIView *contentView;
@@ -29,21 +36,18 @@
 @implementation FWTAnnotationView
 @synthesize backgroundImageView = _backgroundImageView;
 @synthesize contentView = _contentView;
+@synthesize delegate = _delegate;
 @synthesize arrow = _arrow;
 @synthesize backgroundHelper = _backgroundHelper;
+@synthesize animationHelper = _animationHelper;
 
 - (void)dealloc
 {
+    self.delegate = nil;
     self.arrow = nil;
     self.backgroundHelper = nil;
+    self.animationHelper = nil;
     self.contentView = nil;
-    
-    self.prepareToAnimationsBlock = nil;
-    self.presentAnimationsBlock = nil;
-    self.dismissAnimationsBlock = nil;
-    self.presentCompletionBlock = nil;
-    self.dismissCompletionBlock = nil;
-    
     self.backgroundImageView = nil;
     [super dealloc];
 }
@@ -57,20 +61,10 @@
         self.contentSize = CGSizeZero;
         self.adjustPositionInSuperviewEnabled = YES;
         
-        //
-        self.prepareToAnimationsBlock = ^{ self.alpha = .0f; };
-        self.presentAnimationsBlock = ^{ self.alpha = 1.0f; };
-        self.presentCompletionBlock = NULL;
-        self.dismissAnimationsBlock = ^{ self.alpha = .0f; };
-        self.dismissCompletionBlock = NULL;
-        self.animationDuration = .2f;
-        
+        //  debug
         self.contentView.layer.borderWidth = 1.0f;
         self.contentView.layer.borderColor = [UIColor redColor].CGColor;
-        
         self.backgroundImageView.layer.borderWidth = 2.0f;
-        
-        
         self.layer.borderWidth = 1.0f;
     }
     
@@ -128,6 +122,14 @@
     return self->_arrow;
 }
 
+- (FWTAnnotationAnimationHelper *)animationHelper
+{
+    if (!self->_animationHelper)
+        self->_animationHelper = [[FWTAnnotationAnimationHelper alloc] initWithAnnotationView:self];
+    
+    return self->_animationHelper;
+}
+
 #pragma mark - Private
 - (CGFloat)_arrowOffsetForDeltaX:(CGFloat)dX deltaY:(CGFloat)dY direction:(NSInteger)direction
 {
@@ -143,8 +145,7 @@
         arrowOffset = direction*dX;
         maxArrowOffset = availableHalfRectSize.width - cornerRadius;
     }
-    
-    if (self.arrow.direction & FWTAnnotationArrowDirectionLeft || self.arrow.direction & FWTAnnotationArrowDirectionRight)
+    else if (self.arrow.direction & FWTAnnotationArrowDirectionLeft || self.arrow.direction & FWTAnnotationArrowDirectionRight)
     {
         arrowOffset = direction*dY;
         maxArrowOffset = availableHalfRectSize.height - cornerRadius;
@@ -163,22 +164,22 @@
     if (self.arrow.direction & FWTAnnotationArrowDirectionUp)
         midPoint.x -= (popoverSize.width * .5f + self.arrow.cornerOffset);
     
-    if (self.arrow.direction & FWTAnnotationArrowDirectionDown)
+    else if (self.arrow.direction & FWTAnnotationArrowDirectionDown)
     {
         midPoint.x -= (popoverSize.width * .5f + self.arrow.cornerOffset);
         midPoint.y -= popoverSize.height;
     }
     
-    if (self.arrow.direction & FWTAnnotationArrowDirectionLeft)
+    else if (self.arrow.direction & FWTAnnotationArrowDirectionLeft)
         midPoint.y -= (popoverSize.height * .5f + self.arrow.cornerOffset);
     
-    if (self.arrow.direction & FWTAnnotationArrowDirectionRight)
+    else if (self.arrow.direction & FWTAnnotationArrowDirectionRight)
     {
         midPoint.x -= popoverSize.width;
         midPoint.y -= (popoverSize.height * .5f + self.arrow.cornerOffset);
     }
     
-    if (self.arrow.direction & FWTAnnotationArrowDirectionNone)
+    else if (self.arrow.direction & FWTAnnotationArrowDirectionNone)
     {
         midPoint.x -= popoverSize.width * .5f;
         midPoint.y -= popoverSize.height * .5f;
@@ -231,6 +232,16 @@
 }
 
 #pragma mark - Public
+- (void)setDelegate:(id<FWTAnnotationViewDelegate>)delegate
+{
+    if (self->_delegate != delegate)
+    {
+        self->_delegate = delegate;
+        _delegateHas.didPresent = [self->_delegate respondsToSelector:@selector(annotationViewDidPresent:)];
+        _delegateHas.didDismiss = [self->_delegate respondsToSelector:@selector(annotationViewDidDismiss:)];
+    }
+}
+
 - (void)presentAnnotationFromRect:(CGRect)rect
                            inView:(UIView *)view
           permittedArrowDirection:(FWTAnnotationArrowDirection)arrowDirection
@@ -254,36 +265,57 @@
     
     //
     if (!animated)
+    {
         [view addSubview:self];
+        
+        if (_delegateHas.didPresent) [self.delegate annotationViewDidPresent:self];
+    }
     else
     {
         //
-        self.prepareToAnimationsBlock();
+        [self.animationHelper safePerformBlock:self.animationHelper.prepareBlock];
         
         //
         [view addSubview:self];
           
         //
         if (animated)
-            [UIView animateWithDuration:self.animationDuration
+            [UIView animateWithDuration:self.animationHelper.animationDuration
                                   delay:.0f
                                 options:UIViewAnimationCurveEaseIn
-                             animations:self.presentAnimationsBlock
-                             completion:self.presentCompletionBlock];
+                             animations:self.animationHelper.presentAnimationsBlock
+                             completion:^(BOOL finished) {
+
+                                 //
+                                 [self.animationHelper safePerformCompletionBlock:self.animationHelper.presentCompletionBlock finished:finished];
+                                 
+                                 //
+                                 if (_delegateHas.didPresent) [self.delegate annotationViewDidPresent:self];
+            }];
     }
 }
 
 - (void)dismissPopoverAnimated:(BOOL)animated
 {
-    //
     if (animated)
-        [UIView animateWithDuration:self.animationDuration
+        [UIView animateWithDuration:self.animationHelper.animationDuration
                               delay:.0f
                             options:UIViewAnimationCurveEaseIn
-                         animations:self.dismissAnimationsBlock
-                         completion:self.dismissCompletionBlock];
+                         animations:self.animationHelper.dismissAnimationsBlock
+                         completion:^(BOOL finished) {
+
+                             [self.animationHelper safePerformCompletionBlock:self.animationHelper.dismissCompletionBlock finished:finished];
+                             
+                             if (_delegateHas.didDismiss) [self.delegate annotationViewDidDismiss:self];
+                             
+                             [self removeFromSuperview];
+                         }];
     else
+    {
         [self removeFromSuperview];
+        
+        if (_delegateHas.didDismiss) [self.delegate annotationViewDidDismiss:self];
+    }
 }
 
 @end

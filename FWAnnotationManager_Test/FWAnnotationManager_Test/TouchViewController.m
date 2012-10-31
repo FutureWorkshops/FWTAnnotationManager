@@ -76,7 +76,7 @@
     if (!self->_popoverView)
     {
         self->_popoverView = [[FWTDefaultAnnotationView alloc] init];
-        self->_popoverView.contentSize = CGSizeMake(160.0f, 60.0f);
+        self->_popoverView.contentSize = CGSizeMake(260.0f, 60.0f);
         self->_popoverView.backgroundHelper.drawPathBlock = ^(CGContextRef ctx, FWTAnnotationBackgroundHelper *backgroundHelper){
             
             //  clip to current path
@@ -104,16 +104,9 @@
         self->_popoverView.textLabel.shadowOffset = CGSizeMake(.0f, -.7f);
         self->_popoverView.textLabel.shadowColor = [[UIColor blackColor] colorWithAlphaComponent:.5f];
         
-        self->_popoverView.dismissCompletionBlock = ^(BOOL finished){
-            [self.popoverView removeFromSuperview];
+        self->_popoverView.animationHelper.dismissCompletionBlock = ^(BOOL finished){
             self.popoverView = nil;
         };
-        
-        
-        //  control position of the arrow
-        //
-//        self->_popoverView.arrowOffset = 20;
-//        self->_popoverView.adjustPositionInSuperviewEnabled = NO;
     }
         
     return self->_popoverView;
@@ -140,7 +133,7 @@
     //
     if (self.popoverView.superview)
     {
-        [self.popoverView dismissPopoverAnimated:NO];
+        [self.popoverView dismissPopoverAnimated:YES];
         return;
     }
     
@@ -154,7 +147,7 @@
     [self.popoverView presentAnnotationFromRect:_touchPointView.frame
                                          inView:self.view
                         permittedArrowDirection:self.popoverArrowDirection //
-                                       animated:NO];
+                                       animated:YES];
     
     //
     [self.view bringSubviewToFront:_touchPointView];

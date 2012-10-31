@@ -141,21 +141,21 @@
     _popoverView.textLabel.shadowColor = [[UIColor blackColor] colorWithAlphaComponent:.5f];
     
 
-    _popoverView.prepareToAnimationsBlock = ^{
+    _popoverView.animationHelper.prepareBlock = ^{
         _popoverView.frame = CGRectOffset(_popoverView.frame, .0f, -self.view.frame.size.height);
     };
-    
-    _popoverView.presentAnimationsBlock = ^{
+
+    _popoverView.animationHelper.presentAnimationsBlock = ^{
         _popoverView.frame = CGRectOffset(_popoverView.frame, .0f, self.view.frame.size.height + 5.0f);
     };
-    
-    _popoverView.presentCompletionBlock = ^(BOOL finished){
+
+    _popoverView.animationHelper.presentCompletionBlock = ^(BOOL finished){
         [UIView animateWithDuration:.1f animations:^{
             _popoverView.frame = CGRectOffset(_popoverView.frame, .0f, -5.0f);
         }];
     };
     
-    _popoverView.dismissAnimationsBlock = ^{
+    _popoverView.animationHelper.dismissAnimationsBlock = ^{
         _popoverView.transform = ((arc4random()%1000) > 500) ? CGAffineTransformMakeRotation(M_PI*.5f):CGAffineTransformMakeRotation(-M_PI*.5f);
         _popoverView.frame = CGRectOffset(_popoverView.frame, .0f, self.view.frame.size.height);
     };
