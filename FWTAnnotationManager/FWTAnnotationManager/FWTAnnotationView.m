@@ -9,46 +9,41 @@
 #import "FWTAnnotationView.h"
 #import <QuartzCore/QuartzCore.h>
 
+@interface FWTAnnotationArrow ()
+@property (nonatomic, readwrite, assign) FWTAnnotationArrowDirection direction;
+@end
+
 @interface FWTAnnotationView ()
-{
-    UIImageView *_backgroundImageView;
-}
+
 @property (nonatomic, retain)  UIImageView *backgroundImageView;
-@property (nonatomic, readwrite) FWTAnnotationArrowDirection arrowDirection;
-@property (nonatomic, readwrite, retain) UIBezierPath *bezierPath;
 @property (nonatomic, readwrite, retain) UIView *contentView;
-@property (nonatomic, readwrite, retain) FWTAnnotationBackgroundImageHelper *backgroundImageHelper;
-@property (nonatomic, readwrite, retain) FWTAnnotationArrow *arrow;
+@property (nonatomic, assign) UIEdgeInsets suggestedEdgeInsets, edgeInsets;
 
 //  Private
-- (void)adjustEdgeInsets;
-//- (UIImage *)resizableBackgroundImageForSize:(CGSize)size;
-- (CGFloat)arrowOffsetForDeltaX:(CGFloat)dX deltaY:(CGFloat)dY direction:(NSInteger)direction;
-- (CGPoint)midPointForRect:(CGRect)rect popoverSize:(CGSize)popoverSize arrowDirection:(FWTAnnotationArrowDirection)arrowDirections;
+- (CGFloat)_arrowOffsetForDeltaX:(CGFloat)dX deltaY:(CGFloat)dY direction:(NSInteger)direction;
+- (CGPoint)_midPointForRect:(CGRect)rect popoverSize:(CGSize)popoverSize arrowDirection:(FWTAnnotationArrowDirection)arrowDirections;
+- (void)_adjustAndSetFrame:(CGRect)frame inSuperview:(UIView *)view;
 
 @end
 
 @implementation FWTAnnotationView
 @synthesize backgroundImageView = _backgroundImageView;
 @synthesize contentView = _contentView;
-@synthesize backgroundImageHelper = _backgroundImageHelper;
 @synthesize arrow = _arrow;
+@synthesize backgroundHelper = _backgroundHelper;
 
 - (void)dealloc
 {
     self.arrow = nil;
-    self.backgroundImageHelper = nil;
+    self.backgroundHelper = nil;
     self.contentView = nil;
-//    self.bezierPathColorStroke = nil;
-//    self.bezierPathColorFill = nil;
-//    self.shadowColor = nil;
-    self.bezierPath = nil;
-    self.drawPathBlock = nil;
+    
     self.prepareToAnimationsBlock = nil;
     self.presentAnimationsBlock = nil;
     self.dismissAnimationsBlock = nil;
     self.presentCompletionBlock = nil;
     self.dismissCompletionBlock = nil;
+    
     self.backgroundImageView = nil;
     [super dealloc];
 }
@@ -57,29 +52,26 @@
 {
     if ((self = [super initWithFrame:frame]))
     {        
-        self.backgroundColor = [UIColor clearColor];
-        
-        self.desiredEdgeInsets = UIEdgeInsetsMake(10.0f, 10.0f, 10.0f, 10.0f);
-        self.edgeInsets = self.edgeInsets;
-        
+        //
+        self.suggestedEdgeInsets = UIEdgeInsetsMake(10.0f, 10.0f, 10.0f, 10.0f);
         self.contentSize = CGSizeZero;
-
-        //
-        self.arrowDirection = FWTAnnotationArrowDirectionUp;
-        
-        //
         self.adjustPositionInSuperviewEnabled = YES;
         
-        
+        //
         self.prepareToAnimationsBlock = ^{ self.alpha = .0f; };
         self.presentAnimationsBlock = ^{ self.alpha = 1.0f; };
         self.presentCompletionBlock = NULL;
         self.dismissAnimationsBlock = ^{ self.alpha = .0f; };
         self.dismissCompletionBlock = NULL;
-        
         self.animationDuration = .2f;
         
-//        self.layer.borderWidth = 1.0f;
+        self.contentView.layer.borderWidth = 1.0f;
+        self.contentView.layer.borderColor = [UIColor redColor].CGColor;
+        
+        self.backgroundImageView.layer.borderWidth = 2.0f;
+        
+        
+        self.layer.borderWidth = 1.0f;
     }
     
     return self;
@@ -93,14 +85,14 @@
     if (!self.backgroundImageView.superview)
         [self addSubview:self.backgroundImageView];
 
+//    self.backgroundImageView.frame = CGRectMake(.0f, .0f, self.backgroundImageView.image.size.width, self.backgroundImageView.image.size.height);//self.bounds;
     self.backgroundImageView.frame = self.bounds;
     
     //
     if (!self.contentView.superview)
         [self addSubview:self.contentView];
     
-    CGRect avalaibleRect = UIEdgeInsetsInsetRect(self.bounds, self.edgeInsets);
-    self.contentView.frame = avalaibleRect;
+    self.contentView.frame = UIEdgeInsetsInsetRect(self.bounds, self.edgeInsets);
 }
 
 #pragma mark - Getters
@@ -108,9 +100,6 @@
 {
     if (!self->_backgroundImageView)
         self->_backgroundImageView = [[UIImageView alloc] init];
-    
-    self->_backgroundImageView.layer.borderWidth = 1.0f;
-    self->_backgroundImageView.layer.borderColor = [UIColor redColor].CGColor;
     
     return self->_backgroundImageView;
 }
@@ -120,18 +109,15 @@
     if (!self->_contentView)
         self->_contentView = [[UIView alloc] init];
     
-    self->_contentView.layer.borderWidth = 1.0f;
-    self->_contentView.layer.borderColor = [UIColor greenColor].CGColor;
-    
     return self->_contentView;
 }
 
-- (FWTAnnotationBackgroundImageHelper *)backgroundImageHelper
+- (FWTAnnotationBackgroundHelper *)backgroundHelper
 {
-    if (!self->_backgroundImageHelper)
-        self->_backgroundImageHelper = [[FWTAnnotationBackgroundImageHelper alloc] initWithAnnotationView:self];
+    if (!self->_backgroundHelper)
+        self->_backgroundHelper = [[FWTAnnotationBackgroundHelper alloc] initWithAnnotationView:self];
     
-    return self->_backgroundImageHelper;
+    return self->_backgroundHelper;
 }
 
 - (FWTAnnotationArrow *)arrow
@@ -143,39 +129,22 @@
 }
 
 #pragma mark - Private
-- (void)adjustEdgeInsets
-{
-    UIEdgeInsets currentInsets = self.edgeInsets;
-    CGFloat dY = self.arrow.arrowSize.height;
-    
-    if (self.arrowDirection & FWTAnnotationArrowDirectionUp)
-        currentInsets.top += dY;
-    else if (self.arrowDirection & FWTAnnotationArrowDirectionLeft)
-        currentInsets.left += dY;
-    else if (self.arrowDirection & FWTAnnotationArrowDirectionRight)
-        currentInsets.right += dY;
-    else if (self.arrowDirection & FWTAnnotationArrowDirectionDown)
-        currentInsets.bottom += dY;
-    
-    self.edgeInsets = currentInsets;
-}
-
-- (CGFloat)arrowOffsetForDeltaX:(CGFloat)dX deltaY:(CGFloat)dY direction:(NSInteger)direction
+- (CGFloat)_arrowOffsetForDeltaX:(CGFloat)dX deltaY:(CGFloat)dY direction:(NSInteger)direction
 {
     //
     CGRect shapeBounds = UIEdgeInsetsInsetRect(self.bounds, self.edgeInsets);
-    CGFloat cornerRadius = self.backgroundImageHelper.cornerRadius;
+    CGFloat cornerRadius = self.backgroundHelper.cornerRadius;
     CGSize availableHalfRectSize = CGSizeMake((shapeBounds.size.width-2*cornerRadius)*.5f, (shapeBounds.size.height-2*cornerRadius)*.5f);
     CGFloat maxArrowOffset = .0f;
     
     CGFloat arrowOffset = .0f;
-    if (self.arrowDirection & FWTAnnotationArrowDirectionUp || self.arrowDirection & FWTAnnotationArrowDirectionDown)
+    if (self.arrow.direction & FWTAnnotationArrowDirectionUp || self.arrow.direction & FWTAnnotationArrowDirectionDown)
     {
         arrowOffset = direction*dX;
         maxArrowOffset = availableHalfRectSize.width - cornerRadius;
     }
     
-    if (self.arrowDirection & FWTAnnotationArrowDirectionLeft || self.arrowDirection & FWTAnnotationArrowDirectionRight)
+    if (self.arrow.direction & FWTAnnotationArrowDirectionLeft || self.arrow.direction & FWTAnnotationArrowDirectionRight)
     {
         arrowOffset = direction*dY;
         maxArrowOffset = availableHalfRectSize.height - cornerRadius;
@@ -187,29 +156,29 @@
     return arrowOffset;
 }
 
-- (CGPoint)midPointForRect:(CGRect)rect popoverSize:(CGSize)popoverSize arrowDirection:(FWTAnnotationArrowDirection)arrowDirections
+- (CGPoint)_midPointForRect:(CGRect)rect popoverSize:(CGSize)popoverSize arrowDirection:(FWTAnnotationArrowDirection)arrowDirections
 {
     CGPoint midPoint = CGPointMake(CGRectGetMidX(rect), CGRectGetMidY(rect));
     
-    if (self.arrowDirection & FWTAnnotationArrowDirectionUp)
-        midPoint.x -= (popoverSize.width * .5f + self.arrow.arrowCornerOffset);
+    if (self.arrow.direction & FWTAnnotationArrowDirectionUp)
+        midPoint.x -= (popoverSize.width * .5f + self.arrow.cornerOffset);
     
-    if (self.arrowDirection & FWTAnnotationArrowDirectionDown)
+    if (self.arrow.direction & FWTAnnotationArrowDirectionDown)
     {
-        midPoint.x -= (popoverSize.width * .5f + self.arrow.arrowCornerOffset);
+        midPoint.x -= (popoverSize.width * .5f + self.arrow.cornerOffset);
         midPoint.y -= popoverSize.height;
     }
     
-    if (self.arrowDirection & FWTAnnotationArrowDirectionLeft)
-        midPoint.y -= (popoverSize.height * .5f + self.arrow.arrowCornerOffset);
+    if (self.arrow.direction & FWTAnnotationArrowDirectionLeft)
+        midPoint.y -= (popoverSize.height * .5f + self.arrow.cornerOffset);
     
-    if (self.arrowDirection & FWTAnnotationArrowDirectionRight)
+    if (self.arrow.direction & FWTAnnotationArrowDirectionRight)
     {
         midPoint.x -= popoverSize.width;
-        midPoint.y -= (popoverSize.height * .5f + self.arrow.arrowCornerOffset);
+        midPoint.y -= (popoverSize.height * .5f + self.arrow.cornerOffset);
     }
     
-    if (self.arrowDirection & FWTAnnotationArrowDirectionNone)
+    if (self.arrow.direction & FWTAnnotationArrowDirectionNone)
     {
         midPoint.x -= popoverSize.width * .5f;
         midPoint.y -= popoverSize.height * .5f;
@@ -218,12 +187,11 @@
     return midPoint;
 }
 
-- (void)adjustAndSetFrame:(CGRect)frame inSuperview:(UIView *)view
+- (void)_adjustAndSetFrame:(CGRect)frame inSuperview:(UIView *)view
 {
     CGFloat dX = .0f;
     CGFloat dY = .0f;
     NSInteger direction = 1;
-    
     if (self.adjustPositionInSuperviewEnabled)
     {
         CGRect intersection = CGRectIntersection(view.bounds, frame);
@@ -259,7 +227,7 @@
     
     //
     if (self.adjustPositionInSuperviewEnabled)
-        self.arrow.arrowOffset = [self arrowOffsetForDeltaX:dX deltaY:dY direction:direction];
+        self.arrow.offset = [self _arrowOffsetForDeltaX:dX deltaY:dY direction:direction];
 }
 
 #pragma mark - Public
@@ -269,24 +237,20 @@
                          animated:(BOOL)animated
 {
     //
-    self.arrowDirection = arrowDirection;
+    self.arrow.direction = arrowDirection;
     
     //
-    self.edgeInsets = self.desiredEdgeInsets;
-    [self adjustEdgeInsets];
+    self.edgeInsets = [self.arrow adjustedEdgeInsetsForEdgeInsets:self.suggestedEdgeInsets];
     
     //
-    CGPoint midPoint = [self midPointForRect:rect popoverSize:self.contentSize arrowDirection:self.arrowDirection];
+    CGPoint midPoint = [self _midPointForRect:rect popoverSize:self.contentSize arrowDirection:self.arrow.direction];
     CGRect frame = CGRectZero;
     frame.origin = midPoint;
     frame.size = self.contentSize;
-    [self adjustAndSetFrame:frame inSuperview:view];
+    [self _adjustAndSetFrame:frame inSuperview:view];
     
     //
-    self.backgroundImageView.image = [self.backgroundImageHelper resizableBackgroundImageForSize:self.contentSize];
-    
-    //
-    [self setNeedsLayout];
+    self.backgroundImageView.image = [self.backgroundHelper resizableBackgroundImageForSize:self.contentSize edgeInsets:self.edgeInsets];
     
     //
     if (!animated)
@@ -300,22 +264,26 @@
         [view addSubview:self];
           
         //
-        [UIView animateWithDuration:self.animationDuration
-                              delay:.0f
-                            options:UIViewAnimationCurveEaseIn
-                         animations:self.presentAnimationsBlock
-                         completion:self.presentCompletionBlock];
+        if (animated)
+            [UIView animateWithDuration:self.animationDuration
+                                  delay:.0f
+                                options:UIViewAnimationCurveEaseIn
+                             animations:self.presentAnimationsBlock
+                             completion:self.presentCompletionBlock];
     }
 }
 
 - (void)dismissPopoverAnimated:(BOOL)animated
 {
     //
-    [UIView animateWithDuration:self.animationDuration
-                          delay:.0f
-                        options:UIViewAnimationCurveEaseIn
-                     animations:self.dismissAnimationsBlock
-                     completion:self.dismissCompletionBlock];
+    if (animated)
+        [UIView animateWithDuration:self.animationDuration
+                              delay:.0f
+                            options:UIViewAnimationCurveEaseIn
+                         animations:self.dismissAnimationsBlock
+                         completion:self.dismissCompletionBlock];
+    else
+        [self removeFromSuperview];
 }
 
 @end

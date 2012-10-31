@@ -1,12 +1,12 @@
 //
-//  FWTAnnotationBackgroundImage.m
+//  FWTAnnotationBackgroundHelper.m
 //  FWTAnnotationManager
 //
-//  Created by Marco Meschini on 30/10/2012.
+//  Created by Marco Meschini on 31/10/2012.
 //  Copyright (c) 2012 Marco Meschini. All rights reserved.
 //
 
-#import "FWTAnnotationBackgroundImageHelper.h"
+#import "FWTAnnotationBackgroundHelper.h"
 #import "FWTAnnotationView.h"
 
 enum {
@@ -15,19 +15,16 @@ enum {
 };
 typedef NSUInteger AxisType;
 
-@interface FWTAnnotationBackgroundImageHelper ()
+@interface FWTAnnotationBackgroundHelper ()
 @property (nonatomic, readwrite, assign) FWTAnnotationView *annotationView;
-@property (nonatomic, readwrite, retain) UIBezierPath *bezierPath;
+@property (nonatomic, readwrite, assign) CGRect pathFrame;
 @end
 
-@implementation FWTAnnotationBackgroundImageHelper
+@implementation FWTAnnotationBackgroundHelper
 
 - (void)dealloc
 {
     self.annotationView = nil;
-    self.bezierPath = nil;
-    self.bezierPathColorFill = nil;
-    self.bezierPathColorStroke = nil;
     [super dealloc];
 }
 
@@ -39,22 +36,31 @@ typedef NSUInteger AxisType;
         
         //
         self.cornerRadius = 6.0f;
-        self.bezierPathColorFill = [[UIColor blackColor] colorWithAlphaComponent:.5f];
-        self.bezierPathColorStroke = [UIColor blackColor];
-        self.bezierPathLineWidth = 1.0f;
-        self.shadowBlur = 8.0f;
+        
+        //
+        self.fillColor = [[UIColor blackColor] colorWithAlphaComponent:.5f].CGColor;
+        self.strokeColor = [UIColor blackColor].CGColor;
+        
+        //
+        self.lineWidth = 1.0f;
+        self.lineJoin = kCALineJoinRound;
+        
+        //
+        self.shadowRadius = 8.0f;
         self.shadowOffset = CGSizeMake(.0f, 2.0f);
-        self.shadowColor = [[UIColor blackColor] colorWithAlphaComponent:.75f];
+        self.shadowColor = [[UIColor blackColor] colorWithAlphaComponent:.95f].CGColor;
+        self.shadowOpacity = 1.0f;
+        
+//        self.borderWidth = 1.0f;
     }
     
     return self;
 }
 
-- (UIImage *)resizableBackgroundImageForSize:(CGSize)size
+- (UIImage *)resizableBackgroundImageForSize:(CGSize)size edgeInsets:(UIEdgeInsets)edgeInsets
 {
     //
-    UIEdgeInsets edgeInsets = self.annotationView.edgeInsets;
-    FWTAnnotationArrowDirection arrowDirection = self.annotationView.arrowDirection;
+    FWTAnnotationArrowDirection arrowDirection = self.annotationView.arrow.direction;
     UIEdgeInsets capInsets = UIEdgeInsetsZero;
     CGSize contextSize = size;
     if (arrowDirection & FWTAnnotationArrowDirectionUp || arrowDirection & FWTAnnotationArrowDirectionDown)
@@ -62,28 +68,29 @@ typedef NSUInteger AxisType;
         contextSize.height = (self.cornerRadius * 2) + edgeInsets.top + edgeInsets.bottom + 1.0f;
         capInsets = UIEdgeInsetsMake(edgeInsets.top + self.cornerRadius, .0f, edgeInsets.bottom + self.cornerRadius, .0f);
     }
-    
-    if (arrowDirection & FWTAnnotationArrowDirectionLeft || arrowDirection & FWTAnnotationArrowDirectionRight)
+    else if (arrowDirection & FWTAnnotationArrowDirectionLeft || arrowDirection & FWTAnnotationArrowDirectionRight)
     {
         contextSize.width = (self.cornerRadius * 2) + edgeInsets.left + edgeInsets.right + 1.0f;
         capInsets = UIEdgeInsetsMake(.0f, edgeInsets.left + self.cornerRadius, .0f, edgeInsets.right + self.cornerRadius);
     }
+    else if (arrowDirection & FWTAnnotationArrowDirectionNone)
+    {
+        contextSize.width = (self.cornerRadius * 2) + edgeInsets.left + edgeInsets.right + 1.0f;
+        contextSize.height = (self.cornerRadius * 2) + edgeInsets.top + edgeInsets.bottom + 1.0f;
+        capInsets = UIEdgeInsetsMake(edgeInsets.top + self.cornerRadius, edgeInsets.left + self.cornerRadius, edgeInsets.bottom + self.cornerRadius, edgeInsets.right + self.cornerRadius);
+    }
     
     //
-    CGSize ctxSize = contextSize;
-    CGRect rect = CGRectMake(.0f, .0f, ctxSize.width, ctxSize.height);
+    CGRect rect = CGRectMake(.0f, .0f, contextSize.width, contextSize.height);
+    self.pathFrame = UIEdgeInsetsInsetRect(rect, edgeInsets);
+    self.path = [self bezierPathForRect:self.pathFrame].CGPath;
     
     //
-    CGRect shapeBounds = UIEdgeInsetsInsetRect(rect, edgeInsets);
-    self.bezierPath = [self _bezierPathForRect:shapeBounds];
-    
-    //
-    UIImage *image = [self _backgroundImageForSize:ctxSize];
+    UIImage *image = [self _backgroundImageForSize:contextSize];
     return [image resizableImageWithCapInsets:capInsets];
 }
 
-#pragma mark - Private
-- (UIBezierPath *)_bezierPathForRect:(CGRect)rect
+- (UIBezierPath *)bezierPathForRect:(CGRect)rect
 {
     CGFloat radius = self.cornerRadius;
     
@@ -106,12 +113,12 @@ typedef NSUInteger AxisType;
     CGPoint gh = CGPointMake(g.x - radius, g.y);
     CGPoint h  = CGPointMake(g.x - radius, g.y - radius);
     
-    FWTAnnotationArrowDirection arrowDirection = self.annotationView.arrowDirection;
-    CGSize arrowSize = self.annotationView.arrow.arrowSize;
+    FWTAnnotationArrowDirection arrowDirection = self.annotationView.arrow.direction;
+    CGSize arrowSize = self.annotationView.arrow.size;
     CGFloat halfArrowWidth = arrowSize.width*.5f;
     CGSize availableHalfRectSize = CGSizeMake((rect.size.width-2*radius)*.5f, (rect.size.height-2*radius)*.5f);
-    CGFloat ao = self.annotationView.arrow.arrowOffset;
-    CGFloat ao_aco = self.annotationView.arrow.arrowOffset + self.annotationView.arrow.arrowCornerOffset;
+    CGFloat ao = self.annotationView.arrow.offset;
+    CGFloat ao_aco = self.annotationView.arrow.offset + self.annotationView.arrow.cornerOffset;
     void(^AppendArrowBlock)(UIBezierPath *, CGPoint, NSInteger, AxisType) = ^(UIBezierPath *bezierPath, CGPoint point, NSInteger sign, AxisType axisType) {
         
         CGPoint a0, a1, a2;
@@ -156,42 +163,53 @@ typedef NSUInteger AxisType;
     return bp;
 }
 
+#pragma mark - Private
 - (UIImage *)_backgroundImageForSize:(CGSize)size
 {
+    NSLog(@"_backgroundImageForSize:%@", NSStringFromCGSize(size));
+
+    //
+    self.frame = CGRectMake(.0f, .0f, size.width, size.height);
+    
     //
     UIGraphicsBeginImageContextWithOptions(size, NO, .0f);
     CGContextRef ctx = UIGraphicsGetCurrentContext();
     
-    //  join with a rounded end
-    CGContextSetLineJoin(ctx, kCGLineJoinRound);
-    
-    //  fill with a solid to get good shadow - then clear inside
-    CGContextSaveGState(ctx);
-    CGContextSetFillColorWithColor(ctx, [UIColor blackColor].CGColor);
-    CGContextSetShadowWithColor(ctx, self.shadowOffset, self.shadowBlur, self.shadowColor.CGColor);
-    CGContextAddPath(ctx, self.bezierPath.CGPath);
-    CGContextDrawPath(ctx, kCGPathFill);
-    CGContextRestoreGState(ctx);
-    CGContextSaveGState(ctx);
-    [self.bezierPath addClip];
-    [[UIColor clearColor] setFill];
-    UIRectFill(CGContextGetClipBoundingBox(ctx));
-    CGContextRestoreGState(ctx);
-    
-    //  fill with the right color now
-    CGContextSetFillColorWithColor(ctx, self.bezierPathColorFill.CGColor);
-    CGContextAddPath(ctx, self.bezierPath.CGPath);
-    CGContextDrawPath(ctx, kCGPathFill);
-    
     //
-    if (self.annotationView.drawPathBlock)
-        self.annotationView.drawPathBlock(ctx, self.annotationView);
+    CGFloat savedLineWidth = self.lineWidth;
+    CGColorRef savedFillColorRef = self.fillColor;
+    CGFloat savedShadowOpacity = self.shadowOpacity;
     
-    //  stroke the border
-    CGContextSetStrokeColorWithColor(ctx, self.bezierPathColorStroke.CGColor);
-    CGContextSetLineWidth(ctx, self.bezierPathLineWidth);
-    CGContextAddPath(ctx, self.bezierPath.CGPath);
-    CGContextDrawPath(ctx, kCGPathStroke);
+    //  render the shadow at first
+    if (self.shadowOpacity != .0f)
+    {
+        self.lineWidth = .0f;                           //  hide stroke
+        self.fillColor = [UIColor blackColor].CGColor;  //  use a solid fill color
+        [self renderInContext:ctx];
+        CGContextSaveGState(ctx);
+        CGContextAddPath(ctx, self.path);
+        CGContextClip(ctx);
+        CGContextClearRect(ctx, CGContextGetClipBoundingBox(ctx));
+        CGContextRestoreGState(ctx);
+    }
+    
+    //  render the fill without shadow
+    self.fillColor = savedFillColorRef;
+    self.shadowOpacity = .0f;
+    [self renderInContext:ctx];
+    
+    //  give a chanche to do some extra stuff
+    if (self.drawPathBlock)
+        self.drawPathBlock(ctx, self);
+    
+    //  render the border
+    self.lineWidth = savedLineWidth;
+    self.fillColor = [UIColor clearColor].CGColor;
+    [self renderInContext:ctx];
+    
+    //  restore properties
+    self.fillColor = savedFillColorRef;
+    self.shadowOpacity = savedShadowOpacity;
     
     //
     UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
@@ -199,5 +217,6 @@ typedef NSUInteger AxisType;
     
     return image;
 }
+
 
 @end

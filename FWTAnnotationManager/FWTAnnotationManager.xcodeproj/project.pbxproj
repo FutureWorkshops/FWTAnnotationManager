@@ -10,7 +10,7 @@
 		A93B0972163FF9C70030F227 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A93B0971163FF9C70030F227 /* QuartzCore.framework */; };
 		A93B0975163FF9CE0030F227 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A93B0974163FF9CD0030F227 /* UIKit.framework */; };
 		A93B0977163FF9D50030F227 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A93B0976163FF9D50030F227 /* CoreGraphics.framework */; };
-		A93B097A164035700030F227 /* FWTAnnotationBackgroundImageHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = A93B0979164035700030F227 /* FWTAnnotationBackgroundImageHelper.m */; };
+		A949007716413AF000864A8B /* FWTAnnotationBackgroundHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = A949007616413AF000864A8B /* FWTAnnotationBackgroundHelper.m */; };
 		A97E7F3516404BD200AC7395 /* FWTAnnotationArrow.m in Sources */ = {isa = PBXBuildFile; fileRef = A97E7F3416404BD200AC7395 /* FWTAnnotationArrow.m */; };
 		E4C452D015DB9C6800DD1A0F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4C452CF15DB9C6800DD1A0F /* Foundation.framework */; };
 		E4C4530D15DB9DDB00DD1A0F /* FWTDefaultAnnotationView.m in Sources */ = {isa = PBXBuildFile; fileRef = E4C4530815DB9DDB00DD1A0F /* FWTDefaultAnnotationView.m */; };
@@ -35,8 +35,8 @@
 		A93B0971163FF9C70030F227 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		A93B0974163FF9CD0030F227 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		A93B0976163FF9D50030F227 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
-		A93B09781640356F0030F227 /* FWTAnnotationBackgroundImageHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FWTAnnotationBackgroundImageHelper.h; sourceTree = "<group>"; };
-		A93B0979164035700030F227 /* FWTAnnotationBackgroundImageHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FWTAnnotationBackgroundImageHelper.m; sourceTree = "<group>"; };
+		A949007516413AF000864A8B /* FWTAnnotationBackgroundHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FWTAnnotationBackgroundHelper.h; sourceTree = "<group>"; };
+		A949007616413AF000864A8B /* FWTAnnotationBackgroundHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FWTAnnotationBackgroundHelper.m; sourceTree = "<group>"; };
 		A97E7F3316404BD200AC7395 /* FWTAnnotationArrow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FWTAnnotationArrow.h; sourceTree = "<group>"; };
 		A97E7F3416404BD200AC7395 /* FWTAnnotationArrow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FWTAnnotationArrow.m; sourceTree = "<group>"; };
 		E4C452CC15DB9C6800DD1A0F /* libFWAnnotationManager.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; name = libFWAnnotationManager.a; path = libFWTAnnotationManager.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -102,8 +102,8 @@
 				E4C4530A15DB9DDB00DD1A0F /* FWTAnnotation.m */,
 				E4C4530B15DB9DDB00DD1A0F /* FWTAnnotationView.h */,
 				E4C4530C15DB9DDB00DD1A0F /* FWTAnnotationView.m */,
-				A93B09781640356F0030F227 /* FWTAnnotationBackgroundImageHelper.h */,
-				A93B0979164035700030F227 /* FWTAnnotationBackgroundImageHelper.m */,
+				A949007516413AF000864A8B /* FWTAnnotationBackgroundHelper.h */,
+				A949007616413AF000864A8B /* FWTAnnotationBackgroundHelper.m */,
 				A97E7F3316404BD200AC7395 /* FWTAnnotationArrow.h */,
 				A97E7F3416404BD200AC7395 /* FWTAnnotationArrow.m */,
 				E4C4530715DB9DDB00DD1A0F /* FWTDefaultAnnotationView.h */,
@@ -178,8 +178,8 @@
 				E4C4530E15DB9DDB00DD1A0F /* FWTAnnotation.m in Sources */,
 				E4C4530F15DB9DDB00DD1A0F /* FWTAnnotationView.m in Sources */,
 				E4C4531215DB9DF400DD1A0F /* FWTAnnotationManager.m in Sources */,
-				A93B097A164035700030F227 /* FWTAnnotationBackgroundImageHelper.m in Sources */,
 				A97E7F3516404BD200AC7395 /* FWTAnnotationArrow.m in Sources */,
+				A949007716413AF000864A8B /* FWTAnnotationBackgroundHelper.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

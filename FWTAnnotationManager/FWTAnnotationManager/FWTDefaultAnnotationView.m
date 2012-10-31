@@ -8,9 +8,12 @@
 
 #import "FWTDefaultAnnotationView.h"
 
+@interface FWTAnnotationArrow ()
+@property (nonatomic, readwrite, assign) FWTAnnotationArrowDirection direction;
+@end
+
 @interface FWTAnnotationView ()
-@property (nonatomic, readwrite) FWTAnnotationArrowDirection arrowDirection;
-- (void)adjustEdgeInsets;
+@property (nonatomic, assign) UIEdgeInsets suggestedEdgeInsets, edgeInsets;
 @end
 
 @interface FWTDefaultAnnotationView ()
@@ -49,8 +52,7 @@
 {
     [super layoutSubviews];
     
-    CGRect avalaibleRect = UIEdgeInsetsInsetRect(self.bounds, self.edgeInsets);
-    self.contentView.frame = UIEdgeInsetsInsetRect(avalaibleRect, self.contentViewEdgeInsets);
+    self.contentView.frame = UIEdgeInsetsInsetRect(self.contentView.frame, self.contentViewEdgeInsets);
     
     //
     if (self.textLabelEnabled)
@@ -114,11 +116,10 @@
                       animated:(BOOL)animated
 {
     //
-    self.arrowDirection = arrowDirection;
-    
+    self.arrow.direction = arrowDirection;
+
     //
-    self.edgeInsets = self.desiredEdgeInsets;
-    [self adjustEdgeInsets];
+    self.edgeInsets = [self.arrow adjustedEdgeInsetsForEdgeInsets:self.suggestedEdgeInsets];
     
     //  calculate how much space we have and then calculate the size of the text
     //

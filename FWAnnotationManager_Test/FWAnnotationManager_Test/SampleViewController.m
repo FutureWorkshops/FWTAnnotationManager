@@ -73,7 +73,6 @@
     return YES;
 }
 
-
 #pragma mark - Private
 - (void)cancel
 {
@@ -128,8 +127,8 @@
     _popoverView.contentSize = CGSizeMake(160.0f, 60.0f);
     
     //
-    _popoverView.arrow.arrowCornerOffset = 10.0f;
-    _popoverView.arrow.arrowOffset = 10.0f;
+    _popoverView.arrow.cornerOffset = 10.0f;
+    _popoverView.arrow.offset = 10.0f;
     //    _popoverView.animationDuration = .35f;
     
     //

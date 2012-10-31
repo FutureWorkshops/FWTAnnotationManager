@@ -77,26 +77,24 @@
     {
         self->_popoverView = [[FWTDefaultAnnotationView alloc] init];
         self->_popoverView.contentSize = CGSizeMake(160.0f, 60.0f);
-//        self->_popoverView.drawPathBlock = ^(CGContextRef ctx, FWTAnnotationView *popOverView){
-//            CGRect ctxRect = CGContextGetClipBoundingBox(ctx);
-//            
-//            UIEdgeInsets insets = popOverView.edgeInsets;
-//            CGRect shapeBounds = UIEdgeInsetsInsetRect(ctxRect, insets);
-//            
-//            //  clip to current path
-//            CGContextSaveGState(ctx);
-//            [popOverView.bezierPath addClip];
-//            
-//            //  stroke a thick inner border
-//            CGRect innerShapeBounds = CGRectInset(shapeBounds, 2.0f, 2.0f);
-//            UIBezierPath *innerBezierPath = [popOverView bezierPathForRect:innerShapeBounds];
-//            CGContextSetStrokeColorWithColor(ctx, [UIColor whiteColor].CGColor);
-//            CGContextSetLineWidth(ctx, 6.0f);
-//            CGContextSetBlendMode(ctx, kCGBlendModeSoftLight);
-//            CGContextAddPath(ctx, innerBezierPath.CGPath);
-//            CGContextDrawPath(ctx, kCGPathStroke);
-//            CGContextRestoreGState(ctx);
-//        };
+        self->_popoverView.backgroundHelper.drawPathBlock = ^(CGContextRef ctx, FWTAnnotationBackgroundHelper *backgroundHelper){
+            
+            //  clip to current path
+            CGContextSaveGState(ctx);
+            CGContextAddPath(ctx, backgroundHelper.path);
+            CGContextClip(ctx);
+            
+            //  stroke a thick inner border
+            CGRect innerShapeBounds = CGRectInset(backgroundHelper.pathFrame, 2.0f, 2.0f);
+            UIBezierPath *innerBezierPath = [backgroundHelper bezierPathForRect:innerShapeBounds];
+            CGContextSetStrokeColorWithColor(ctx, [[UIColor whiteColor] colorWithAlphaComponent:1.0f].CGColor);
+            CGContextSetLineWidth(ctx, 5.0f);
+            CGContextSetLineJoin(ctx, kCGLineJoinRound);
+            CGContextSetBlendMode(ctx, kCGBlendModeColorBurn);
+            CGContextAddPath(ctx, innerBezierPath.CGPath);
+            CGContextDrawPath(ctx, kCGPathStroke);
+            CGContextRestoreGState(ctx);
+        };
         
         self->_popoverView.textLabel.textAlignment = UITextAlignmentCenter;
         self->_popoverView.textLabel.backgroundColor = [UIColor clearColor];
@@ -142,11 +140,12 @@
     //
     if (self.popoverView.superview)
     {
-        [self.popoverView dismissPopoverAnimated:YES];
+        [self.popoverView dismissPopoverAnimated:NO];
         return;
     }
     
     //
+    self.popoverView.contentSize = CGSizeMake(160.0f, 60.0f);
     self.popoverView.textLabel.text = [StaticModel randomText];
     id image = [StaticModel randomImage];
     if ([image isKindOfClass:[UIImage class]])
@@ -155,7 +154,7 @@
     [self.popoverView presentAnnotationFromRect:_touchPointView.frame
                                          inView:self.view
                         permittedArrowDirection:self.popoverArrowDirection //
-                                       animated:YES];
+                                       animated:NO];
     
     //
     [self.view bringSubviewToFront:_touchPointView];

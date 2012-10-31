@@ -7,13 +7,22 @@
 //
 
 #import <UIKit/UIKit.h>
-//#import "FWTAnnotationView.h"
+
+typedef NS_ENUM(NSInteger, FWTAnnotationArrowDirection) {
+    FWTAnnotationArrowDirectionNone = 1UL << 0,
+    FWTAnnotationArrowDirectionUp = 1UL << 1,
+    FWTAnnotationArrowDirectionDown = 1UL << 2,
+    FWTAnnotationArrowDirectionLeft = 1UL << 3,
+    FWTAnnotationArrowDirectionRight = 1UL << 4,
+};
 
 @interface FWTAnnotationArrow : NSObject
 
-//@property (nonatomic, readonly) FWTAnnotationArrowDirection arrowDirection;
-@property (nonatomic, assign) CGSize arrowSize;
-@property (nonatomic, assign) CGFloat arrowOffset;
-@property (nonatomic, assign) CGFloat arrowCornerOffset;
+@property (nonatomic, readonly, assign) FWTAnnotationArrowDirection direction;
+@property (nonatomic, assign) CGSize size;
+@property (nonatomic, assign) CGFloat offset;
+@property (nonatomic, assign) CGFloat cornerOffset;
+
+- (UIEdgeInsets)adjustedEdgeInsetsForEdgeInsets:(UIEdgeInsets)edgeInsets;
 
 @end
