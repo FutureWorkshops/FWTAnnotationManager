@@ -10,13 +10,10 @@
 		A93B0972163FF9C70030F227 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A93B0971163FF9C70030F227 /* QuartzCore.framework */; };
 		A93B0975163FF9CE0030F227 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A93B0974163FF9CD0030F227 /* UIKit.framework */; };
 		A93B0977163FF9D50030F227 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A93B0976163FF9D50030F227 /* CoreGraphics.framework */; };
-		A949007716413AF000864A8B /* FWTAnnotationBackgroundHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = A949007616413AF000864A8B /* FWTAnnotationBackgroundHelper.m */; };
-		A949007B164173F700864A8B /* FWTAnnotationAnimationHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = A949007A164173F700864A8B /* FWTAnnotationAnimationHelper.m */; };
-		A97E7F3516404BD200AC7395 /* FWTAnnotationArrow.m in Sources */ = {isa = PBXBuildFile; fileRef = A97E7F3416404BD200AC7395 /* FWTAnnotationArrow.m */; };
+		A9AF1DBA1642A68D0006F23C /* libFWTPopoverView.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A9AF1DB91642A68D0006F23C /* libFWTPopoverView.a */; };
 		E4C452D015DB9C6800DD1A0F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4C452CF15DB9C6800DD1A0F /* Foundation.framework */; };
 		E4C4530D15DB9DDB00DD1A0F /* FWTDefaultAnnotationView.m in Sources */ = {isa = PBXBuildFile; fileRef = E4C4530815DB9DDB00DD1A0F /* FWTDefaultAnnotationView.m */; };
 		E4C4530E15DB9DDB00DD1A0F /* FWTAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = E4C4530A15DB9DDB00DD1A0F /* FWTAnnotation.m */; };
-		E4C4530F15DB9DDB00DD1A0F /* FWTAnnotationView.m in Sources */ = {isa = PBXBuildFile; fileRef = E4C4530C15DB9DDB00DD1A0F /* FWTAnnotationView.m */; };
 		E4C4531215DB9DF400DD1A0F /* FWTAnnotationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E4C4531115DB9DF400DD1A0F /* FWTAnnotationManager.m */; };
 /* End PBXBuildFile section */
 
@@ -36,21 +33,14 @@
 		A93B0971163FF9C70030F227 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		A93B0974163FF9CD0030F227 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		A93B0976163FF9D50030F227 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
-		A949007516413AF000864A8B /* FWTAnnotationBackgroundHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FWTAnnotationBackgroundHelper.h; sourceTree = "<group>"; };
-		A949007616413AF000864A8B /* FWTAnnotationBackgroundHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FWTAnnotationBackgroundHelper.m; sourceTree = "<group>"; };
-		A9490079164173F700864A8B /* FWTAnnotationAnimationHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FWTAnnotationAnimationHelper.h; sourceTree = "<group>"; };
-		A949007A164173F700864A8B /* FWTAnnotationAnimationHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FWTAnnotationAnimationHelper.m; sourceTree = "<group>"; };
-		A97E7F3316404BD200AC7395 /* FWTAnnotationArrow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FWTAnnotationArrow.h; sourceTree = "<group>"; };
-		A97E7F3416404BD200AC7395 /* FWTAnnotationArrow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FWTAnnotationArrow.m; sourceTree = "<group>"; };
-		E4C452CC15DB9C6800DD1A0F /* libFWAnnotationManager.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; name = libFWAnnotationManager.a; path = libFWTAnnotationManager.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		A9AF1DB91642A68D0006F23C /* libFWTPopoverView.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libFWTPopoverView.a; path = "../../../Library/Developer/Xcode/DerivedData/FWTAnnotationManager-gkhobiuduhyfhvflttlfnmmdgimu/Build/Products/Debug-iphoneos/libFWTPopoverView.a"; sourceTree = "<group>"; };
+		E4C452CC15DB9C6800DD1A0F /* libFWTAnnotationManager.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libFWTAnnotationManager.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		E4C452CF15DB9C6800DD1A0F /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		E4C452D315DB9C6800DD1A0F /* FWTAnnotationManager-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FWTAnnotationManager-Prefix.pch"; sourceTree = "<group>"; };
 		E4C4530715DB9DDB00DD1A0F /* FWTDefaultAnnotationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FWTDefaultAnnotationView.h; sourceTree = "<group>"; };
 		E4C4530815DB9DDB00DD1A0F /* FWTDefaultAnnotationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FWTDefaultAnnotationView.m; sourceTree = "<group>"; };
 		E4C4530915DB9DDB00DD1A0F /* FWTAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FWTAnnotation.h; sourceTree = "<group>"; };
 		E4C4530A15DB9DDB00DD1A0F /* FWTAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FWTAnnotation.m; sourceTree = "<group>"; };
-		E4C4530B15DB9DDB00DD1A0F /* FWTAnnotationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FWTAnnotationView.h; sourceTree = "<group>"; };
-		E4C4530C15DB9DDB00DD1A0F /* FWTAnnotationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FWTAnnotationView.m; sourceTree = "<group>"; };
 		E4C4531015DB9DF400DD1A0F /* FWTAnnotationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FWTAnnotationManager.h; sourceTree = "<group>"; };
 		E4C4531115DB9DF400DD1A0F /* FWTAnnotationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FWTAnnotationManager.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -60,6 +50,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A9AF1DBA1642A68D0006F23C /* libFWTPopoverView.a in Frameworks */,
 				A93B0977163FF9D50030F227 /* CoreGraphics.framework in Frameworks */,
 				A93B0975163FF9CE0030F227 /* UIKit.framework in Frameworks */,
 				A93B0972163FF9C70030F227 /* QuartzCore.framework in Frameworks */,
@@ -70,19 +61,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		A949007C1641839800864A8B /* Private */ = {
-			isa = PBXGroup;
-			children = (
-				A949007516413AF000864A8B /* FWTAnnotationBackgroundHelper.h */,
-				A949007616413AF000864A8B /* FWTAnnotationBackgroundHelper.m */,
-				A97E7F3316404BD200AC7395 /* FWTAnnotationArrow.h */,
-				A97E7F3416404BD200AC7395 /* FWTAnnotationArrow.m */,
-				A9490079164173F700864A8B /* FWTAnnotationAnimationHelper.h */,
-				A949007A164173F700864A8B /* FWTAnnotationAnimationHelper.m */,
-			);
-			name = Private;
-			sourceTree = "<group>";
-		};
 		E4C452C115DB9C6800DD1A0F = {
 			isa = PBXGroup;
 			children = (
@@ -95,7 +73,7 @@
 		E4C452CD15DB9C6800DD1A0F /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				E4C452CC15DB9C6800DD1A0F /* libFWAnnotationManager.a */,
+				E4C452CC15DB9C6800DD1A0F /* libFWTAnnotationManager.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -103,6 +81,7 @@
 		E4C452CE15DB9C6800DD1A0F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				A9AF1DB91642A68D0006F23C /* libFWTPopoverView.a */,
 				A93B0976163FF9D50030F227 /* CoreGraphics.framework */,
 				A93B0974163FF9CD0030F227 /* UIKit.framework */,
 				A93B0971163FF9C70030F227 /* QuartzCore.framework */,
@@ -116,11 +95,8 @@
 			children = (
 				E4C4530915DB9DDB00DD1A0F /* FWTAnnotation.h */,
 				E4C4530A15DB9DDB00DD1A0F /* FWTAnnotation.m */,
-				E4C4530B15DB9DDB00DD1A0F /* FWTAnnotationView.h */,
-				E4C4530C15DB9DDB00DD1A0F /* FWTAnnotationView.m */,
 				E4C4530715DB9DDB00DD1A0F /* FWTDefaultAnnotationView.h */,
 				E4C4530815DB9DDB00DD1A0F /* FWTDefaultAnnotationView.m */,
-				A949007C1641839800864A8B /* Private */,
 				E4C4531015DB9DF400DD1A0F /* FWTAnnotationManager.h */,
 				E4C4531115DB9DF400DD1A0F /* FWTAnnotationManager.m */,
 				E4C452D215DB9C6800DD1A0F /* Supporting Files */,
@@ -153,7 +129,7 @@
 			);
 			name = FWTAnnotationManager;
 			productName = FWAnnotationManager;
-			productReference = E4C452CC15DB9C6800DD1A0F /* libFWAnnotationManager.a */;
+			productReference = E4C452CC15DB9C6800DD1A0F /* libFWTAnnotationManager.a */;
 			productType = "com.apple.product-type.library.static";
 		};
 /* End PBXNativeTarget section */
@@ -189,11 +165,7 @@
 			files = (
 				E4C4530D15DB9DDB00DD1A0F /* FWTDefaultAnnotationView.m in Sources */,
 				E4C4530E15DB9DDB00DD1A0F /* FWTAnnotation.m in Sources */,
-				E4C4530F15DB9DDB00DD1A0F /* FWTAnnotationView.m in Sources */,
 				E4C4531215DB9DF400DD1A0F /* FWTAnnotationManager.m in Sources */,
-				A97E7F3516404BD200AC7395 /* FWTAnnotationArrow.m in Sources */,
-				A949007716413AF000864A8B /* FWTAnnotationBackgroundHelper.m in Sources */,
-				A949007B164173F700864A8B /* FWTAnnotationAnimationHelper.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -220,6 +192,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/../FWTPopover/FWTPopoverView/FWTPopoverView/\"";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				SDKROOT = iphoneos;
 			};
@@ -238,6 +211,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/../FWTPopover/FWTPopoverView/FWTPopoverView/\"";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
@@ -250,6 +224,10 @@
 				DSTROOT = /tmp/FWTAnnotationManager.dst;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "FWTAnnotationManager/FWTAnnotationManager-Prefix.pch";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../../../Library/Developer/Xcode/DerivedData/FWTAnnotationManager-gkhobiuduhyfhvflttlfnmmdgimu/Build/Products/Debug-iphoneos\"",
+				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -262,6 +240,10 @@
 				DSTROOT = /tmp/FWTAnnotationManager.dst;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "FWTAnnotationManager/FWTAnnotationManager-Prefix.pch";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../../../Library/Developer/Xcode/DerivedData/FWTAnnotationManager-gkhobiuduhyfhvflttlfnmmdgimu/Build/Products/Debug-iphoneos\"",
+				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;

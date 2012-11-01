@@ -124,12 +124,11 @@
     FWTDefaultAnnotationView *_popoverView = [[[FWTDefaultAnnotationView alloc] init] autorelease];
     
     //
-    _popoverView.contentSize = CGSizeMake(160.0f, 60.0f);
+    _popoverView.contentSize = CGSizeMake(160.0f, 40.0f);
     
     //
     _popoverView.arrow.cornerOffset = 10.0f;
     _popoverView.arrow.offset = 10.0f;
-    //    _popoverView.animationDuration = .35f;
     
     //
     _popoverView.textLabel.textAlignment = UITextAlignmentCenter;
@@ -141,6 +140,26 @@
     _popoverView.textLabel.shadowColor = [[UIColor blackColor] colorWithAlphaComponent:.5f];
     
 
+    _popoverView.backgroundHelper.drawPathBlock = ^(CGContextRef ctx, FWTPopoverBackgroundHelper *backgroundHelper){
+        
+        //  clip to current path
+        CGContextSaveGState(ctx);
+        CGContextAddPath(ctx, backgroundHelper.path);
+        CGContextClip(ctx);
+        
+        //  stroke a thick inner border
+        CGRect innerShapeBounds = CGRectInset(backgroundHelper.pathFrame, 2.0f, 2.0f);
+        UIBezierPath *innerBezierPath = [backgroundHelper bezierPathForRect:innerShapeBounds];
+        CGContextSetStrokeColorWithColor(ctx, [[UIColor whiteColor] colorWithAlphaComponent:1.0f].CGColor);
+        CGContextSetLineWidth(ctx, 5.0f);
+        CGContextSetLineJoin(ctx, kCGLineJoinRound);
+        CGContextSetBlendMode(ctx, kCGBlendModeColorBurn);
+        CGContextAddPath(ctx, innerBezierPath.CGPath);
+        CGContextDrawPath(ctx, kCGPathStroke);
+        CGContextRestoreGState(ctx);
+    };
+
+    
     _popoverView.animationHelper.prepareBlock = ^{
         _popoverView.frame = CGRectOffset(_popoverView.frame, .0f, -self.view.frame.size.height);
     };
@@ -176,7 +195,7 @@
 }
 
 #pragma mark - FWTAnnotationManagerDelegate
-- (FWTAnnotationView *)annotationManager:(FWTAnnotationManager *)annotationManager viewForAnnotation:(FWTAnnotation *)annotation
+- (FWTPopoverView *)annotationManager:(FWTAnnotationManager *)annotationManager viewForAnnotation:(FWTAnnotation *)annotation
 {
     FWTDefaultAnnotationView *_popoverView = [self defaultPopoverView];
     _popoverView.textLabel.text = annotation.text;
@@ -185,7 +204,7 @@
 }
 
 - (void)annotationManager:(FWTAnnotationManager *)annotationManager
-     didTapAnnotationView:(FWTAnnotationView *)annotationView
+     didTapAnnotationView:(FWTPopoverView *)annotationView
                annotation:(FWTAnnotation *)annotation
 {
     if (annotationView)

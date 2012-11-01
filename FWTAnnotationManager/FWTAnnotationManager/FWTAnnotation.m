@@ -26,8 +26,9 @@
     if ((self = [super init]))
     {
         self.guid = [[self class] _GUID];
-        self.arrowDirection = FWTAnnotationArrowDirectionNone;
+        self.arrowDirection = FWTPopoverArrowDirectionNone;
         self.delay = .0f;
+        self.animated = YES;
     }
     
     return self;

@@ -6,16 +6,15 @@
 //  Copyright (c) 2012 Futureworkshops. All rights reserved.
 //
 
-#import "FWTAnnotationView.h"
+#import "FWTPopoverView.h"
 
-@interface FWTDefaultAnnotationView : FWTAnnotationView
+@interface FWTDefaultAnnotationView : FWTPopoverView
 {
     UILabel *_textLabel;
     UIImageView *_imageView;
 }
 
 @property (nonatomic, assign) UIEdgeInsets contentViewEdgeInsets;
-
 @property (nonatomic, readonly, retain) UILabel *textLabel;
 @property (nonatomic, readonly, retain) UIImageView *imageView;
 

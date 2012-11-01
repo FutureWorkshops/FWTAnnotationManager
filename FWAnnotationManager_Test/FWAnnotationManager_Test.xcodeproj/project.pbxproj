@@ -66,6 +66,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		A9A4AFBB1642BFBC0034593C /* Sample - Touch */ = {
+			isa = PBXGroup;
+			children = (
+				E4C4531915DB9E2700DD1A0F /* TouchViewController.h */,
+				E4C4531A15DB9E2700DD1A0F /* TouchViewController.m */,
+			);
+			name = "Sample - Touch";
+			sourceTree = "<group>";
+		};
 		E4C452DD15DB9C8C00DD1A0F = {
 			isa = PBXGroup;
 			children = (
@@ -102,6 +111,7 @@
 				E4C452FC15DB9C8C00DD1A0F /* AppDelegate.m */,
 				E4C4531315DB9E2700DD1A0F /* SamplePickerViewController.h */,
 				E4C4531415DB9E2700DD1A0F /* SamplePickerViewController.m */,
+				A9A4AFBB1642BFBC0034593C /* Sample - Touch */,
 				E4C4539D15DBBA8600DD1A0F /* Sample */,
 				E4C452F315DB9C8C00DD1A0F /* Supporting Files */,
 			);
@@ -127,8 +137,6 @@
 			children = (
 				E4C4531515DB9E2700DD1A0F /* SampleViewController.h */,
 				E4C4531615DB9E2700DD1A0F /* SampleViewController.m */,
-				E4C4531915DB9E2700DD1A0F /* TouchViewController.h */,
-				E4C4531A15DB9E2700DD1A0F /* TouchViewController.m */,
 				E4C4531715DB9E2700DD1A0F /* StaticModel.h */,
 				E4C4531815DB9E2700DD1A0F /* StaticModel.m */,
 			);
@@ -244,7 +252,10 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/../FWTAnnotationManager/FWTAnnotationManager/\"/**";
+				HEADER_SEARCH_PATHS = (
+					"\"$(SRCROOT)/../FWTPopover/FWTPopoverView/FWTPopoverView/\"",
+					"\"$(SRCROOT)/../FWTAnnotationManager/FWTAnnotationManager/\"/**",
+				);
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)/../FWTAnnotationManager/FWTAnnotationManager/\"/**";
 				SDKROOT = iphoneos;
@@ -266,7 +277,10 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/../FWTAnnotationManager/FWTAnnotationManager/\"/**";
+				HEADER_SEARCH_PATHS = (
+					"\"$(SRCROOT)/../FWTPopover/FWTPopoverView/FWTPopoverView/\"",
+					"\"$(SRCROOT)/../FWTAnnotationManager/FWTAnnotationManager/\"/**",
+				);
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)/../FWTAnnotationManager/FWTAnnotationManager/\"/**";
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";

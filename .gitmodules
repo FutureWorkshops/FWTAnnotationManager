@@ -1,0 +1,3 @@
+[submodule "FWTPopover"]
+	path = FWTPopover
+	url = git@github.com:FutureWorkshops/FWTPopover.git

@@ -7,33 +7,30 @@
 //
 
 #import "TouchViewController.h"
-#import "FWTAnnotationView.h"
 #import "FWTDefaultAnnotationView.h"
 #import "StaticModel.h"
 
 @interface TouchViewController ()
 {
-    FWTDefaultAnnotationView *_popoverView;
     UIView *_touchPointView;
-    
     UISegmentedControl *_segmentedControl;
-    FWTAnnotationArrowDirection _popoverArrowDirection;
+    FWTPopoverArrowDirection _popoverArrowDirection;
 }
 
-@property (nonatomic, retain) FWTDefaultAnnotationView *popoverView;
+@property (nonatomic, retain) UIView *touchPointView;
 @property (nonatomic, retain) UISegmentedControl *segmentedControl;
-@property (nonatomic, assign) FWTAnnotationArrowDirection popoverArrowDirection;
+@property (nonatomic, assign) FWTPopoverArrowDirection popoverArrowDirection;
 
 @end
 
 @implementation TouchViewController
-@synthesize popoverView = _popoverView;
 @synthesize segmentedControl = _segmentedControl;
 @synthesize popoverArrowDirection = _popoverArrowDirection;
+@synthesize touchPointView = _touchPointView;
 
 - (void)dealloc
 {
-    self.popoverView = nil;
+    self.touchPointView = nil;
     self.segmentedControl = nil;
     [super dealloc];
 }
@@ -71,45 +68,15 @@
     return self->_segmentedControl;
 }
 
-- (FWTDefaultAnnotationView *)popoverView
+- (UIView *)touchPointView
 {
-    if (!self->_popoverView)
+    if (!self->_touchPointView)
     {
-        self->_popoverView = [[FWTDefaultAnnotationView alloc] init];
-        self->_popoverView.contentSize = CGSizeMake(260.0f, 60.0f);
-        self->_popoverView.backgroundHelper.drawPathBlock = ^(CGContextRef ctx, FWTAnnotationBackgroundHelper *backgroundHelper){
-            
-            //  clip to current path
-            CGContextSaveGState(ctx);
-            CGContextAddPath(ctx, backgroundHelper.path);
-            CGContextClip(ctx);
-            
-            //  stroke a thick inner border
-            CGRect innerShapeBounds = CGRectInset(backgroundHelper.pathFrame, 2.0f, 2.0f);
-            UIBezierPath *innerBezierPath = [backgroundHelper bezierPathForRect:innerShapeBounds];
-            CGContextSetStrokeColorWithColor(ctx, [[UIColor whiteColor] colorWithAlphaComponent:1.0f].CGColor);
-            CGContextSetLineWidth(ctx, 5.0f);
-            CGContextSetLineJoin(ctx, kCGLineJoinRound);
-            CGContextSetBlendMode(ctx, kCGBlendModeColorBurn);
-            CGContextAddPath(ctx, innerBezierPath.CGPath);
-            CGContextDrawPath(ctx, kCGPathStroke);
-            CGContextRestoreGState(ctx);
-        };
-        
-        self->_popoverView.textLabel.textAlignment = UITextAlignmentCenter;
-        self->_popoverView.textLabel.backgroundColor = [UIColor clearColor];
-        self->_popoverView.textLabel.numberOfLines = 0;
-        self->_popoverView.textLabel.font = [UIFont systemFontOfSize:12.0f];
-        self->_popoverView.textLabel.textColor = [UIColor colorWithWhite:.91f alpha:1.0f];
-        self->_popoverView.textLabel.shadowOffset = CGSizeMake(.0f, -.7f);
-        self->_popoverView.textLabel.shadowColor = [[UIColor blackColor] colorWithAlphaComponent:.5f];
-        
-        self->_popoverView.animationHelper.dismissCompletionBlock = ^(BOOL finished){
-            self.popoverView = nil;
-        };
+        self->_touchPointView = [[UIView alloc] initWithFrame:CGRectMake(.0f, .0f, 3.0f, 3.0f)];
+        self->_touchPointView.layer.borderWidth = 1.0f;
     }
-        
-    return self->_popoverView;
+    
+    return self->_touchPointView;
 }
 
 #pragma mark - Actions
@@ -122,36 +89,52 @@
 {
     CGPoint point = [[touches anyObject] locationInView:self.view];
     
-    if (!_touchPointView)
+    if (!self.touchPointView.superview)
+        [self.view addSubview:self.touchPointView];
+    
+    self.touchPointView.center = point;
+    
+    //
+    FWTDefaultAnnotationView *popoverView = (FWTDefaultAnnotationView *)[self.view viewWithTag:0xbeef];
+    if (!popoverView)
     {
-        _touchPointView = [[UIView alloc] initWithFrame:CGRectMake(.0f, .0f, 3.0f, 3.0f)];
-        _touchPointView.layer.borderWidth = 1.0f;
-        [self.view addSubview:_touchPointView];
-    }    
-    _touchPointView.center = point;
+        popoverView = [[self class] _defaultAnnotationView];
+        popoverView.tag = 0xbeef;
+        popoverView.textLabel.text = [StaticModel randomText];
+        id image = [StaticModel randomImage];
+        if ([image isKindOfClass:[UIImage class]])
+            popoverView.imageView.image = image;
 
-    //
-    if (self.popoverView.superview)
-    {
-        [self.popoverView dismissPopoverAnimated:YES];
-        return;
+        [popoverView presentFromRect:self.touchPointView.frame
+                              inView:self.view
+             permittedArrowDirection:self.popoverArrowDirection
+                            animated:YES];
     }
-    
-    //
-    self.popoverView.contentSize = CGSizeMake(160.0f, 60.0f);
-    self.popoverView.textLabel.text = [StaticModel randomText];
-    id image = [StaticModel randomImage];
-    if ([image isKindOfClass:[UIImage class]])
-        self.popoverView.imageView.image = image;
-    
-    [self.popoverView presentAnnotationFromRect:_touchPointView.frame
-                                         inView:self.view
-                        permittedArrowDirection:self.popoverArrowDirection //
-                                       animated:YES];
+    else
+    {
+        [popoverView dismissPopoverAnimated:YES];
+    }
     
     //
     [self.view bringSubviewToFront:_touchPointView];
 }
 
++ (FWTDefaultAnnotationView *)_defaultAnnotationView
+{
+    //
+    FWTDefaultAnnotationView *toReturn = [[[FWTDefaultAnnotationView alloc] init] autorelease];
+    toReturn.contentSize = CGSizeMake(180.0f, 40.0f);
+    
+    //
+    toReturn.textLabel.textAlignment = UITextAlignmentCenter;
+    toReturn.textLabel.backgroundColor = [UIColor clearColor];
+    toReturn.textLabel.numberOfLines = 0;
+    toReturn.textLabel.font = [UIFont systemFontOfSize:12.0f];
+    toReturn.textLabel.textColor = [UIColor colorWithWhite:.91f alpha:1.0f];
+    toReturn.textLabel.shadowOffset = CGSizeMake(.0f, -.7f);
+    toReturn.textLabel.shadowColor = [[UIColor blackColor] colorWithAlphaComponent:.5f];
+    
+    return toReturn;
+}
 
 @end

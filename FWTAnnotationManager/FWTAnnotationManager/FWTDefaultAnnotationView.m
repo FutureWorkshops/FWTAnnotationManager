@@ -8,28 +8,17 @@
 
 #import "FWTDefaultAnnotationView.h"
 
-@interface FWTAnnotationArrow ()
-@property (nonatomic, readwrite, assign) FWTAnnotationArrowDirection direction;
-@end
-
-@interface FWTAnnotationView ()
-@property (nonatomic, assign) UIEdgeInsets suggestedEdgeInsets, edgeInsets;
-@end
+const CGFloat FWTDefaultAnnotationViewSpaceBetweenImageViewAndTextLabel = 5.0f;
 
 @interface FWTDefaultAnnotationView ()
-{
-    BOOL _textLabelEnabled, _imageViewEnabled;
-}
 @property (nonatomic, readwrite, retain) UILabel *textLabel;
 @property (nonatomic, readwrite, retain) UIImageView *imageView;
-@property (nonatomic, assign) BOOL textLabelEnabled, imageViewEnabled;
+@property (nonatomic, assign) CGFloat spaceBetweenImageViewAndTextLabel;
 @end
 
 @implementation FWTDefaultAnnotationView
 @synthesize textLabel = _textLabel;
 @synthesize imageView = _imageView;
-@synthesize textLabelEnabled = _textLabelEnabled;
-@synthesize imageViewEnabled = _imageViewEnabled;
 
 - (void)dealloc
 {
@@ -43,6 +32,10 @@
     if ((self = [super initWithFrame:frame]))
     {
         self.contentViewEdgeInsets = UIEdgeInsetsMake(5.0f, 5.0f, 5.0f, 5.0f);
+        self.spaceBetweenImageViewAndTextLabel = FWTDefaultAnnotationViewSpaceBetweenImageViewAndTextLabel;
+        
+//        self.contentView.layer.borderWidth = 1.0f;
+//        self.contentView.layer.borderColor = [[UIColor redColor] colorWithAlphaComponent:.25f].CGColor;
     }
     
     return self;
@@ -54,32 +47,39 @@
     
     self.contentView.frame = UIEdgeInsetsInsetRect(self.contentView.frame, self.contentViewEdgeInsets);
     
-    //
-    if (self.textLabelEnabled)
+    [self _layoutTextLabel];
+    
+    [self _layoutImageView];
+}
+
+#pragma mark - Private
+- (void)_layoutTextLabel
+{
+    if (self->_textLabel)
     {
         if (!self.textLabel.superview)
             [self.contentView addSubview:self.textLabel];
         
-        CGRect contentViewBounds = self.contentView.bounds;
-        if (self.imageViewEnabled)
+        CGRect textLabelFrame = self.contentView.bounds;
+        if (self->_imageView)
         {
-            CGFloat imageWidth = self.imageView.image.size.width;
-            contentViewBounds.origin.x += imageWidth;
-            contentViewBounds.size.width -= imageWidth;
+            CGFloat imageWidth = self.imageView.image.size.width + self.spaceBetweenImageViewAndTextLabel;
+            textLabelFrame.origin.x += imageWidth;
+            textLabelFrame.size.width -= imageWidth;
         }
-                
-        CGRect textLabelFrame = contentViewBounds;
+        
         self.textLabel.frame = textLabelFrame;
     }
-    
-    //
-    if (self.imageViewEnabled)
+}
+
+- (void)_layoutImageView
+{
+    if (self->_imageView)
     {
         if (!self.imageView.superview)
             [self.contentView addSubview:self.imageView];
-     
-        CGRect contentViewBounds = self.contentView.bounds;
-        CGRect imageViewFrame = contentViewBounds;
+        
+        CGRect imageViewFrame = self.contentView.bounds;
         imageViewFrame.origin.y += (imageViewFrame.size.height - self.imageView.image.size.height)*.5f;
         imageViewFrame.size = self.imageView.image.size;
         self.imageView.frame = imageViewFrame;
@@ -90,10 +90,7 @@
 - (UILabel *)textLabel
 {
     if (!self->_textLabel)
-    {
-        self.textLabelEnabled = YES;
         self->_textLabel = [[UILabel alloc] init];
-    }
     
     return self->_textLabel;
 }
@@ -101,42 +98,34 @@
 - (UIImageView *)imageView
 {
     if (!self->_imageView)
-    {
-        self.imageViewEnabled = YES;
         self->_imageView = [[UIImageView alloc] init];
-    }
     
     return self->_imageView;
 }
 
 #pragma mark - Overrides
-- (void)presentAnnotationFromRect:(CGRect)rect
-                        inView:(UIView *)view
-       permittedArrowDirection:(FWTAnnotationArrowDirection)arrowDirection
-                      animated:(BOOL)animated
+- (void)presentFromRect:(CGRect)rect inView:(UIView *)view permittedArrowDirection:(FWTPopoverArrowDirection)arrowDirection animated:(BOOL)animated
 {
-    //
-    self.arrow.direction = arrowDirection;
-
-    //
-    self.edgeInsets = [self.arrow adjustedEdgeInsetsForEdgeInsets:self.suggestedEdgeInsets];
-    
-    //  calculate how much space we have and then calculate the size of the text
+    //  Calculate the available space and then get the size of the text
     //
     CGFloat imageWidth = .0f;
-    if (self.imageViewEnabled)
-        imageWidth = self.imageView.image.size.width;
-    
-    CGFloat widthToRemove = self.edgeInsets.left + self.edgeInsets.right + self.contentViewEdgeInsets.left + self.contentViewEdgeInsets.right + imageWidth;
-    CGFloat heightToAdd = self.edgeInsets.top + self.edgeInsets.bottom + self.contentViewEdgeInsets.top + self.contentViewEdgeInsets.bottom;
-    CGFloat avalaibleWidth = self.contentSize.width - widthToRemove;
-    CGSize size = [self.textLabel.text sizeWithFont:self.textLabel.font constrainedToSize:CGSizeMake(avalaibleWidth, MAXFLOAT)];
-    size.height += heightToAdd;
-    CGSize newContentSize = self.contentSize;
-    newContentSize.height = MAX(newContentSize.height, size.height);
-    self.contentSize = newContentSize;
-    
-    [super presentAnnotationFromRect:rect inView:view permittedArrowDirection:arrowDirection animated:animated];
+    if (self->_imageView)
+        imageWidth = self.imageView.image.size.width + self.spaceBetweenImageViewAndTextLabel;
+
+    if (self->_textLabel)
+    {
+        CGFloat widthToRemove = self.contentViewEdgeInsets.left + self.contentViewEdgeInsets.right + imageWidth;
+        CGFloat heightToAdd = self.contentViewEdgeInsets.top + self.contentViewEdgeInsets.bottom;
+        CGFloat avalaibleWidth = self.contentSize.width - widthToRemove;
+        CGSize size = [self.textLabel.text sizeWithFont:self.textLabel.font constrainedToSize:CGSizeMake(avalaibleWidth, MAXFLOAT)];
+        size.height += heightToAdd;
+        CGSize newContentSize = self.contentSize;
+        newContentSize.height = MAX(newContentSize.height, size.height);
+        self.contentSize = newContentSize;
+    }
+
+    //
+    [super presentFromRect:rect inView:view permittedArrowDirection:arrowDirection animated:animated];
 }
 
 

@@ -66,6 +66,7 @@
             [color setFill];
             UIRectFill(CGRectMake(.0f, .0f, ctxSize.width, ctxSize.height));
             CGContextDrawLinearGradient(ctx, _gradient, CGPointZero, CGPointMake(ctxSize.width, ctxSize.height), kCGGradientDrawsAfterEndLocation);
+            CGContextStrokeRect(ctx, CGRectMake(.0f, .0f, ctxSize.width, ctxSize.height));
             UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
             UIGraphicsEndImageContext();
             
@@ -94,7 +95,7 @@
         FWTAnnotation *pd0 = [[[FWTAnnotation alloc] init] autorelease];
         pd0.presentingRectPortrait = CGRectMake(200, 300, 1, 1);
         pd0.presentingRectLandscape = CGRectMake(300, 200, 1, 1);
-        pd0.arrowDirection = FWTAnnotationArrowDirectionDown;
+        pd0.arrowDirection = FWTPopoverArrowDirectionDown;
         pd0.animated = YES;
         pd0.text = @"No, Donny, these men are nihilists, there's nothing to be afraid of.";
         
@@ -102,7 +103,7 @@
         FWTAnnotation *pd1 = [[[FWTAnnotation alloc] init] autorelease];
         pd1.presentingRectPortrait = CGRectMake(30, 130, 1, 1);
         pd1.presentingRectLandscape = CGRectMake(30, 80, 1, 1);
-        pd1.arrowDirection = FWTAnnotationArrowDirectionLeft;
+        pd1.arrowDirection = FWTPopoverArrowDirectionLeft;
         pd1.animated = YES;
         pd1.text = @"Where's the fucking money Lebowski?";
         pd1.delay = .5f;
@@ -111,7 +112,7 @@
         FWTAnnotation *pd2 = [[[FWTAnnotation alloc] init] autorelease];
         pd2.presentingRectPortrait = CGRectMake(300, 30, 1, 1);
         pd2.presentingRectLandscape = CGRectMake(480, 30, 1, 1);
-        pd2.arrowDirection = FWTAnnotationArrowDirectionRight;
+        pd2.arrowDirection = FWTPopoverArrowDirectionRight;
         pd2.animated = YES;
         pd2.text = @"Are these the Nazis, Walter?";
         pd2.delay = 1.0f;

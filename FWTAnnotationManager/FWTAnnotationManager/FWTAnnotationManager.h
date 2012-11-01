@@ -7,14 +7,14 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "FWTAnnotationView.h"
+#import "FWTDefaultAnnotationView.h"
 #import "FWTAnnotation.h"
 
 @class FWTAnnotationManager;
 @protocol FWTAnnotationManagerDelegate <NSObject>
 @optional
-- (FWTAnnotationView *)annotationManager:(FWTAnnotationManager *)annotationManager viewForAnnotation:(FWTAnnotation *)annotation;
-- (void)annotationManager:(FWTAnnotationManager *)annotationManager didTapAnnotationView:(FWTAnnotationView *)annotationView annotation:(FWTAnnotation *)annotation;
+- (FWTDefaultAnnotationView *)annotationManager:(FWTAnnotationManager *)annotationManager viewForAnnotation:(FWTAnnotation *)annotation;
+- (void)annotationManager:(FWTAnnotationManager *)annotationManager didTapAnnotationView:(FWTDefaultAnnotationView *)annotationView annotation:(FWTAnnotation *)annotation;
 @end
 
 @interface FWTAnnotationManager : NSObject
@@ -45,9 +45,9 @@
 - (void)removeAnnotation:(FWTAnnotation *)annotation;
 - (void)removeAnnotations:(NSArray *)annotations;
 
-- (FWTAnnotationView *)viewForAnnotation:(FWTAnnotation *)annotation;
-- (FWTAnnotation *)annotationForView:(FWTAnnotationView *)view;
-- (FWTAnnotationView *)viewAtPoint:(CGPoint)point;
+- (FWTDefaultAnnotationView *)viewForAnnotation:(FWTAnnotation *)annotation;
+- (FWTAnnotation *)annotationForView:(FWTDefaultAnnotationView *)view;
+- (FWTDefaultAnnotationView *)viewAtPoint:(CGPoint)point;
 
 - (void)cancel;
 
