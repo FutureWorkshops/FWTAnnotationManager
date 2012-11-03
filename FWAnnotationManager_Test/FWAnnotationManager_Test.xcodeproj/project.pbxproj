@@ -11,6 +11,7 @@
 		A93B0906163EFABF0030F227 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = A93B0903163EFABF0030F227 /* Default.png */; };
 		A93B0907163EFABF0030F227 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A93B0904163EFABF0030F227 /* Default@2x.png */; };
 		A93B0939163FDEB50030F227 /* libFWTAnnotationManager.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A93B0938163FDEB50030F227 /* libFWTAnnotationManager.a */; };
+		A9A4AFBE1642C3770034593C /* CustomAnnotationView.m in Sources */ = {isa = PBXBuildFile; fileRef = A9A4AFBD1642C3770034593C /* CustomAnnotationView.m */; };
 		E4C452ED15DB9C8C00DD1A0F /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4C452EC15DB9C8C00DD1A0F /* UIKit.framework */; };
 		E4C452EF15DB9C8C00DD1A0F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4C452EE15DB9C8C00DD1A0F /* Foundation.framework */; };
 		E4C452F115DB9C8C00DD1A0F /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4C452F015DB9C8C00DD1A0F /* CoreGraphics.framework */; };
@@ -29,6 +30,8 @@
 		A93B0903163EFABF0030F227 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
 		A93B0904163EFABF0030F227 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
 		A93B0938163FDEB50030F227 /* libFWTAnnotationManager.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libFWTAnnotationManager.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		A9A4AFBC1642C3770034593C /* CustomAnnotationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomAnnotationView.h; sourceTree = "<group>"; };
+		A9A4AFBD1642C3770034593C /* CustomAnnotationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomAnnotationView.m; sourceTree = "<group>"; };
 		E4C452E815DB9C8C00DD1A0F /* FWAnnotationManager_Test.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FWAnnotationManager_Test.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E4C452EC15DB9C8C00DD1A0F /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		E4C452EE15DB9C8C00DD1A0F /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -135,6 +138,8 @@
 		E4C4539D15DBBA8600DD1A0F /* Sample */ = {
 			isa = PBXGroup;
 			children = (
+				A9A4AFBC1642C3770034593C /* CustomAnnotationView.h */,
+				A9A4AFBD1642C3770034593C /* CustomAnnotationView.m */,
 				E4C4531515DB9E2700DD1A0F /* SampleViewController.h */,
 				E4C4531615DB9E2700DD1A0F /* SampleViewController.m */,
 				E4C4531715DB9E2700DD1A0F /* StaticModel.h */,
@@ -214,6 +219,7 @@
 				E4C4531C15DB9E2700DD1A0F /* SampleViewController.m in Sources */,
 				E4C4531D15DB9E2700DD1A0F /* StaticModel.m in Sources */,
 				E4C4531E15DB9E2700DD1A0F /* TouchViewController.m in Sources */,
+				A9A4AFBE1642C3770034593C /* CustomAnnotationView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

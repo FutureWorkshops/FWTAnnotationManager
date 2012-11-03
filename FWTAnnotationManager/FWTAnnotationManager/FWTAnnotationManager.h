@@ -12,27 +12,14 @@
 
 @class FWTAnnotationManager;
 @protocol FWTAnnotationManagerDelegate <NSObject>
+
 @optional
 - (FWTDefaultAnnotationView *)annotationManager:(FWTAnnotationManager *)annotationManager viewForAnnotation:(FWTAnnotation *)annotation;
 - (void)annotationManager:(FWTAnnotationManager *)annotationManager didTapAnnotationView:(FWTDefaultAnnotationView *)annotationView annotation:(FWTAnnotation *)annotation;
+
 @end
 
 @interface FWTAnnotationManager : NSObject
-{
-    UIView *_view, *_contentView;
-    NSMutableArray *_annotations;
-    NSMutableDictionary *_annotationsDictionary;
-    UITapGestureRecognizer *_tapGestureRecognizer;
-    
-    id<FWTAnnotationManagerDelegate> _delegate;
-    struct
-    {
-        BOOL viewForAnnotation: 1;
-        BOOL didTapAnnotationView: 1;
-    } _delegateHas;
-    
-    BOOL _removeAnnotationsWithRandomDelay;
-}
 
 @property (nonatomic, retain) UIView *view;
 @property (nonatomic, readonly, retain) NSMutableArray *annotations;

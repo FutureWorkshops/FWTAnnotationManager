@@ -12,10 +12,13 @@
 @interface FWTAnnotation : NSObject
 
 @property (nonatomic, readonly, retain) NSString *guid;
+
 @property (nonatomic, assign) CGRect presentingRectPortrait, presentingRectLandscape;
 @property (nonatomic, assign) FWTPopoverArrowDirection arrowDirection;
 @property (nonatomic, assign) NSTimeInterval delay;
 @property (nonatomic, assign) BOOL animated;
+
 @property (nonatomic, retain) NSString *text;
+@property (nonatomic, retain) UIImage *image;
 
 @end

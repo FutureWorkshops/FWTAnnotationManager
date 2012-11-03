@@ -7,15 +7,14 @@
 //
 
 #import "FWTPopoverView.h"
+#import "FWTAnnotation.h"
 
 @interface FWTDefaultAnnotationView : FWTPopoverView
-{
-    UILabel *_textLabel;
-    UIImageView *_imageView;
-}
 
 @property (nonatomic, assign) UIEdgeInsets contentViewEdgeInsets;
 @property (nonatomic, readonly, retain) UILabel *textLabel;
 @property (nonatomic, readonly, retain) UIImageView *imageView;
+
+- (void)adjustFrameToRect:(CGRect)presentingRect;
 
 @end

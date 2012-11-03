@@ -18,6 +18,7 @@
 {
     self.guid = nil;
     self.text = nil;
+    self.image = nil;
     [super dealloc];
 }
 
@@ -41,7 +42,6 @@
 	NSString *unique = [NSString stringWithString:(id)theString];
 	CFRelease(theString);
     CFRelease(theUUID); // Cleanup
-    NSLog(@"unique:%@", unique);
 	return unique;
 }
 
