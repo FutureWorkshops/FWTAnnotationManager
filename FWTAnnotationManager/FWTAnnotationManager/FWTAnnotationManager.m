@@ -16,25 +16,23 @@
         BOOL didTapAnnotationView: 1;
     } _delegateHas;
 }
-@property (nonatomic, readwrite, retain) NSMutableArray *annotations;
+
+@property (nonatomic, retain) NSMutableArray *mutableAnnotations;
 @property (nonatomic, retain) NSMutableDictionary *annotationsDictionary;
 @property (nonatomic, retain) UIView *contentView;
 @property (nonatomic, retain) UITapGestureRecognizer *tapGestureRecognizer;
-@property (nonatomic, assign) BOOL animationsDisabled;
 @property (nonatomic, assign) NSInteger popoverViewDidPresentCounter;
 @property (nonatomic, retain) id orientationObserver;
 
 @end
 
 @implementation FWTAnnotationManager
-@synthesize view = _view;
+@synthesize mutableAnnotations = _mutableAnnotations;
 @synthesize annotations = _annotations;
 @synthesize annotationsDictionary = _annotationsDictionary;
 @synthesize delegate = _delegate;
 @synthesize contentView = _contentView;
 @synthesize tapGestureRecognizer = _tapGestureRecognizer;
-@synthesize animationsDisabled = _animationsDisabled;
-@synthesize removeAnnotationsWithRandomDelay = _removeAnnotationsWithRandomDelay;
 
 - (void)dealloc
 {
@@ -43,9 +41,9 @@
     self.tapGestureRecognizer = nil;
     self.contentView = nil;
     self.delegate = nil;
-    self.annotations = nil;
+    self.mutableAnnotations = nil;
     self.annotationsDictionary = nil;
-    self.view = nil;
+    self.parentView = nil;
     [super dealloc];
 }
 
@@ -72,10 +70,15 @@
 }
 
 #pragma mark - Getters
-- (NSMutableArray *)annotations
+- (NSArray *)annotations
 {
-    if (!self->_annotations) self->_annotations = [[NSMutableArray alloc] init];
-    return self->_annotations;
+    return [[self.mutableAnnotations copy] autorelease];
+}
+
+- (NSMutableArray *)mutableAnnotations
+{
+    if (!self->_mutableAnnotations) self->_mutableAnnotations = [[NSMutableArray alloc] init];
+    return self->_mutableAnnotations;
 }
 
 - (NSMutableDictionary *)annotationsDictionary
@@ -129,7 +132,12 @@
                                                                                       queue:[NSOperationQueue mainQueue]
                                                                                  usingBlock:^(NSNotification *note) {
                                                                                      NSLog(@"_updatePopoverAnnotationsToInterfaceOrientation");
-                                                                                     [myself _updatePopoverAnnotationsToInterfaceOrientation:[UIApplication sharedApplication].statusBarOrientation];
+                                                                                     
+                                                                                     int64_t delayInSeconds = .1f;
+                                                                                     dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+                                                                                     dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+                                                                                         [myself _updatePopoverAnnotationsToInterfaceOrientation:[UIApplication sharedApplication].statusBarOrientation];
+                                                                                     });
                                                                                  }];
     }
 }
@@ -141,60 +149,18 @@
         [[NSNotificationCenter defaultCenter] removeObserver:self.orientationObserver
                                                         name:UIApplicationDidChangeStatusBarOrientationNotification
                                                       object:nil];
-        
         self.orientationObserver = nil;
     }
 }
 
 - (void)_updatePopoverAnnotationsToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
 {
-//    return;
-    
-//    NSArray *arrayCopy = [NSArray arrayWithArray:self.annotations];
-    [self.annotations enumerateObjectsUsingBlock:^(FWTAnnotation *annotation, NSUInteger idx, BOOL *stop) {
-        FWTDefaultAnnotationView *_popoverView = [self viewForAnnotation:annotation];
-        
-        CGRect rect = CGRectZero;
-        UIInterfaceOrientation orientation = [UIApplication sharedApplication].statusBarOrientation;
-        if UIInterfaceOrientationIsLandscape(orientation)
-            rect = annotation.presentingRectLandscape;
-        else
-            rect = annotation.presentingRectPortrait;
-        
-        [_popoverView adjustFrameToRect:rect];
-//        _popoverView.center = CGPointMake(CGRectGetMidX(rect), CGRectGetMidY(rect));
-        
-//        [_popoverView presentFromRect:rect inView:self.contentView permittedArrowDirection:annotation.arrowDirection animated:NO];
-
-        
-//        if (_popoverView)
-//        {
-//            [self.annotations removeObject:annotation];
-//            [self.annotationsDictionary removeObjectForKey:annotation.guid];
-//            [_popoverView removeFromSuperview];
-//        }
+    [UIView animateWithDuration:.2f animations:^{
+        [self.mutableAnnotations enumerateObjectsUsingBlock:^(FWTAnnotation *annotation, NSUInteger idx, BOOL *stop) {
+            FWTDefaultAnnotationView *_popoverView = [self viewForAnnotation:annotation];
+            [_popoverView adjustPositionToRect:[self _presentingRectForAnnotation:annotation]];
+        }];
     }];
-    
-//    self.presentAnimationsCounter = arrayCopy.count;
-//    self.animationsDisabled = YES;
-//    [self addAnnotations:arrayCopy];
-//    self.animationsDisabled = NO;
-    
-//    NSArray *arrayCopy = [NSArray arrayWithArray:self.annotations];
-//    [arrayCopy enumerateObjectsUsingBlock:^(FWTAnnotation *annotation, NSUInteger idx, BOOL *stop) {
-//        FWTDefaultAnnotationView *_popoverView = [self viewForAnnotation:annotation];
-//        if (_popoverView)
-//        {
-//            CGRect rect = CGRectZero;
-//            UIInterfaceOrientation orientation = [UIApplication sharedApplication].statusBarOrientation;
-//            if UIInterfaceOrientationIsLandscape(orientation)
-//                rect = annotation.presentingRectLandscape;
-//            else
-//                rect = annotation.presentingRectPortrait;
-//            
-//            [_popoverView presentFromRect:rect inView:self.contentView permittedArrowDirection:annotation.arrowDirection animated:NO];
-//        }
-//    }];
 }
 
 #pragma mark - Private 
@@ -212,11 +178,7 @@
     if (_delegateHas.viewForAnnotation)
         _popoverView = [self.delegate annotationManager:self viewForAnnotation:annotation];
     else
-    {
         _popoverView = [[[FWTDefaultAnnotationView alloc] init] autorelease];
-        if (annotation.text) _popoverView.textLabel.text = annotation.text;
-        if (annotation.image) _popoverView.imageView.image = annotation.image;
-    }
     
     _popoverView.delegate = self;
     return _popoverView;
@@ -226,8 +188,8 @@
 - (void)addAnnotation:(FWTAnnotation *)annotation
 {
     //  add the contentView if needed
-    if (!self.contentView.superview) [self.view addSubview:self.contentView];
-    self.contentView.frame = self.view.bounds;
+    if (!self.contentView.superview) [self.parentView addSubview:self.contentView];
+    self.contentView.frame = self.parentView.bounds;
     
     //  add the gesture
     if (!self.tapGestureRecognizer.view) [self.contentView addGestureRecognizer:self.tapGestureRecognizer];
@@ -239,21 +201,19 @@
     //  get an annotationView
     FWTDefaultAnnotationView *annotationView = [self _createViewForAnnotation:annotation];
     
-    //  update
-    [self.annotations addObject:annotation];
+    //  configure
+    if (annotation.text) annotationView.textLabel.text = annotation.text;
+    if (annotation.image) annotationView.imageView.image = annotation.image;
+    annotationView.animationHelper.presentDelay = annotation.delay;
+    
+    //  update model
+    [self.mutableAnnotations addObject:annotation];
     [self.annotationsDictionary setObject:annotationView forKey:annotation.guid];
     self.popoverViewDidPresentCounter++;
     
-    //
-    BOOL animated = NO;
-    if (!self.animationsDisabled)
-    {
-        annotationView.animationHelper.presentDelay = annotation.delay;
-        animated = annotation.animated;
-    }
-    
+    //  ready to present
     CGRect rect = [self _presentingRectForAnnotation:annotation];
-    [annotationView presentFromRect:rect inView:self.contentView permittedArrowDirection:annotation.arrowDirection animated:animated];
+    [annotationView presentFromRect:rect inView:self.contentView permittedArrowDirection:annotation.arrowDirection animated:annotation.animated];
 }
 
 - (void)addAnnotations:(NSArray *)annotations
@@ -281,7 +241,7 @@
 - (void)cancel
 {
     [NSObject cancelPreviousPerformRequestsWithTarget:self];
-    [self.annotations enumerateObjectsUsingBlock:^(FWTAnnotation *annotation, NSUInteger idx, BOOL *stop) {
+    [self.mutableAnnotations enumerateObjectsUsingBlock:^(FWTAnnotation *annotation, NSUInteger idx, BOOL *stop) {
         FWTDefaultAnnotationView *_popoverView = [self viewForAnnotation:annotation];
         [_popoverView removeFromSuperview];
     }];
@@ -297,7 +257,7 @@
 - (FWTDefaultAnnotationView *)viewAtPoint:(CGPoint)point
 {
     __block FWTDefaultAnnotationView *toReturn = nil;
-    [self.annotations enumerateObjectsUsingBlock:^(FWTAnnotation *annotation, NSUInteger idx, BOOL *stop) {
+    [self.mutableAnnotations enumerateObjectsUsingBlock:^(FWTAnnotation *annotation, NSUInteger idx, BOOL *stop) {
         FWTDefaultAnnotationView *_popoverView = [self viewForAnnotation:annotation];
         if (CGRectContainsPoint(_popoverView.frame, point))
         {
@@ -312,7 +272,7 @@
 - (FWTAnnotation *)annotationForView:(FWTDefaultAnnotationView *)view
 {
     __block FWTAnnotation *toReturn = nil;
-    [self.annotations enumerateObjectsUsingBlock:^(FWTAnnotation *annotation, NSUInteger idx, BOOL *stop) {
+    [self.mutableAnnotations enumerateObjectsUsingBlock:^(FWTAnnotation *annotation, NSUInteger idx, BOOL *stop) {
         FWTDefaultAnnotationView *_popoverView = [self viewForAnnotation:annotation];
         if (_popoverView == view)
         {
@@ -342,11 +302,11 @@
 - (void)popoverViewDidDismiss:(FWTPopoverView *)annotationView
 {
     FWTAnnotation *annotation = [self annotationForView:(FWTDefaultAnnotationView *)annotationView];
-    [self.annotations removeObject:annotation];
+    [self.mutableAnnotations removeObject:annotation];
     [self.annotationsDictionary removeObjectForKey:annotation.guid];
     
     //
-    if (self.annotations.count == 0)
+    if (self.mutableAnnotations.count == 0)
     {
         [self.contentView removeFromSuperview];
         [self _unregisterFromStatusBarOrientationNotifications];

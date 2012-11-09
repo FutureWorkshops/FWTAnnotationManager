@@ -15,6 +15,4 @@
 @property (nonatomic, readonly, retain) UILabel *textLabel;
 @property (nonatomic, readonly, retain) UIImageView *imageView;
 
-- (void)adjustFrameToRect:(CGRect)presentingRect;
-
 @end

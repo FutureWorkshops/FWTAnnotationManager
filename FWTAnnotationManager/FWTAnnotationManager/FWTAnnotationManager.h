@@ -21,10 +21,9 @@
 
 @interface FWTAnnotationManager : NSObject
 
-@property (nonatomic, retain) UIView *view;
-@property (nonatomic, readonly, retain) NSMutableArray *annotations;
+@property (nonatomic, retain) UIView *parentView;
+@property (nonatomic, readonly, copy) NSArray *annotations;
 @property (nonatomic, assign) id<FWTAnnotationManagerDelegate> delegate;
-@property (nonatomic, assign) BOOL removeAnnotationsWithRandomDelay;
 
 - (void)addAnnotation:(FWTAnnotation *)annotation;
 - (void)addAnnotations:(NSArray *)annotations;

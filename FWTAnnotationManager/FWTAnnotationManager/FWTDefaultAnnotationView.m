@@ -10,10 +10,6 @@
 
 const CGFloat FWTDefaultAnnotationViewSpaceBetweenImageViewAndTextLabel = 5.0f;
 
-@interface FWTPopoverView ()
-- (CGPoint)_midPointForRect:(CGRect)rect popoverSize:(CGSize)popoverSize arrowDirection:(FWTPopoverArrowDirection)arrowDirections;
-@end
-
 @interface FWTDefaultAnnotationView ()
 @property (nonatomic, readwrite, retain) UILabel *textLabel;
 @property (nonatomic, readwrite, retain) UIImageView *imageView;
@@ -130,17 +126,6 @@ const CGFloat FWTDefaultAnnotationViewSpaceBetweenImageViewAndTextLabel = 5.0f;
 
     //
     [super presentFromRect:rect inView:view permittedArrowDirection:arrowDirection animated:animated];
-}
-
-#pragma mark - Public
-- (void)adjustFrameToRect:(CGRect)presentingRect
-{
-    CGPoint p = [self _midPointForRect:presentingRect popoverSize:self.bounds.size arrowDirection:self.arrow.direction];
-//    NSLog(@"c:%@ - p:%@", NSStringFromCGPoint(self.center), NSStringFromCGPoint(p));
-    CGRect frame = self.frame;
-    frame.origin = p;
-//    [self _adjustAndSetFrame:frame inSuperview:self.superview];
-    self.frame = frame;
 }
 
 @end
