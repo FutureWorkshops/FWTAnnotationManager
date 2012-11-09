@@ -102,7 +102,7 @@
         //
         FWTAnnotation *pd1 = [[[FWTAnnotation alloc] init] autorelease];
         pd1.presentingRectPortrait = CGRectMake(30, 230, 1, 1);
-        pd1.presentingRectLandscape = CGRectMake(30, 80, 1, 1);
+        pd1.presentingRectLandscape = CGRectMake(-30, 80, 1, 1);
         pd1.arrowDirection = FWTPopoverArrowDirectionLeft;
         pd1.animated = YES;
         pd1.text = @"Where's the fucking money Lebowski?";

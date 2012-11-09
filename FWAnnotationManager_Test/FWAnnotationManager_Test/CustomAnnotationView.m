@@ -20,7 +20,6 @@
         
         //
         self.arrow.cornerOffset = 10.0f;
-        self.arrow.offset = 10.0f;
         
         //
         self.textLabel.textAlignment = UITextAlignmentCenter;
@@ -31,7 +30,8 @@
         self.textLabel.shadowOffset = CGSizeMake(.0f, -.7f);
         self.textLabel.shadowColor = [[UIColor blackColor] colorWithAlphaComponent:.5f];
         
-        
+        //
+        self.backgroundHelper.cornerRadius = 9.0f;
         self.backgroundHelper.drawPathBlock = ^(CGContextRef ctx, FWTPopoverBackgroundHelper *backgroundHelper){
             
             //  clip to current path
@@ -50,6 +50,9 @@
             CGContextDrawPath(ctx, kCGPathStroke);
             CGContextRestoreGState(ctx);
         };
+        
+        //
+        self.animationHelper.dismissDuration = .3f;
     }
     
     return self;

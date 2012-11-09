@@ -136,7 +136,7 @@
     {
         if (sc.selectedSegmentIndex == 0)
         {
-            self.fwPopoverController.view = self.view;
+            self.fwPopoverController.parentView = self.view;
             
             [self.fwPopoverController addAnnotations:[StaticModel popoverAnnotations]];
             
@@ -152,7 +152,7 @@
     }
     else
     {
-        self.fwPopoverController.view = self.view;
+        self.fwPopoverController.parentView = self.view;
                 
         FWTAnnotation *pd = [[StaticModel popoverAnnotations] objectAtIndex:sc.selectedSegmentIndex];
         if ([self.fwPopoverController.annotations containsObject:pd])
@@ -192,7 +192,6 @@
 {
     CustomAnnotationView *_popoverView = [[[CustomAnnotationView alloc] init] autorelease];
     [_popoverView setupAnimationHelperWithSuperview:self.view];
-    _popoverView.textLabel.text = annotation.text;
     return _popoverView;
 }
 

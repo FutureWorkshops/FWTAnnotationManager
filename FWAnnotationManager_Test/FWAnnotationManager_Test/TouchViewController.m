@@ -124,6 +124,7 @@
     //
     FWTDefaultAnnotationView *toReturn = [[[FWTDefaultAnnotationView alloc] init] autorelease];
     toReturn.contentSize = CGSizeMake(180.0f, 40.0f);
+//    toReturn.adjustPositionInSuperviewEnabled = NO;
     
     //
     toReturn.textLabel.textAlignment = UITextAlignmentCenter;
