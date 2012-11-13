@@ -125,7 +125,7 @@
 #pragma mark - Private
 - (void)cancel
 {
-    [self.fwPopoverController cancel];
+//    [self.fwPopoverController cancel];
     self.navigationItem.rightBarButtonItem = nil;
 }
 
@@ -146,7 +146,7 @@
         }
         else
         {
-            [self.fwPopoverController removeAnnotations:self.fwPopoverController.annotations];
+            [self.fwPopoverController removeAnnotations:self.fwPopoverController.model.annotations];
             self.navigationItem.rightBarButtonItem = nil;
         }
     }
@@ -155,7 +155,7 @@
         self.fwPopoverController.parentView = self.view;
                 
         FWTAnnotation *pd = [[StaticModel popoverAnnotations] objectAtIndex:sc.selectedSegmentIndex];
-        if ([self.fwPopoverController.annotations containsObject:pd])
+        if ([self.fwPopoverController.model.annotations containsObject:pd])
             [self.fwPopoverController removeAnnotation:pd];
         else
         {
@@ -182,6 +182,8 @@
     {
         self->_fwPopoverController = [[FWTAnnotationManager alloc] init];
         self->_fwPopoverController.delegate = self;
+        self->_fwPopoverController.annotationsContainerViewType = FWTAnnotationsContainerViewTypeRadial;
+//        self->_fwPopoverController.annotationsContainerView.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:.2f];
     }
     
     return self->_fwPopoverController;
@@ -202,7 +204,7 @@
     if (annotationView)
         [annotationManager removeAnnotation:annotation];
     else
-        [annotationManager removeAnnotations:annotationManager.annotations];
+        [annotationManager removeAnnotations:annotationManager.model.annotations];
 }
 
 @end

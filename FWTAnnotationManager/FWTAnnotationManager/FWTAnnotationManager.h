@@ -9,6 +9,12 @@
 #import <Foundation/Foundation.h>
 #import "FWTDefaultAnnotationView.h"
 #import "FWTAnnotation.h"
+#import "FWTAnnotationModel.h"
+
+typedef NS_ENUM(NSInteger, FWTAnnotationsContainerViewType) {
+    FWTAnnotationsContainerViewTypeDefault,
+    FWTAnnotationsContainerViewTypeRadial,
+};
 
 @class FWTAnnotationManager;
 @protocol FWTAnnotationManagerDelegate <NSObject>
@@ -22,8 +28,10 @@
 @interface FWTAnnotationManager : NSObject
 
 @property (nonatomic, retain) UIView *parentView;
-@property (nonatomic, readonly, copy) NSArray *annotations;
+@property (nonatomic, assign) FWTAnnotationsContainerViewType annotationsContainerViewType; //  configure the type before accessing any property
+@property (nonatomic, readonly, retain) UIView *annotationsContainerView;   //  plug with your own class or just customize the default one
 @property (nonatomic, assign) id<FWTAnnotationManagerDelegate> delegate;
+@property (nonatomic, readonly, retain) FWTAnnotationModel *model;
 
 - (void)addAnnotation:(FWTAnnotation *)annotation;
 - (void)addAnnotations:(NSArray *)annotations;
@@ -31,11 +39,7 @@
 - (void)removeAnnotation:(FWTAnnotation *)annotation;
 - (void)removeAnnotations:(NSArray *)annotations;
 
-- (FWTDefaultAnnotationView *)viewForAnnotation:(FWTAnnotation *)annotation;
-- (FWTAnnotation *)annotationForView:(FWTDefaultAnnotationView *)view;
-- (FWTDefaultAnnotationView *)viewAtPoint:(CGPoint)point;
-
-- (void)cancel;
+//- (void)cancel;
 
 - (BOOL)hasSuperview;
 

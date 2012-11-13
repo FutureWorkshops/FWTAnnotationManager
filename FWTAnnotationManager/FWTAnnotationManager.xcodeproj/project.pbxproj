@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A90CD557164D3887002EB0C0 /* FWTAnnotationModel.m in Sources */ = {isa = PBXBuildFile; fileRef = A90CD556164D3887002EB0C0 /* FWTAnnotationModel.m */; };
+		A90CD58F164D5B4A002EB0C0 /* FWTRadialAnnotationsContainerView.m in Sources */ = {isa = PBXBuildFile; fileRef = A90CD58E164D5B4A002EB0C0 /* FWTRadialAnnotationsContainerView.m */; };
+		A918A97C1650209600B126E4 /* FWTRadialMaskLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = A918A97B1650209600B126E4 /* FWTRadialMaskLayer.m */; };
+		A918A97F1650234A00B126E4 /* gradient_mask.png in CopyFiles */ = {isa = PBXBuildFile; fileRef = A918A97D1650214800B126E4 /* gradient_mask.png */; };
+		A918A9801650234A00B126E4 /* gradient_mask@2x.png in CopyFiles */ = {isa = PBXBuildFile; fileRef = A918A97E1650214800B126E4 /* gradient_mask@2x.png */; };
 		A93B0972163FF9C70030F227 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A93B0971163FF9C70030F227 /* QuartzCore.framework */; };
 		A93B0975163FF9CE0030F227 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A93B0974163FF9CD0030F227 /* UIKit.framework */; };
 		A93B0977163FF9D50030F227 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A93B0976163FF9D50030F227 /* CoreGraphics.framework */; };
@@ -22,14 +27,24 @@
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "include/${PRODUCT_NAME}";
-			dstSubfolderSpec = 16;
+			dstSubfolderSpec = 7;
 			files = (
+				A918A97F1650234A00B126E4 /* gradient_mask.png in CopyFiles */,
+				A918A9801650234A00B126E4 /* gradient_mask@2x.png in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		A90CD555164D3887002EB0C0 /* FWTAnnotationModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FWTAnnotationModel.h; sourceTree = "<group>"; };
+		A90CD556164D3887002EB0C0 /* FWTAnnotationModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FWTAnnotationModel.m; sourceTree = "<group>"; };
+		A90CD58D164D5B4A002EB0C0 /* FWTRadialAnnotationsContainerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FWTRadialAnnotationsContainerView.h; sourceTree = "<group>"; };
+		A90CD58E164D5B4A002EB0C0 /* FWTRadialAnnotationsContainerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FWTRadialAnnotationsContainerView.m; sourceTree = "<group>"; };
+		A918A97A1650209600B126E4 /* FWTRadialMaskLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FWTRadialMaskLayer.h; sourceTree = "<group>"; };
+		A918A97B1650209600B126E4 /* FWTRadialMaskLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FWTRadialMaskLayer.m; sourceTree = "<group>"; };
+		A918A97D1650214800B126E4 /* gradient_mask.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = gradient_mask.png; sourceTree = "<group>"; };
+		A918A97E1650214800B126E4 /* gradient_mask@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "gradient_mask@2x.png"; sourceTree = "<group>"; };
 		A93B0971163FF9C70030F227 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		A93B0974163FF9CD0030F227 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		A93B0976163FF9D50030F227 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -61,6 +76,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		A90CD553164D385E002EB0C0 /* Private */ = {
+			isa = PBXGroup;
+			children = (
+				A90CD555164D3887002EB0C0 /* FWTAnnotationModel.h */,
+				A90CD556164D3887002EB0C0 /* FWTAnnotationModel.m */,
+				A90CD58D164D5B4A002EB0C0 /* FWTRadialAnnotationsContainerView.h */,
+				A90CD58E164D5B4A002EB0C0 /* FWTRadialAnnotationsContainerView.m */,
+				A918A97A1650209600B126E4 /* FWTRadialMaskLayer.h */,
+				A918A97B1650209600B126E4 /* FWTRadialMaskLayer.m */,
+			);
+			name = Private;
+			sourceTree = "<group>";
+		};
 		E4C452C115DB9C6800DD1A0F = {
 			isa = PBXGroup;
 			children = (
@@ -99,6 +127,7 @@
 				E4C4530815DB9DDB00DD1A0F /* FWTDefaultAnnotationView.m */,
 				E4C4531015DB9DF400DD1A0F /* FWTAnnotationManager.h */,
 				E4C4531115DB9DF400DD1A0F /* FWTAnnotationManager.m */,
+				A90CD553164D385E002EB0C0 /* Private */,
 				E4C452D215DB9C6800DD1A0F /* Supporting Files */,
 			);
 			path = FWTAnnotationManager;
@@ -107,6 +136,8 @@
 		E4C452D215DB9C6800DD1A0F /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				A918A97D1650214800B126E4 /* gradient_mask.png */,
+				A918A97E1650214800B126E4 /* gradient_mask@2x.png */,
 				E4C452D315DB9C6800DD1A0F /* FWTAnnotationManager-Prefix.pch */,
 			);
 			name = "Supporting Files";
@@ -166,6 +197,9 @@
 				E4C4530D15DB9DDB00DD1A0F /* FWTDefaultAnnotationView.m in Sources */,
 				E4C4530E15DB9DDB00DD1A0F /* FWTAnnotation.m in Sources */,
 				E4C4531215DB9DF400DD1A0F /* FWTAnnotationManager.m in Sources */,
+				A90CD557164D3887002EB0C0 /* FWTAnnotationModel.m in Sources */,
+				A90CD58F164D5B4A002EB0C0 /* FWTRadialAnnotationsContainerView.m in Sources */,
+				A918A97C1650209600B126E4 /* FWTRadialMaskLayer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

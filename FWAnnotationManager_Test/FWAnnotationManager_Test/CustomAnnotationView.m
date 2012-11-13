@@ -66,14 +66,14 @@
     };
     
     self.animationHelper.presentAnimationsBlock = ^{
-        myself.frame = CGRectOffset(myself.frame, .0f, theSuperview.frame.size.height + 5.0f);
+        myself.frame = CGRectOffset(myself.frame, .0f, theSuperview.frame.size.height);// + 5.0f);
     };
     
-    self.animationHelper.presentCompletionBlock = ^(BOOL finished){
-        [UIView animateWithDuration:.1f animations:^{
-            myself.frame = CGRectOffset(myself.frame, .0f, -5.0f);
-        }];
-    };
+//    self.animationHelper.presentCompletionBlock = ^(BOOL finished){
+//        [UIView animateWithDuration:.1f animations:^{
+//            myself.frame = CGRectOffset(myself.frame, .0f, -5.0f);
+//        }];
+//    };
     
     self.animationHelper.dismissAnimationsBlock = ^{
         myself.transform = ((arc4random()%1000) > 500) ? CGAffineTransformMakeRotation(M_PI*.5f):CGAffineTransformMakeRotation(-M_PI*.5f);

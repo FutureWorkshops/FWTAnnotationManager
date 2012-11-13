@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A918A983165023C300B126E4 /* gradient_mask.png in Resources */ = {isa = PBXBuildFile; fileRef = A918A981165023C300B126E4 /* gradient_mask.png */; };
+		A918A984165023C300B126E4 /* gradient_mask@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A918A982165023C300B126E4 /* gradient_mask@2x.png */; };
 		A93B0905163EFABF0030F227 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A93B0902163EFABF0030F227 /* Default-568h@2x.png */; };
 		A93B0906163EFABF0030F227 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = A93B0903163EFABF0030F227 /* Default.png */; };
 		A93B0907163EFABF0030F227 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A93B0904163EFABF0030F227 /* Default@2x.png */; };
@@ -26,6 +28,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		A918A981165023C300B126E4 /* gradient_mask.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = gradient_mask.png; sourceTree = "<group>"; };
+		A918A982165023C300B126E4 /* gradient_mask@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "gradient_mask@2x.png"; sourceTree = "<group>"; };
 		A93B0902163EFABF0030F227 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		A93B0903163EFABF0030F227 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
 		A93B0904163EFABF0030F227 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
@@ -124,6 +128,8 @@
 		E4C452F315DB9C8C00DD1A0F /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				A918A981165023C300B126E4 /* gradient_mask.png */,
+				A918A982165023C300B126E4 /* gradient_mask@2x.png */,
 				A93B0902163EFABF0030F227 /* Default-568h@2x.png */,
 				A93B0903163EFABF0030F227 /* Default.png */,
 				A93B0904163EFABF0030F227 /* Default@2x.png */,
@@ -203,6 +209,8 @@
 				A93B0905163EFABF0030F227 /* Default-568h@2x.png in Resources */,
 				A93B0906163EFABF0030F227 /* Default.png in Resources */,
 				A93B0907163EFABF0030F227 /* Default@2x.png in Resources */,
+				A918A983165023C300B126E4 /* gradient_mask.png in Resources */,
+				A918A984165023C300B126E4 /* gradient_mask@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
