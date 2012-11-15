@@ -6,17 +6,17 @@
 //  Copyright (c) 2012 Futureworkshops. All rights reserved.
 //
 
-#import "FWTDefaultAnnotationView.h"
+#import "FWTAnnotationView.h"
 
 const CGFloat FWTDefaultAnnotationViewSpaceBetweenImageViewAndTextLabel = 5.0f;
 
-@interface FWTDefaultAnnotationView ()
+@interface FWTAnnotationView ()
 @property (nonatomic, readwrite, retain) UILabel *textLabel;
 @property (nonatomic, readwrite, retain) UIImageView *imageView;
 @property (nonatomic, assign) CGFloat spaceBetweenImageViewAndTextLabel;
 @end
 
-@implementation FWTDefaultAnnotationView
+@implementation FWTAnnotationView
 @synthesize textLabel = _textLabel;
 @synthesize imageView = _imageView;
 

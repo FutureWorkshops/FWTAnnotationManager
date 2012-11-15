@@ -24,7 +24,7 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
-    self.window.backgroundColor = [UIColor colorWithWhite:.9f alpha:1.0f]; // scrollViewTexturedBackgroundColor];//
+    self.window.backgroundColor = [UIColor scrollViewTexturedBackgroundColor];//
     
     //
     UIViewController *vc = [[[SamplePickerViewController alloc] init] autorelease];

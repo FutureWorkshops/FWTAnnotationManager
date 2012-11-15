@@ -8,7 +8,7 @@
 
 #import "FWTAnnotationModel.h"
 #import "FWTAnnotation.h"
-#import "FWTDefaultAnnotationView.h"
+#import "FWTAnnotationView.h"
 
 @interface FWTAnnotationModel ()
 @property (nonatomic, retain) NSMutableArray *mutableAnnotations;
@@ -45,7 +45,7 @@
     return [[self.mutableAnnotations copy] autorelease];
 }
 
-- (void)addAnnotation:(FWTAnnotation *)annotation withView:(FWTDefaultAnnotationView *)annotationView
+- (void)addAnnotation:(FWTAnnotation *)annotation withView:(FWTAnnotationView *)annotationView
 {
     [self.mutableAnnotations addObject:annotation];
     [self.annotationsDictionary setObject:annotationView forKey:annotation.guid];
@@ -57,16 +57,16 @@
     [self.annotationsDictionary removeObjectForKey:annotation.guid];
 }
 
-- (FWTDefaultAnnotationView *)viewForAnnotation:(FWTAnnotation *)annotation
+- (FWTAnnotationView *)viewForAnnotation:(FWTAnnotation *)annotation
 {
     return [self.annotationsDictionary objectForKey:annotation.guid];
 }
 
-- (FWTAnnotation *)annotationForView:(FWTDefaultAnnotationView *)view
+- (FWTAnnotation *)annotationForView:(FWTAnnotationView *)view
 {
     __block FWTAnnotation *toReturn = nil;
     [self.mutableAnnotations enumerateObjectsUsingBlock:^(FWTAnnotation *annotation, NSUInteger idx, BOOL *stop) {
-        FWTDefaultAnnotationView *_popoverView = [self viewForAnnotation:annotation];
+        FWTAnnotationView *_popoverView = [self viewForAnnotation:annotation];
         if (_popoverView == view)
         {
             toReturn = annotation;
@@ -77,10 +77,10 @@
     return toReturn;
 }
 
-- (FWTDefaultAnnotationView *)viewAtPoint:(CGPoint)point
+- (FWTAnnotationView *)viewAtPoint:(CGPoint)point
 {
-    __block FWTDefaultAnnotationView *toReturn = nil;
-    [self.annotationsDictionary enumerateKeysAndObjectsUsingBlock:^(id key, FWTDefaultAnnotationView *obj, BOOL *stop) {
+    __block FWTAnnotationView *toReturn = nil;
+    [self.annotationsDictionary enumerateKeysAndObjectsUsingBlock:^(id key, FWTAnnotationView *obj, BOOL *stop) {
         if (CGRectContainsPoint(obj.frame, point))
         {
             toReturn = obj;

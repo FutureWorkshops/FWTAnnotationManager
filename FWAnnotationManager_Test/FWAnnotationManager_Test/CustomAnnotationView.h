@@ -6,9 +6,9 @@
 //  Copyright (c) 2012 Marco Meschini. All rights reserved.
 //
 
-#import "FWTDefaultAnnotationView.h"
+#import "FWTAnnotationView.h"
 
-@interface CustomAnnotationView : FWTDefaultAnnotationView
+@interface CustomAnnotationView : FWTAnnotationView
 
 - (void)setupAnimationHelperWithSuperview:(UIView *)theSuperview;
 

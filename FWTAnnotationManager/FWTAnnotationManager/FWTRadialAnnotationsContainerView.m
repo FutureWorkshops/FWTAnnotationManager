@@ -9,11 +9,11 @@
 #import <QuartzCore/QuartzCore.h>
 
 #import "FWTRadialAnnotationsContainerView.h"
-#import "FWTDefaultAnnotationView.h"
+#import "FWTAnnotationView.h"
 #import "FWTRadialMaskLayer.h"
 
 @interface FWTRadialAnnotation : NSObject
-@property (nonatomic, retain) FWTDefaultAnnotationView *view;
+@property (nonatomic, retain) FWTAnnotationView *view;
 @property (nonatomic, retain) FWTRadialMaskLayer *layer;
 @property (nonatomic, assign) CGRect frame;
 @property (nonatomic, assign) BOOL needsRenderInContext;
@@ -31,8 +31,11 @@
 NSString *const keyPathFrame = @"frame";
 
 @interface FWTRadialAnnotationsContainerView ()
-@property (nonatomic, retain) UIColor *realBackgroundColor;
+@property (nonatomic, retain) UIImage *radialMaskImage;
+@property (nonatomic, retain) UIImage *accessoryImage;
 @property (nonatomic, assign) CGFloat radialGradientRadius;
+
+@property (nonatomic, retain) UIColor *realBackgroundColor;
 @property (nonatomic, retain) NSMutableDictionary *model;
 @end
 
@@ -42,6 +45,8 @@ NSString *const keyPathFrame = @"frame";
 {
     self.model = nil;
     self.realBackgroundColor = nil;
+    self.accessoryImage = nil;
+    self.radialMaskImage = nil;
     [super dealloc];
 }
 
@@ -50,12 +55,12 @@ NSString *const keyPathFrame = @"frame";
     if ((self = [super initWithFrame:frame]))
     {
         self.contentMode = UIViewContentModeRedraw;
+        
+        // default settings
         self.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:.65f];
+        self.radialMaskImage = [UIImage imageNamed:@"gradient_mask.png"];
+        self.accessoryImage = [[self class] _defaultAccessoryImage];
         self.radialGradientRadius = 100.0f;
-        
-//        self.layer.borderColor = [UIColor redColor].CGColor;
-//        self.layer.borderWidth = 2.0f;
-        
     }
     return self;
 }
@@ -117,20 +122,21 @@ NSString *const keyPathFrame = @"frame";
 }
 
 #pragma mark - Public
-- (void)addAnnotationView:(FWTDefaultAnnotationView *)annotationView
+- (void)addAnnotationView:(FWTAnnotationView *)annotationView
 {
     CGFloat presentDelay = annotationView.animationHelper.presentDelay;
-    if (presentDelay > .25) presentDelay -= .25f;
+    if (presentDelay > .25) presentDelay -= .25f;   //  our animations will take 1/4 of second
     [self performSelector:@selector(_addAnnotationView:) withObject:annotationView afterDelay:presentDelay];
 }
 
-- (void)removeAnnotationView:(FWTDefaultAnnotationView *)annotationView
+- (void)removeAnnotationView:(FWTAnnotationView *)annotationView
 {
     // remove from kvo
     [annotationView removeObserver:self forKeyPath:keyPathFrame];
     
     // update the entry
-    FWTRadialAnnotation *entry = [self.model objectForKey:[self _keyForAnnotationView:annotationView]];
+    NSString *annotationKey = [self _keyForAnnotationView:annotationView];
+    FWTRadialAnnotation *entry = [self.model objectForKey:annotationKey];
     entry.needsRenderInContext = NO;
     
     // add to view hierarchy (be sure the frame is right)
@@ -146,9 +152,9 @@ NSString *const keyPathFrame = @"frame";
     // animate
     __block typeof(self) myself = self;
     void(^completionBlock)() = [[^() {
-        [myself.model removeObjectForKey:[myself _keyForAnnotationView:entry.view]];    // remove entry
-        [entry.layer removeFromSuperlayer];                                             // remove layer from hierarchy
-        [self setNeedsDisplay];                                                         // refresh
+        [myself.model removeObjectForKey:annotationKey];    // remove entry
+        [entry.layer removeFromSuperlayer];                 // remove layer from hierarchy
+        [self setNeedsDisplay];                             // refresh
     } copy] autorelease];
     [entry.layer performSelector:@selector(dismissAnimation:) withObject:completionBlock afterDelay:.0f];
 }
@@ -161,15 +167,15 @@ NSString *const keyPathFrame = @"frame";
 }
 
 #pragma mark - Private
-- (void)_addAnnotationView:(FWTDefaultAnnotationView *)annotationView
+- (void)_addAnnotationView:(FWTAnnotationView *)annotationView
 {
     CGRect rectForAnnotation = [self _rectForAnnotationView:annotationView];
     
     // create layer
     FWTRadialMaskLayer *theLayer = [FWTRadialMaskLayer layer];
     theLayer.fillColor = self.realBackgroundColor.CGColor;
-    theLayer.maskImageRef = [UIImage imageNamed:@"gradient_mask.png"].CGImage;
-    theLayer.accessoryImageRef = [[self class] _defaultAccessoryImage];
+    theLayer.maskImageRef = self.radialMaskImage.CGImage;
+    theLayer.accessoryImageRef = self.accessoryImage.CGImage;
     theLayer.frame = rectForAnnotation;
 
     // add to view hierarchy
@@ -198,7 +204,7 @@ NSString *const keyPathFrame = @"frame";
     [entry.layer performSelector:@selector(presentAnimation:) withObject:completionBlock afterDelay:.0f];
 }
 
-- (CGRect)_rectForAnnotationView:(FWTDefaultAnnotationView *)annotationView
+- (CGRect)_rectForAnnotationView:(FWTAnnotationView *)annotationView
 {
     CGRect arrowRect = [annotationView arrowRect];
     CGRect radialRect = CGRectMake(.0f, .0f, self.radialGradientRadius*2, self.radialGradientRadius*2);
@@ -229,7 +235,7 @@ NSString *const keyPathFrame = @"frame";
     return radialRect;
 }
 
-- (NSString *)_keyForAnnotationView:(FWTDefaultAnnotationView *)annotationView
+- (NSString *)_keyForAnnotationView:(FWTAnnotationView *)annotationView
 {
     return [NSString stringWithFormat:@"%u", [annotationView hash]];
 }
@@ -246,7 +252,7 @@ NSString *const keyPathFrame = @"frame";
 }
 
 #pragma mark -
-+ (CGImageRef)_defaultAccessoryImage
++ (UIImage *)_defaultAccessoryImage
 {
     static UIImage *_accessoryImage = nil;
     static dispatch_once_t onceToken;
@@ -272,7 +278,7 @@ NSString *const keyPathFrame = @"frame";
         _accessoryImage = [image retain];
     });
     
-    return _accessoryImage.CGImage;
+    return _accessoryImage;
 }
 
 @end

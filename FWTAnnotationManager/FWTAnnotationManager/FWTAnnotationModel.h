@@ -8,17 +8,17 @@
 
 #import <UIKit/UIKit.h>
 
-@class FWTAnnotation, FWTDefaultAnnotationView;
+@class FWTAnnotation, FWTAnnotationView;
 @interface FWTAnnotationModel : NSObject
 @property (nonatomic, readonly, copy) NSArray *annotations;
 @property (nonatomic, readonly) NSInteger numberOfAnnotations;
 
-- (void)addAnnotation:(FWTAnnotation *)annotation withView:(FWTDefaultAnnotationView *)annotationView;
+- (void)addAnnotation:(FWTAnnotation *)annotation withView:(FWTAnnotationView *)annotationView;
 - (void)removeAnnotation:(FWTAnnotation *)annotation;
 
-- (FWTDefaultAnnotationView *)viewForAnnotation:(FWTAnnotation *)annotation;
-- (FWTAnnotation *)annotationForView:(FWTDefaultAnnotationView *)view;
-- (FWTDefaultAnnotationView *)viewAtPoint:(CGPoint)point;
+- (FWTAnnotationView *)viewForAnnotation:(FWTAnnotation *)annotation;
+- (FWTAnnotation *)annotationForView:(FWTAnnotationView *)view;
+- (FWTAnnotationView *)viewAtPoint:(CGPoint)point;
 
 - (void)enumerateAnnotationsUsingBlock:(void (^)(FWTAnnotation *annotation, NSUInteger idx, BOOL *stop))block;
 

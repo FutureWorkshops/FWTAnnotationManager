@@ -39,7 +39,7 @@
         self.textLabel.textAlignment = UITextAlignmentCenter;
         self.textLabel.backgroundColor = [UIColor clearColor];
         self.textLabel.numberOfLines = 0;
-        self.textLabel.font = [UIFont systemFontOfSize:12.0f];
+        self.textLabel.font = [UIFont boldSystemFontOfSize:12.0f];
         self.textLabel.textColor = [UIColor colorWithWhite:.91f alpha:1.0f];
         self.textLabel.shadowOffset = CGSizeMake(.0f, -.7f);
         self.textLabel.shadowColor = [[UIColor blackColor] colorWithAlphaComponent:.5f];
@@ -71,53 +71,6 @@
     
     return self;
 }
-
-//- (void)layoutSubviews
-//{
-//    [super layoutSubviews];
-//
-//    if (!self.ringImageView.superview)
-//        [self insertSubview:self.ringImageView belowSubview:self.backgroundImageView];
-//    
-//    
-//    CGRect arrowRect = [self arrowRect];
-//    arrowRect = [self convertRect:arrowRect fromView:self.superview];
-//    
-//    if (self.arrow.direction & FWTPopoverArrowDirectionUp)
-//    {
-//        arrowRect = CGRectOffset(arrowRect, self.arrow.cornerOffset, -self.arrow.size.height*.5f);
-//    }
-//    else if (self.arrow.direction & FWTPopoverArrowDirectionDown)
-//    {
-//        arrowRect = CGRectOffset(arrowRect, self.arrow.cornerOffset, self.arrow.size.height*.5f);
-//    }
-//    else if (self.arrow.direction & FWTPopoverArrowDirectionLeft)
-//    {
-//        arrowRect = CGRectOffset(arrowRect, -self.arrow.size.width*.5f, self.arrow.cornerOffset);
-//    }
-//    else if (self.arrow.direction & FWTPopoverArrowDirectionRight)
-//    {
-//        arrowRect = CGRectOffset(arrowRect, self.arrow.size.width*.5f, self.arrow.cornerOffset);
-//    }
-//    else if (self.arrow.direction & FWTPopoverArrowDirectionNone)
-//    {
-//        arrowRect = CGRectZero;
-//    }
-//
-//    CGRect ringRect = arrowRect;
-//    ringRect.size = CGSizeMake(50.0f, 50.0f);
-//    ringRect.origin.x -= (ringRect.size.width - arrowRect.size.width)*.5f;
-//    ringRect.origin.y -= (ringRect.size.height - arrowRect.size.height)*.5f;
-////    self.ringImageView.layer.cornerRadius = ringRect.size.width*.5f;
-//    
-//    self.ringImageView.frame = ringRect;
-//}
-//
-//- (UIImageView *)ringImageView
-//{
-//    if (!self->_ringImageView) self->_ringImageView = [[UIImageView alloc] initWithImage:[[self class] ringImage]];    
-//    return self->_ringImageView;
-//}
 
 - (void)setupAnimationHelperWithSuperview:(UIView *)theSuperview
 {

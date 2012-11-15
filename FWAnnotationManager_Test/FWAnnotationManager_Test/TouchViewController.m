@@ -7,7 +7,7 @@
 //
 
 #import "TouchViewController.h"
-#import "FWTDefaultAnnotationView.h"
+#import "FWTAnnotationView.h"
 #import "StaticModel.h"
 
 @interface TouchViewController ()
@@ -95,7 +95,7 @@
     self.touchPointView.center = point;
     
     //
-    FWTDefaultAnnotationView *popoverView = (FWTDefaultAnnotationView *)[self.view viewWithTag:0xbeef];
+    FWTAnnotationView *popoverView = (FWTAnnotationView *)[self.view viewWithTag:0xbeef];
     if (!popoverView)
     {
         popoverView = [[self class] _defaultAnnotationView];
@@ -119,10 +119,10 @@
     [self.view bringSubviewToFront:_touchPointView];
 }
 
-+ (FWTDefaultAnnotationView *)_defaultAnnotationView
++ (FWTAnnotationView *)_defaultAnnotationView
 {
     //
-    FWTDefaultAnnotationView *toReturn = [[[FWTDefaultAnnotationView alloc] init] autorelease];
+    FWTAnnotationView *toReturn = [[[FWTAnnotationView alloc] init] autorelease];
     toReturn.contentSize = CGSizeMake(180.0f, 40.0f);
 //    toReturn.adjustPositionInSuperviewEnabled = NO;
     

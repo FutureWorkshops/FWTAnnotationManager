@@ -7,7 +7,7 @@
 //
 
 #import "SampleViewController.h"
-#import "FWTDefaultAnnotationView.h"
+#import "FWTAnnotationView.h"
 #import "StaticModel.h"
 #import "CustomAnnotationView.h"
 #import <CoreImage/CoreImage.h>
@@ -181,7 +181,7 @@
 }
 
 #pragma mark - Private
-+ (FWTDefaultAnnotationView *)_defaultAnnotationView
++ (FWTAnnotationView *)_defaultAnnotationView
 {
     CustomAnnotationView *_popoverView = [[[CustomAnnotationView alloc] init] autorelease];
 
@@ -203,7 +203,7 @@
 }
 
 #pragma mark - FWTAnnotationManagerDelegate
-- (FWTDefaultAnnotationView *)annotationManager:(FWTAnnotationManager *)annotationManager viewForAnnotation:(FWTAnnotation *)annotation
+- (FWTAnnotationView *)annotationManager:(FWTAnnotationManager *)annotationManager viewForAnnotation:(FWTAnnotation *)annotation
 {
     CustomAnnotationView *_popoverView = [[[CustomAnnotationView alloc] init] autorelease];
     [_popoverView setupAnimationHelperWithSuperview:self.view];
@@ -211,7 +211,7 @@
 }
 
 - (void)annotationManager:(FWTAnnotationManager *)annotationManager
-     didTapAnnotationView:(FWTDefaultAnnotationView *)annotationView
+     didTapAnnotationView:(FWTAnnotationView *)annotationView
                annotation:(FWTAnnotation *)annotation;
 {
     if (annotationView)

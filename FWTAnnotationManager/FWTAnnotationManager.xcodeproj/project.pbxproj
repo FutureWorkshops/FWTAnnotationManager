@@ -17,7 +17,7 @@
 		A93B0977163FF9D50030F227 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A93B0976163FF9D50030F227 /* CoreGraphics.framework */; };
 		A9AF1DBA1642A68D0006F23C /* libFWTPopoverView.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A9AF1DB91642A68D0006F23C /* libFWTPopoverView.a */; };
 		E4C452D015DB9C6800DD1A0F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4C452CF15DB9C6800DD1A0F /* Foundation.framework */; };
-		E4C4530D15DB9DDB00DD1A0F /* FWTDefaultAnnotationView.m in Sources */ = {isa = PBXBuildFile; fileRef = E4C4530815DB9DDB00DD1A0F /* FWTDefaultAnnotationView.m */; };
+		E4C4530D15DB9DDB00DD1A0F /* FWTAnnotationView.m in Sources */ = {isa = PBXBuildFile; fileRef = E4C4530815DB9DDB00DD1A0F /* FWTAnnotationView.m */; };
 		E4C4530E15DB9DDB00DD1A0F /* FWTAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = E4C4530A15DB9DDB00DD1A0F /* FWTAnnotation.m */; };
 		E4C4531215DB9DF400DD1A0F /* FWTAnnotationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E4C4531115DB9DF400DD1A0F /* FWTAnnotationManager.m */; };
 /* End PBXBuildFile section */
@@ -52,8 +52,8 @@
 		E4C452CC15DB9C6800DD1A0F /* libFWTAnnotationManager.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libFWTAnnotationManager.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		E4C452CF15DB9C6800DD1A0F /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		E4C452D315DB9C6800DD1A0F /* FWTAnnotationManager-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FWTAnnotationManager-Prefix.pch"; sourceTree = "<group>"; };
-		E4C4530715DB9DDB00DD1A0F /* FWTDefaultAnnotationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FWTDefaultAnnotationView.h; sourceTree = "<group>"; };
-		E4C4530815DB9DDB00DD1A0F /* FWTDefaultAnnotationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FWTDefaultAnnotationView.m; sourceTree = "<group>"; };
+		E4C4530715DB9DDB00DD1A0F /* FWTAnnotationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FWTAnnotationView.h; sourceTree = "<group>"; };
+		E4C4530815DB9DDB00DD1A0F /* FWTAnnotationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FWTAnnotationView.m; sourceTree = "<group>"; };
 		E4C4530915DB9DDB00DD1A0F /* FWTAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FWTAnnotation.h; sourceTree = "<group>"; };
 		E4C4530A15DB9DDB00DD1A0F /* FWTAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FWTAnnotation.m; sourceTree = "<group>"; };
 		E4C4531015DB9DF400DD1A0F /* FWTAnnotationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FWTAnnotationManager.h; sourceTree = "<group>"; };
@@ -123,8 +123,8 @@
 			children = (
 				E4C4530915DB9DDB00DD1A0F /* FWTAnnotation.h */,
 				E4C4530A15DB9DDB00DD1A0F /* FWTAnnotation.m */,
-				E4C4530715DB9DDB00DD1A0F /* FWTDefaultAnnotationView.h */,
-				E4C4530815DB9DDB00DD1A0F /* FWTDefaultAnnotationView.m */,
+				E4C4530715DB9DDB00DD1A0F /* FWTAnnotationView.h */,
+				E4C4530815DB9DDB00DD1A0F /* FWTAnnotationView.m */,
 				E4C4531015DB9DF400DD1A0F /* FWTAnnotationManager.h */,
 				E4C4531115DB9DF400DD1A0F /* FWTAnnotationManager.m */,
 				A90CD553164D385E002EB0C0 /* Private */,
@@ -194,7 +194,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E4C4530D15DB9DDB00DD1A0F /* FWTDefaultAnnotationView.m in Sources */,
+				E4C4530D15DB9DDB00DD1A0F /* FWTAnnotationView.m in Sources */,
 				E4C4530E15DB9DDB00DD1A0F /* FWTAnnotation.m in Sources */,
 				E4C4531215DB9DF400DD1A0F /* FWTAnnotationManager.m in Sources */,
 				A90CD557164D3887002EB0C0 /* FWTAnnotationModel.m in Sources */,

@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "FWTDefaultAnnotationView.h"
+#import "FWTAnnotationView.h"
 #import "FWTAnnotation.h"
 #import "FWTAnnotationModel.h"
 
@@ -20,8 +20,8 @@ typedef NS_ENUM(NSInteger, FWTAnnotationsContainerViewType) {
 @protocol FWTAnnotationManagerDelegate <NSObject>
 
 @optional
-- (FWTDefaultAnnotationView *)annotationManager:(FWTAnnotationManager *)annotationManager viewForAnnotation:(FWTAnnotation *)annotation;
-- (void)annotationManager:(FWTAnnotationManager *)annotationManager didTapAnnotationView:(FWTDefaultAnnotationView *)annotationView annotation:(FWTAnnotation *)annotation;
+- (FWTAnnotationView *)annotationManager:(FWTAnnotationManager *)annotationManager viewForAnnotation:(FWTAnnotation *)annotation;
+- (void)annotationManager:(FWTAnnotationManager *)annotationManager didTapAnnotationView:(FWTAnnotationView *)annotationView annotation:(FWTAnnotation *)annotation;
 
 @end
 

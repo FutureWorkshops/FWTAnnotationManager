@@ -98,7 +98,7 @@
     if (_delegateHas.didTapAnnotationView)
     {
         CGPoint point = [gesture locationInView:gesture.view];
-        FWTDefaultAnnotationView *_popoverView = [self.model viewAtPoint:point];
+        FWTAnnotationView *_popoverView = [self.model viewAtPoint:point];
         FWTAnnotation *_annotation = [self.model annotationForView:_popoverView];
         [self.delegate annotationManager:self didTapAnnotationView:_popoverView annotation:_annotation];
     }
@@ -142,7 +142,7 @@
 {
     [UIView animateWithDuration:.2f animations:^{
         [self.model enumerateAnnotationsUsingBlock:^(FWTAnnotation *annotation, NSUInteger idx, BOOL *stop) {
-            FWTDefaultAnnotationView *_popoverView = [self.model viewForAnnotation:annotation];
+            FWTAnnotationView *_popoverView = [self.model viewForAnnotation:annotation];
             [_popoverView adjustPositionToRect:[self _presentingRectForAnnotation:annotation]];
         }];
     }];
@@ -157,13 +157,13 @@
     return rect;
 }
 
-- (FWTDefaultAnnotationView *)_createViewForAnnotation:(FWTAnnotation *)annotation
+- (FWTAnnotationView *)_createViewForAnnotation:(FWTAnnotation *)annotation
 {
-    FWTDefaultAnnotationView *_popoverView = nil;
+    FWTAnnotationView *_popoverView = nil;
     if (_delegateHas.viewForAnnotation)
         _popoverView = [self.delegate annotationManager:self viewForAnnotation:annotation];
     else
-        _popoverView = [[[FWTDefaultAnnotationView alloc] init] autorelease];
+        _popoverView = [[[FWTAnnotationView alloc] init] autorelease];
     
     _popoverView.delegate = self;
     return _popoverView;
@@ -204,7 +204,7 @@
     [self _registerToStatusBarOrientationNotifications];
     
     //  get an annotationView
-    FWTDefaultAnnotationView *annotationView = [self _createViewForAnnotation:annotation];
+    FWTAnnotationView *annotationView = [self _createViewForAnnotation:annotation];
     
     //  configure
     if (annotation.text) annotationView.textLabel.text = annotation.text;
@@ -214,11 +214,12 @@
     //  update model
     [self.model addAnnotation:annotation withView:annotationView];
     
-    //
+    //  update animation counter
     self.popoverViewDidPresentCounter++;
     
     //
-    [self.annotationsContainerView addAnnotationView:annotationView];
+    if (self.annotationsContainerViewType == FWTAnnotationsContainerViewTypeRadial)
+        [(FWTRadialAnnotationsContainerView *)self.annotationsContainerView addAnnotationView:annotationView];
     
     //  ready to present
     CGRect rect = [self _presentingRectForAnnotation:annotation];
@@ -234,10 +235,12 @@
 
 - (void)removeAnnotation:(FWTAnnotation *)annotation
 {
-    FWTDefaultAnnotationView *_popoverView = [self.model viewForAnnotation:annotation];
+    FWTAnnotationView *_popoverView = [self.model viewForAnnotation:annotation];
     if (_popoverView)
     {
-        [self.annotationsContainerView removeAnnotationView:_popoverView];
+        if (self.annotationsContainerViewType == FWTAnnotationsContainerViewTypeRadial)
+            [(FWTRadialAnnotationsContainerView *)self.annotationsContainerView removeAnnotationView:_popoverView];
+        
         [_popoverView dismissPopoverAnimated:annotation.animated];
     }
 }
@@ -249,16 +252,6 @@
         [self removeAnnotation:obj];
     }];
 }
-
-//- (void)cancel
-//{
-//    [NSObject cancelPreviousPerformRequestsWithTarget:self];
-//    [self.model enumerateAnnotationsUsingBlock:^(FWTAnnotation *annotation, NSUInteger idx, BOOL *stop) {
-//        FWTDefaultAnnotationView *_popoverView = [self.model viewForAnnotation:annotation];
-//        [_popoverView removeFromSuperview];
-//    }];
-//    [self.annotationsContainerView removeFromSuperview];
-//}
 
 - (BOOL)hasSuperview
 {
@@ -277,7 +270,7 @@
 
 - (void)popoverViewDidDismiss:(FWTPopoverView *)annotationView
 {
-    FWTAnnotation *annotation = [self.model annotationForView:(FWTDefaultAnnotationView *)annotationView];
+    FWTAnnotation *annotation = [self.model annotationForView:(FWTAnnotationView *)annotationView];
     [self.model removeAnnotation:annotation];
 
     //

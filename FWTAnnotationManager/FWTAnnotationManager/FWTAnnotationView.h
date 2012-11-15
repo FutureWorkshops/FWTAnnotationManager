@@ -9,7 +9,7 @@
 #import "FWTPopoverView.h"
 #import "FWTAnnotation.h"
 
-@interface FWTDefaultAnnotationView : FWTPopoverView
+@interface FWTAnnotationView : FWTPopoverView
 
 @property (nonatomic, assign) UIEdgeInsets contentViewEdgeInsets;
 @property (nonatomic, readonly, retain) UILabel *textLabel;
