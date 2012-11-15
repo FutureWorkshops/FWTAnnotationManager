@@ -93,15 +93,15 @@
     dispatch_once(&onceToken, ^{
         //
         FWTAnnotation *pd0 = [[[FWTAnnotation alloc] init] autorelease];
-        pd0.presentingRectPortrait = CGRectMake(200, 400, 1, 1);
-        pd0.presentingRectLandscape = CGRectMake(300, 220, 1, 1);
+        pd0.presentingRectPortrait = CGRectMake(200, 420, 1, 1);
+        pd0.presentingRectLandscape = CGRectMake(260, 220, 1, 1);
         pd0.arrowDirection = FWTPopoverArrowDirectionDown;
         pd0.animated = YES;
         pd0.text = @"No, Donny, these men are nihilists, there's nothing to be afraid of.";
         
         //
         FWTAnnotation *pd1 = [[[FWTAnnotation alloc] init] autorelease];
-        pd1.presentingRectPortrait = CGRectMake(30, 230, 1, 1);
+        pd1.presentingRectPortrait = CGRectMake(30, 200, 1, 1);
         pd1.presentingRectLandscape = CGRectMake(-30, 80, 1, 1);
         pd1.arrowDirection = FWTPopoverArrowDirectionLeft;
         pd1.animated = YES;
@@ -110,7 +110,7 @@
         
         //
         FWTAnnotation *pd2 = [[[FWTAnnotation alloc] init] autorelease];
-        pd2.presentingRectPortrait = CGRectMake(310, 60, 1, 1);
+        pd2.presentingRectPortrait = CGRectMake(300, 47, 1, 1);
         pd2.presentingRectLandscape = CGRectMake(480, 40, 1, 1);
         pd2.arrowDirection = FWTPopoverArrowDirectionRight;
         pd2.animated = YES;

@@ -10,10 +10,12 @@
 #import <UIKit/UIKit.h>
 
 @interface FWTRadialMaskLayer : CALayer
-@property (nonatomic, retain) UIColor *fillColor;
-@property (nonatomic, assign) CGFloat value;
-@property (nonatomic, retain) UIImage *maskImage;
 
-- (void)setValue:(CGFloat)value animated:(BOOL)animated;
+@property (nonatomic, readwrite) CGColorRef fillColor;
+@property (nonatomic, readwrite) CGImageRef maskImageRef;
+@property (nonatomic, readwrite) CGImageRef accessoryImageRef;
+
+- (void)presentAnimation:(void (^)(void))completionBlock;
+- (void)dismissAnimation:(void (^)(void))completionBlock;
 
 @end

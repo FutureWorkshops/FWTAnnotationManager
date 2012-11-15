@@ -10,6 +10,7 @@
 #import "FWTDefaultAnnotationView.h"
 #import "StaticModel.h"
 #import "CustomAnnotationView.h"
+#import <CoreImage/CoreImage.h>
 
 @interface SampleViewController ()
 {
@@ -45,9 +46,21 @@
     return self;
 }
 
+- (void)loadView
+{
+    [super loadView];
+    
+//    self.view.backgroundColor = [UIColor scrollViewTexturedBackgroundColor];
+    
+    UIImageView *iv = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"photo.png"]] autorelease];
+    [self.view addSubview:iv];
+}
+
 - (void)viewDidLayoutSubviews
 {
     [super viewDidLayoutSubviews];
+    
+    return;
     
     [self.debugArray makeObjectsPerformSelector:@selector(removeFromSuperlayer)];
     self.debugArray = nil;
@@ -183,7 +196,7 @@
         self->_fwPopoverController = [[FWTAnnotationManager alloc] init];
         self->_fwPopoverController.delegate = self;
         self->_fwPopoverController.annotationsContainerViewType = FWTAnnotationsContainerViewTypeRadial;
-//        self->_fwPopoverController.annotationsContainerView.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:.2f];
+        self->_fwPopoverController.annotationsContainerView.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:.7f];
     }
     
     return self->_fwPopoverController;

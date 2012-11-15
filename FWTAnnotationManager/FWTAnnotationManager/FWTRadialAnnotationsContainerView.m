@@ -9,38 +9,39 @@
 #import <QuartzCore/QuartzCore.h>
 
 #import "FWTRadialAnnotationsContainerView.h"
-#import "FWTPopoverView.h"
+#import "FWTDefaultAnnotationView.h"
 #import "FWTRadialMaskLayer.h"
 
-static char overlayHelperKey;
-
-@interface FWTRadialAnnotationEntry : NSObject
-@property (nonatomic, retain) UIView *view;
-@property (nonatomic, retain) CALayer *accessoryLayer;
-@property (nonatomic, retain) UIView *accessoryView;
+@interface FWTRadialAnnotation : NSObject
+@property (nonatomic, retain) FWTDefaultAnnotationView *view;
+@property (nonatomic, retain) FWTRadialMaskLayer *layer;
+@property (nonatomic, assign) CGRect frame;
+@property (nonatomic, assign) BOOL needsRenderInContext;
 @end
 
-@implementation FWTRadialAnnotationEntry
-
+@implementation FWTRadialAnnotation
 - (void)dealloc
 {
     self.view = nil;
-    self.accessoryLayer = nil;
-    self.accessoryView = nil;
+    self.layer = nil;
     [super dealloc];
 }
-
 @end
 
+NSString *const keyPathFrame = @"frame";
+
 @interface FWTRadialAnnotationsContainerView ()
-@property (nonatomic, retain) NSMutableArray *targetSubviews;
+@property (nonatomic, retain) UIColor *realBackgroundColor;
+@property (nonatomic, assign) CGFloat radialGradientRadius;
+@property (nonatomic, retain) NSMutableDictionary *model;
 @end
 
 @implementation FWTRadialAnnotationsContainerView
 
 - (void)dealloc
 {
-    self.targetSubviews = nil;
+    self.model = nil;
+    self.realBackgroundColor = nil;
     [super dealloc];
 }
 
@@ -49,21 +50,30 @@ static char overlayHelperKey;
     if ((self = [super initWithFrame:frame]))
     {
         self.contentMode = UIViewContentModeRedraw;
+        self.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:.65f];
+        self.radialGradientRadius = 100.0f;
         
-        self.layer.borderColor = [UIColor redColor].CGColor;
-        self.layer.borderWidth = 2.0f;
-        self.backgroundColor = [UIColor clearColor];
+//        self.layer.borderColor = [UIColor redColor].CGColor;
+//        self.layer.borderWidth = 2.0f;
+        
     }
     return self;
 }
 
+- (void)setBackgroundColor:(UIColor *)backgroundColor
+{
+    [super setBackgroundColor:[UIColor clearColor]];
+    self.realBackgroundColor = backgroundColor;
+}
+
 - (void)drawRect:(CGRect)rect
 {
+    //
     CGContextRef ctx = UIGraphicsGetCurrentContext();
-    UIColor *color = [[UIColor blackColor] colorWithAlphaComponent:.7f];
-    CGContextSetFillColorWithColor(ctx, color.CGColor);
-    CGContextFillRect(ctx, rect);
     
+    // first iteration fill the background and clear the clip path
+    CGContextSetFillColorWithColor(ctx, self.realBackgroundColor.CGColor);
+    CGContextFillRect(ctx, rect);
     void(^appendSubpath)(UIBezierPath *, CGRect) = ^(UIBezierPath *path, CGRect rect) {
         [path moveToPoint:rect.origin];
         [path addLineToPoint:CGPointMake(CGRectGetMinX(rect) + CGRectGetWidth(rect), CGRectGetMinY(rect))];
@@ -71,13 +81,11 @@ static char overlayHelperKey;
         [path addLineToPoint:CGPointMake(CGRectGetMinX(rect), CGRectGetMinY(rect) + CGRectGetHeight(rect))];
         [path addLineToPoint:CGPointMake(CGRectGetMinX(rect), CGRectGetMinY(rect))];
     };
-    
+
     __block UIBezierPath *bezierPath = nil;
-    [self.targetSubviews enumerateObjectsUsingBlock:^(UIView *subview, NSUInteger idx, BOOL *stop) {
-        
-//        FWTPopoverView *view = (FWTPopoverView *)entry.view;
+    [self.model enumerateKeysAndObjectsUsingBlock:^(id key, FWTRadialAnnotation *radialAnnotation, BOOL *stop) {
         if (!bezierPath) bezierPath = [[UIBezierPath bezierPath] retain];
-        appendSubpath(bezierPath, subview.frame);
+        appendSubpath(bezierPath, radialAnnotation.frame);
     }];
     
     if (bezierPath)
@@ -86,96 +94,185 @@ static char overlayHelperKey;
         CGContextAddPath(ctx, bezierPath.CGPath);
         [bezierPath release];
         
-        //
         CGContextClip(ctx);
         CGContextClearRect(ctx, rect);
     }
+    
+    // time to render into the context all the animation completed layers
+    __block CGFloat dx = .0f;
+    __block CGFloat dy = .0f;
+    [self.model enumerateKeysAndObjectsUsingBlock:^(id key, FWTRadialAnnotation *radialAnnotation, BOOL *stop) {
+        if (radialAnnotation.needsRenderInContext)
+        {
+            // translate back
+            if (dx != .0f || dy != .0f) CGContextTranslateCTM(ctx, -dx, -dy);
+            
+            //
+            dx = radialAnnotation.frame.origin.x;
+            dy = radialAnnotation.frame.origin.y;
+            CGContextTranslateCTM(ctx, dx, dy);
+            [radialAnnotation.layer renderInContext:ctx];
+        }
+    }];
 }
 
-- (void)didAddSubview:(UIView *)subview
+#pragma mark - Public
+- (void)addAnnotationView:(FWTDefaultAnnotationView *)annotationView
 {
-    if ([subview isKindOfClass:[FWTPopoverView class]])
-    {
-        FWTPopoverView *cast = (FWTPopoverView *)subview;
-        CGFloat presentDelay = cast.animationHelper.presentDelay;
-        [self performSelector:@selector(_addTargetSubview:) withObject:subview afterDelay:presentDelay];
-    }
+    CGFloat presentDelay = annotationView.animationHelper.presentDelay;
+    if (presentDelay > .25) presentDelay -= .25f;
+    [self performSelector:@selector(_addAnnotationView:) withObject:annotationView afterDelay:presentDelay];
 }
 
-- (void)willRemoveSubview:(UIView *)subview
+- (void)removeAnnotationView:(FWTDefaultAnnotationView *)annotationView
 {
-    if ([subview isKindOfClass:[FWTPopoverView class]])
-    {
-        CALayer *layer = objc_getAssociatedObject(subview, &overlayHelperKey);
-        [layer removeFromSuperlayer];
-        
-        [subview removeObserver:self forKeyPath:@"frame"];
-        
-        [self.targetSubviews removeObject:subview];
-        [self setNeedsDisplay];
-    }
+    // remove from kvo
+    [annotationView removeObserver:self forKeyPath:keyPathFrame];
+    
+    // update the entry
+    FWTRadialAnnotation *entry = [self.model objectForKey:[self _keyForAnnotationView:annotationView]];
+    entry.needsRenderInContext = NO;
+    
+    // add to view hierarchy (be sure the frame is right)
+    [CATransaction begin];
+    [CATransaction setDisableActions:YES];
+    entry.layer.frame = entry.frame;
+    [CATransaction commit];
+    [self.layer insertSublayer:entry.layer below:entry.view.layer];
+    
+    // refresh
+    [self setNeedsDisplay];
+    
+    // animate
+    __block typeof(self) myself = self;
+    void(^completionBlock)() = [[^() {
+        [myself.model removeObjectForKey:[myself _keyForAnnotationView:entry.view]];    // remove entry
+        [entry.layer removeFromSuperlayer];                                             // remove layer from hierarchy
+        [self setNeedsDisplay];                                                         // refresh
+    } copy] autorelease];
+    [entry.layer performSelector:@selector(dismissAnimation:) withObject:completionBlock afterDelay:.0f];
 }
 
 #pragma mark - Getters
-- (NSMutableArray *)targetSubviews
+- (NSMutableDictionary *)model
 {
-    if (!self->_targetSubviews) self->_targetSubviews = [[NSMutableArray alloc] init];
-    return self->_targetSubviews;
+    if (!self->_model) self->_model = [[NSMutableDictionary alloc] init];
+    return self->_model;
 }
 
 #pragma mark - Private
-- (void)_addTargetSubview:(UIView *)subview
+- (void)_addAnnotationView:(FWTDefaultAnnotationView *)annotationView
 {
-    [self.targetSubviews addObject:subview];
+    CGRect rectForAnnotation = [self _rectForAnnotationView:annotationView];
     
-//    [CATransaction begin];
-//    [CATransaction setDisableActions:YES];
-    CALayer *l = [CALayer layer];
-    l.backgroundColor = [[UIColor redColor] colorWithAlphaComponent:.25f].CGColor;
-    l.borderWidth = 1.0f;
-    l.frame = subview.frame;
-    [self.layer insertSublayer:l above:subview.layer];
-    
-//    UIView *accessoryView = [[[UIView alloc] init] autorelease];
-//    accessoryView.backgroundColor = [[UIColor redColor] colorWithAlphaComponent:.25f];
-//    accessoryView.layer.borderWidth = 1.0f;
-    
-    [subview addObserver:self forKeyPath:@"frame" options:NSKeyValueObservingOptionNew context:NULL];
-    
-//    FWTRadialAnnotationEntry *entry = [[[FWTRadialAnnotationEntry alloc] init] autorelease];
-//    entry.view = subview;
-//    entry.accessoryView = accessoryView;
-//    entry.accessoryLayer = l;
-//    [self.targetSubviews addObject:entry];
-    
-//    [CATransaction commit];
+    // create layer
+    FWTRadialMaskLayer *theLayer = [FWTRadialMaskLayer layer];
+    theLayer.fillColor = self.realBackgroundColor.CGColor;
+    theLayer.maskImageRef = [UIImage imageNamed:@"gradient_mask.png"].CGImage;
+    theLayer.accessoryImageRef = [[self class] _defaultAccessoryImage];
+    theLayer.frame = rectForAnnotation;
 
-//    FWTRadialMaskLayer *l = [FWTRadialMaskLayer layer];
-//    l.fillColor = [[UIColor blackColor] colorWithAlphaComponent:.7f];
-//    l.maskImage = [UIImage imageNamed:@"gradient_mask.png"];
-//    l.frame = subview.frame;//CGRectMake(10, 10, 150, 150);
-//    l.borderColor = [UIColor redColor].CGColor;
-//    l.borderWidth = 1.0f;
-//    [l setNeedsDisplay];
-//    [self.layer insertSublayer:l above:subview.layer];
-//    [l setValue:1.0f animated:YES];
+    // add to view hierarchy
+    [self.layer insertSublayer:theLayer below:annotationView.layer];
     
-    objc_setAssociatedObject(subview, &overlayHelperKey, l, OBJC_ASSOCIATION_ASSIGN);
+    // create entry and add it to the model
+    FWTRadialAnnotation *entry = [[[FWTRadialAnnotation alloc] init] autorelease];
+    entry.view = annotationView;
+    entry.layer = theLayer;
+    entry.frame = rectForAnnotation;
+    [self.model setObject:entry forKey:[self _keyForAnnotationView:annotationView]];
     
+    // add for kvo
+    [annotationView addObserver:self forKeyPath:keyPathFrame options:NSKeyValueObservingOptionNew context:NULL];
+    
+    // refresh
     [self setNeedsDisplay];
-//    [self setNeedsLayout];
+    
+    // animate
+    __block typeof(self) myself = self;
+    void(^completionBlock)() = [[^() {
+        [entry.layer removeFromSuperlayer]; // remove from view hierarchy
+        entry.needsRenderInContext = YES;   // update entry
+        [myself setNeedsDisplay];           // refresh
+    } copy] autorelease];
+    [entry.layer performSelector:@selector(presentAnimation:) withObject:completionBlock afterDelay:.0f];
+}
+
+- (CGRect)_rectForAnnotationView:(FWTDefaultAnnotationView *)annotationView
+{
+    CGRect arrowRect = [annotationView arrowRect];
+    CGRect radialRect = CGRectMake(.0f, .0f, self.radialGradientRadius*2, self.radialGradientRadius*2);
+    radialRect.origin.x = CGRectGetMidX(arrowRect)-radialRect.size.width*.5f;
+    radialRect.origin.y = CGRectGetMidY(arrowRect)-radialRect.size.height*.5f;
+    
+    if (annotationView.arrow.direction & FWTPopoverArrowDirectionUp)
+    {
+        radialRect = CGRectOffset(radialRect, annotationView.arrow.cornerOffset, -annotationView.arrow.size.height*.5f);
+    }
+    else if (annotationView.arrow.direction & FWTPopoverArrowDirectionDown)
+    {
+        radialRect = CGRectOffset(radialRect, annotationView.arrow.cornerOffset, annotationView.arrow.size.height*.5f);
+    }
+    else if (annotationView.arrow.direction & FWTPopoverArrowDirectionLeft)
+    {
+        radialRect = CGRectOffset(radialRect, -annotationView.arrow.size.width*.5f, annotationView.arrow.cornerOffset);
+    }
+    else if (annotationView.arrow.direction & FWTPopoverArrowDirectionRight)
+    {
+        radialRect = CGRectOffset(radialRect, annotationView.arrow.size.width*.5f, annotationView.arrow.cornerOffset);
+    }
+    else if (annotationView.arrow.direction & FWTPopoverArrowDirectionNone)
+    {
+        radialRect = CGRectZero;
+    }
+    
+    return radialRect;
+}
+
+- (NSString *)_keyForAnnotationView:(FWTDefaultAnnotationView *)annotationView
+{
+    return [NSString stringWithFormat:@"%u", [annotationView hash]];
 }
 
 #pragma mark - KVO
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
-    if ([keyPath isEqualToString:@"frame"])
+    if ([keyPath isEqualToString:keyPathFrame])
     {
-        UIView *subview = (UIView *)object;
-        CALayer *layer = objc_getAssociatedObject(subview, &overlayHelperKey);
-        layer.frame = subview.frame;
-        NSLog(@"KVO: frame");
+        // update the frame
+        FWTRadialAnnotation *entry = [self.model objectForKey:[self _keyForAnnotationView:object]];
+        entry.frame = [self _rectForAnnotationView:object];
     }
+}
+
+#pragma mark -
++ (CGImageRef)_defaultAccessoryImage
+{
+    static UIImage *_accessoryImage = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        CGSize size = CGSizeMake(50.0f, 50.0f);
+        CGRect ctxRect = CGRectMake(.0f, .0f, size.width, size.height);
+        UIGraphicsBeginImageContextWithOptions(size, NO, .0f);
+        CGContextRef ctx = UIGraphicsGetCurrentContext();
+        CGRect availableRect = CGRectInset(ctxRect, 4, 4);
+        [[UIColor whiteColor] setStroke];
+        [[[UIColor whiteColor] colorWithAlphaComponent:.3f] setFill];
+        
+        UIBezierPath *bp = [UIBezierPath bezierPathWithOvalInRect:availableRect];
+        bp.lineWidth = 3.0f;
+        [bp fill];
+        
+        CGContextSetShadowWithColor(ctx, CGSizeZero, 2.0f, [UIColor blackColor].CGColor);
+        [bp stroke];
+        
+        UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+        UIGraphicsEndImageContext();
+        
+        _accessoryImage = [image retain];
+    });
+    
+    return _accessoryImage.CGImage;
 }
 
 @end

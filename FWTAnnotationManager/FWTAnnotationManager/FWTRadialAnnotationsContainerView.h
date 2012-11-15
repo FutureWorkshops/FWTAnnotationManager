@@ -8,6 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
+@class FWTDefaultAnnotationView;
 @interface FWTRadialAnnotationsContainerView : UIView
+
+- (void)addAnnotationView:(FWTDefaultAnnotationView *)annotationView;
+- (void)removeAnnotationView:(FWTDefaultAnnotationView *)annotationView;
 
 @end

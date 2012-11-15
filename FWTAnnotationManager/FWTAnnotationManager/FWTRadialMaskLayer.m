@@ -10,14 +10,17 @@
 
 @interface FWTRadialMaskLayer ()
 @property (nonatomic, retain) UIBezierPath *boundsBezierPath;
+@property (nonatomic, retain) CALayer *accessoryLayer;
+@property (nonatomic, assign) CGFloat maskRadius;
 @end
 
 @implementation FWTRadialMaskLayer
-@dynamic value;
+@dynamic maskRadius;
 
 - (void)dealloc
 {
-    self.maskImage = nil;
+    self.accessoryLayer = nil;
+    self.maskImageRef = nil;
     self.boundsBezierPath = nil;
     self.fillColor = nil;
     [super dealloc];
@@ -27,6 +30,7 @@
 {
     if ((self = [super init]))
     {
+        self.needsDisplayOnBoundsChange = YES;
         //        self.contentsScale = [UIScreen mainScreen].scale;
         //        self.borderWidth = 1.0f;
         //        self.borderColor = [UIColor redColor].CGColor;
@@ -40,7 +44,15 @@
     {
         self.fillColor = [(FWTRadialMaskLayer *)layer fillColor];
         self.boundsBezierPath = [(FWTRadialMaskLayer *)layer boundsBezierPath];
-        self.maskImage = [(FWTRadialMaskLayer *)layer maskImage];
+        self.maskImageRef = [(FWTRadialMaskLayer *)layer maskImageRef];
+    
+        CGImageRef theAccessoryImageRef = [(FWTRadialMaskLayer *)layer accessoryImageRef];
+        if (theAccessoryImageRef)
+        {
+            self.accessoryImageRef = theAccessoryImageRef;
+            self.accessoryLayer = [(FWTRadialMaskLayer *)layer accessoryLayer];
+        }
+        
     }
     return self;
 }
@@ -60,11 +72,11 @@
 - (void)drawInContext:(CGContextRef)ctx
 {
     CGRect rect = CGContextGetClipBoundingBox(ctx);
-    CGContextSetFillColorWithColor(ctx, self.fillColor.CGColor);
+    CGContextSetFillColorWithColor(ctx, self.fillColor);
     
     //
     CGFloat side = rect.size.width*.5f;
-    CGFloat test = side*(1-self.value);
+    CGFloat test = side*(1-self.maskRadius);
     CGRect myRect = CGRectInset(rect, test, test);
     myRect = CGRectIntegral(myRect);
     
@@ -75,37 +87,100 @@
     CGContextEOFillPath(ctx);
     
     //
-    CGContextClipToMask(ctx, myRect, self.maskImage.CGImage);
+    CGContextClipToMask(ctx, myRect, self.maskImageRef);
     CGContextFillRect(ctx, rect);
+}
+
+- (void)layoutSublayers
+{
+    [super layoutSublayers];
+    
+    if (self.accessoryImageRef)
+    {
+        if (!self.accessoryLayer.superlayer) [self addSublayer:self.accessoryLayer];
+        self.accessoryLayer.position = CGPointMake(CGRectGetMidX(self.bounds), CGRectGetMidY(self.bounds));
+    }
+}
+
+#pragma mark - Getters
+- (CALayer *)accessoryLayer
+{
+    if (!self->_accessoryLayer) self->_accessoryLayer = [[CALayer alloc] init];
+    return self->_accessoryLayer;
 }
 
 #pragma mark - Private
 - (void)_updateBoundsBezierPath
 {
     if (!self.boundsBezierPath || !CGSizeEqualToSize(self.bounds.size, self.boundsBezierPath.bounds.size))
-    {
-        NSLog(@"refresh path");
         self.boundsBezierPath = [UIBezierPath bezierPathWithRect:self.bounds];
+}
+
+- (void)_animateMaskRadius:(CGFloat)toValue accessoryBounds:(CGRect)destBounds completion:(void (^)(void))completionBlock
+{
+    [CATransaction begin];
+    [CATransaction setAnimationTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
+    [CATransaction setCompletionBlock:completionBlock];
+    
+    // animate the radial mask
+    CABasicAnimation *animation_a = [CABasicAnimation animationWithKeyPath:@"maskRadius"];
+    animation_a.toValue = [NSNumber numberWithFloat:toValue];
+    self.maskRadius = toValue;
+    [self addAnimation:animation_a forKey:@"maskRadius"];
+    
+    // animate the accessory layer - optional
+    if (self.accessoryImageRef)
+    {
+        CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"bounds"];
+        animation.toValue = [NSValue valueWithCGRect:destBounds];
+        self.accessoryLayer.bounds = destBounds;
+        [self.accessoryLayer addAnimation:animation forKey:@"animateBounds"];
     }
+    
+    [CATransaction commit];
 }
 
 #pragma mark - Public
-- (void)setValue:(CGFloat)value animated:(BOOL)animated
+- (void)setAccessoryImageRef:(CGImageRef)accessoryImageRef
 {
-    if (animated)
+    if (self->_accessoryImageRef != accessoryImageRef)
     {
-        CABasicAnimation *animation = (CABasicAnimation *)[[self class] defaultActionForKey:@"value"];
-        animation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionDefault];
-        //        animation.duration = .35f;
-        animation.fromValue = [self.presentationLayer valueForKey:@"value"];
-        animation.toValue = [NSNumber numberWithFloat:value];
-        self.value = value;
-        [self addAnimation:animation forKey:@"value"];
+        CGImageRelease(self->_accessoryImageRef);
+        self->_accessoryImageRef = nil;
+        
+        if (accessoryImageRef)
+        {
+            self->_accessoryImageRef = CGImageRetain(accessoryImageRef);
+            self.accessoryLayer.contents = (id)self->_accessoryImageRef;
+        }
+        else
+        {
+            if (self->_accessoryLayer)
+            {
+                [self.accessoryLayer removeFromSuperlayer];
+                self.accessoryLayer = nil;
+            }
+        }
     }
-    else
+}
+
+- (void)presentAnimation:(void (^)(void))completionBlock
+{
+    CGRect destRect = CGRectZero;
+    if (self.accessoryImageRef)
     {
-        self.value = value;
+        CGFloat scale = [UIScreen mainScreen].scale;
+        CGImageRef imageRef = (CGImageRef)self.accessoryLayer.contents;
+        CGSize imageSize = CGSizeMake(CGImageGetWidth(imageRef)*1/scale, CGImageGetHeight(imageRef)*1/scale);
+        destRect = CGRectMake(.0f, .0f, imageSize.width, imageSize.height);
     }
+    
+    [self _animateMaskRadius:1.0f accessoryBounds:destRect completion:completionBlock];
+}
+
+- (void)dismissAnimation:(void (^)(void))completionBlock
+{
+    [self _animateMaskRadius:.0f accessoryBounds:CGRectZero completion:completionBlock];
 }
 
 #pragma mark - Custom animatable property
@@ -114,16 +189,7 @@
 // each new value of progress, including tweened ones.
 + (BOOL)needsDisplayForKey:(NSString *)key
 {
-    return [key isEqualToString:@"value"] || [super needsDisplayForKey:key];
+    return [key isEqualToString:@"maskRadius"] || [super needsDisplayForKey:key];
 }
 
-+ (id<CAAction>)defaultActionForKey:(NSString *)event {
-    if ([event isEqualToString:@"value"])
-    {
-        CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:event];
-        return animation;
-    }
-    else
-        return [super defaultActionForKey:event];
-}
 @end

@@ -217,6 +217,9 @@
     //
     self.popoverViewDidPresentCounter++;
     
+    //
+    [self.annotationsContainerView addAnnotationView:annotationView];
+    
     //  ready to present
     CGRect rect = [self _presentingRectForAnnotation:annotation];
     [annotationView presentFromRect:rect inView:self.annotationsContainerView permittedArrowDirection:annotation.arrowDirection animated:annotation.animated];
@@ -233,7 +236,10 @@
 {
     FWTDefaultAnnotationView *_popoverView = [self.model viewForAnnotation:annotation];
     if (_popoverView)
+    {
+        [self.annotationsContainerView removeAnnotationView:_popoverView];
         [_popoverView dismissPopoverAnimated:annotation.animated];
+    }
 }
 
 - (void)removeAnnotations:(NSArray *)annotations
