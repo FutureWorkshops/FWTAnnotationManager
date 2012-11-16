@@ -27,7 +27,7 @@ typedef NS_ENUM(NSInteger, FWTAnnotationsContainerViewType) {
 
 @interface FWTAnnotationManager : NSObject
 
-@property (nonatomic, retain) UIView *parentView;
+@property (nonatomic, assign) UIView *parentView;
 @property (nonatomic, assign) FWTAnnotationsContainerViewType annotationsContainerViewType; //  configure the type before accessing any property
 @property (nonatomic, readonly, retain) UIView *annotationsContainerView;   //  plug with your own class or just customize the default one
 @property (nonatomic, assign) id<FWTAnnotationManagerDelegate> delegate;

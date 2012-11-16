@@ -58,8 +58,8 @@ NSString *const keyPathFrame = @"frame";
         
         // default settings
         self.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:.65f];
-        self.radialMaskImage = [UIImage imageNamed:@"gradient_mask.png"];
-        self.accessoryImage = [[self class] _defaultAccessoryImage];
+        self.radialMaskImage = [[self class] _defaultRadialMaskImage];
+        self.accessoryImage  = [[self class] _defaultAccessoryImage];
         self.radialGradientRadius = 100.0f;
     }
     return self;
@@ -279,6 +279,47 @@ NSString *const keyPathFrame = @"frame";
     });
     
     return _accessoryImage;
+}
+
++ (UIImage *)_defaultRadialMaskImage
+{
+    static UIImage *_radialMaskImage = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        
+        CGFloat side = 100.0f;
+        CGFloat startRadius = 16.0f;
+        CGFloat endRadius   = 48.0f;
+        
+        CGSize ctxSize = CGSizeMake(side, side);
+        CGRect ctxRect = CGRectMake(.0f, .0f, ctxSize.width, ctxSize.height);
+        CGPoint start, end;
+        start = end = CGPointMake(CGRectGetMidX(ctxRect), CGRectGetMidY(ctxRect));
+        
+        UIGraphicsBeginImageContextWithOptions(ctxSize, YES, .0f);
+        CGContextRef ctx = UIGraphicsGetCurrentContext();
+        CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
+        CGContextFillRect(ctx, ctxRect);
+        
+        CGFloat colors[] =
+        {
+             .00f,  1.00f,  // solid black
+            1.00f,   .40f,  // transparent white to get a smoother interpolation
+        };
+        
+        CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceGray();
+        CGGradientRef grayScaleGradient = CGGradientCreateWithColorComponents(colorSpace, colors, NULL, 2);
+        CGColorSpaceRelease(colorSpace);
+        CGContextDrawRadialGradient(ctx, grayScaleGradient, start, startRadius, end, endRadius, kCGGradientDrawsBeforeStartLocation);
+        CGGradientRelease(grayScaleGradient);
+        
+        UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+        UIGraphicsEndImageContext();
+        
+        _radialMaskImage = [image retain];
+    });
+    
+    return _radialMaskImage;
 }
 
 @end

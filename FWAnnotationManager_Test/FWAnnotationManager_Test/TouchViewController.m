@@ -89,9 +89,8 @@
 {
     CGPoint point = [[touches anyObject] locationInView:self.view];
     
-    if (!self.touchPointView.superview)
-        [self.view addSubview:self.touchPointView];
-    
+    //
+    if (!self.touchPointView.superview) [self.view addSubview:self.touchPointView];
     self.touchPointView.center = point;
     
     //
@@ -102,10 +101,9 @@
         popoverView.tag = 0xbeef;
         popoverView.textLabel.text = [StaticModel randomText];
         id image = [StaticModel randomImage];
-        if ([image isKindOfClass:[UIImage class]])
-            popoverView.imageView.image = image;
+        if ([image isKindOfClass:[UIImage class]]) popoverView.imageView.image = image;
 
-        [popoverView presentFromRect:self.touchPointView.frame
+        [popoverView presentFromRect:CGRectMake(point.x, point.y, 1.0f, 1.0f)
                               inView:self.view
              permittedArrowDirection:self.popoverArrowDirection
                             animated:YES];

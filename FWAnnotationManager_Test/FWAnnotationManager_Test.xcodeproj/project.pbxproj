@@ -7,16 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		A918A983165023C300B126E4 /* gradient_mask.png in Resources */ = {isa = PBXBuildFile; fileRef = A918A981165023C300B126E4 /* gradient_mask.png */; };
-		A918A984165023C300B126E4 /* gradient_mask@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A918A982165023C300B126E4 /* gradient_mask@2x.png */; };
 		A93B0905163EFABF0030F227 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A93B0902163EFABF0030F227 /* Default-568h@2x.png */; };
 		A93B0906163EFABF0030F227 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = A93B0903163EFABF0030F227 /* Default.png */; };
 		A93B0907163EFABF0030F227 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A93B0904163EFABF0030F227 /* Default@2x.png */; };
 		A93B0939163FDEB50030F227 /* libFWTAnnotationManager.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A93B0938163FDEB50030F227 /* libFWTAnnotationManager.a */; };
 		A952C7ED1652B0C7002674DC /* photo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A952C7EC1652B0C7002674DC /* photo@2x.png */; };
-		A99009EE1655122300382D13 /* gradient_mask_alpha.png in Resources */ = {isa = PBXBuildFile; fileRef = A99009EC1655122300382D13 /* gradient_mask_alpha.png */; };
-		A99009EF1655122300382D13 /* gradient_mask_alpha@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A99009ED1655122300382D13 /* gradient_mask_alpha@2x.png */; };
-		A99009F21655161500382D13 /* CoreImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A99009F11655161500382D13 /* CoreImage.framework */; };
 		A9A4AFBE1642C3770034593C /* CustomAnnotationView.m in Sources */ = {isa = PBXBuildFile; fileRef = A9A4AFBD1642C3770034593C /* CustomAnnotationView.m */; };
 		E4C452ED15DB9C8C00DD1A0F /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4C452EC15DB9C8C00DD1A0F /* UIKit.framework */; };
 		E4C452EF15DB9C8C00DD1A0F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4C452EE15DB9C8C00DD1A0F /* Foundation.framework */; };
@@ -32,15 +27,11 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		A918A981165023C300B126E4 /* gradient_mask.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = gradient_mask.png; sourceTree = "<group>"; };
-		A918A982165023C300B126E4 /* gradient_mask@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "gradient_mask@2x.png"; sourceTree = "<group>"; };
 		A93B0902163EFABF0030F227 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		A93B0903163EFABF0030F227 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
 		A93B0904163EFABF0030F227 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
 		A93B0938163FDEB50030F227 /* libFWTAnnotationManager.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libFWTAnnotationManager.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		A952C7EC1652B0C7002674DC /* photo@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "photo@2x.png"; sourceTree = "<group>"; };
-		A99009EC1655122300382D13 /* gradient_mask_alpha.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = gradient_mask_alpha.png; sourceTree = "<group>"; };
-		A99009ED1655122300382D13 /* gradient_mask_alpha@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "gradient_mask_alpha@2x.png"; sourceTree = "<group>"; };
 		A99009F11655161500382D13 /* CoreImage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreImage.framework; path = System/Library/Frameworks/CoreImage.framework; sourceTree = SDKROOT; };
 		A9A4AFBC1642C3770034593C /* CustomAnnotationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomAnnotationView.h; sourceTree = "<group>"; };
 		A9A4AFBD1642C3770034593C /* CustomAnnotationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomAnnotationView.m; sourceTree = "<group>"; };
@@ -70,7 +61,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A99009F21655161500382D13 /* CoreImage.framework in Frameworks */,
 				A93B0939163FDEB50030F227 /* libFWTAnnotationManager.a in Frameworks */,
 				E4C4530415DB9D0000DD1A0F /* QuartzCore.framework in Frameworks */,
 				E4C452ED15DB9C8C00DD1A0F /* UIKit.framework in Frameworks */,
@@ -139,10 +129,6 @@
 			isa = PBXGroup;
 			children = (
 				A952C7EC1652B0C7002674DC /* photo@2x.png */,
-				A99009EC1655122300382D13 /* gradient_mask_alpha.png */,
-				A99009ED1655122300382D13 /* gradient_mask_alpha@2x.png */,
-				A918A981165023C300B126E4 /* gradient_mask.png */,
-				A918A982165023C300B126E4 /* gradient_mask@2x.png */,
 				A93B0902163EFABF0030F227 /* Default-568h@2x.png */,
 				A93B0903163EFABF0030F227 /* Default.png */,
 				A93B0904163EFABF0030F227 /* Default@2x.png */,
@@ -222,11 +208,7 @@
 				A93B0905163EFABF0030F227 /* Default-568h@2x.png in Resources */,
 				A93B0906163EFABF0030F227 /* Default.png in Resources */,
 				A93B0907163EFABF0030F227 /* Default@2x.png in Resources */,
-				A918A983165023C300B126E4 /* gradient_mask.png in Resources */,
-				A918A984165023C300B126E4 /* gradient_mask@2x.png in Resources */,
 				A952C7ED1652B0C7002674DC /* photo@2x.png in Resources */,
-				A99009EE1655122300382D13 /* gradient_mask_alpha.png in Resources */,
-				A99009EF1655122300382D13 /* gradient_mask_alpha@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -288,6 +270,7 @@
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)/../FWTAnnotationManager/FWTAnnotationManager/\"/**";
+				OTHER_LDFLAGS = "-ObjC";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -314,6 +297,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)/../FWTAnnotationManager/FWTAnnotationManager/\"/**";
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				OTHER_LDFLAGS = "-ObjC";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;

@@ -31,9 +31,6 @@
     if ((self = [super init]))
     {
         self.needsDisplayOnBoundsChange = YES;
-        //        self.contentsScale = [UIScreen mainScreen].scale;
-        //        self.borderWidth = 1.0f;
-        //        self.borderColor = [UIColor redColor].CGColor;
     }
     return self;
 }
@@ -85,6 +82,8 @@
     [bp appendPath:self.boundsBezierPath];
     CGContextAddPath(ctx, bp.CGPath);
     CGContextEOFillPath(ctx);
+    
+//    CGContextDrawImage(ctx, myRect, self.maskImageRef);
     
     //
     CGContextClipToMask(ctx, myRect, self.maskImageRef);

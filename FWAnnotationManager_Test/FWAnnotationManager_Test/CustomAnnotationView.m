@@ -95,34 +95,6 @@
     };
 }
 
-+ (UIImage *)ringImage
-{
-    static UIImage *_ringImage = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        CGSize ctxSize = CGSizeMake(50.0f, 50.0f);
-        CGRect ctxRect = CGRectMake(.0f, .0f, ctxSize.width, ctxSize.height);
-        UIGraphicsBeginImageContextWithOptions(ctxSize, NO, .0f);
-        CGContextRef ctx = UIGraphicsGetCurrentContext();
-        CGRect availableRect = CGRectInset(ctxRect, 4, 4);
-        [[UIColor whiteColor] setStroke];
-        [[[UIColor whiteColor] colorWithAlphaComponent:.2f] setFill];
-        
-        
-        UIBezierPath *bp = [UIBezierPath bezierPathWithOvalInRect:availableRect];
-        bp.lineWidth = 3.0f;
-        [bp fill];
-        
-        CGContextSetShadowWithColor(ctx, CGSizeZero, 2.0f, [UIColor blackColor].CGColor);
-        [bp stroke];
-        
-        UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
-        UIGraphicsEndImageContext();
-        
-        _ringImage = [image retain];
-    });
-    
-    return _ringImage;
-}
+
 
 @end
