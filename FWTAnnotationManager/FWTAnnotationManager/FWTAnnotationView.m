@@ -33,9 +33,6 @@ const CGFloat FWTDefaultAnnotationViewSpaceBetweenImageViewAndTextLabel = 5.0f;
     {
         self.contentViewEdgeInsets = UIEdgeInsetsMake(5.0f, 5.0f, 5.0f, 5.0f);
         self.spaceBetweenImageViewAndTextLabel = FWTDefaultAnnotationViewSpaceBetweenImageViewAndTextLabel;
-        
-//        self.contentView.layer.borderWidth = 1.0f;
-//        self.contentView.layer.borderColor = [[UIColor redColor] colorWithAlphaComponent:.25f].CGColor;
     }
     
     return self;
@@ -89,17 +86,13 @@ const CGFloat FWTDefaultAnnotationViewSpaceBetweenImageViewAndTextLabel = 5.0f;
 #pragma mark - Getters
 - (UILabel *)textLabel
 {
-    if (!self->_textLabel)
-        self->_textLabel = [[UILabel alloc] init];
-    
+    if (!self->_textLabel) self->_textLabel = [[UILabel alloc] init];
     return self->_textLabel;
 }
 
 - (UIImageView *)imageView
 {
-    if (!self->_imageView)
-        self->_imageView = [[UIImageView alloc] init];
-    
+    if (!self->_imageView) self->_imageView = [[UIImageView alloc] init];
     return self->_imageView;
 }
 

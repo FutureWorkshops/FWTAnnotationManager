@@ -27,9 +27,12 @@
     if ((self = [super init]))
     {
         self.guid = [[self class] _GUID];
+        self.presentingRectPortrait = CGRectZero;
+        self.presentingRectLandscape = CGRectZero;
         self.arrowDirection = FWTPopoverArrowDirectionNone;
         self.delay = .0f;
         self.animated = YES;
+        self.dismissOnTouch = YES;
     }
     
     return self;

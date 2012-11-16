@@ -11,7 +11,7 @@
 #import "CustomAnnotationView.h"
 #import "UIView+FWTAnnotationManager.h"
 
-@interface SampleViewController () <FWTAnnotationManagerDelegate>
+@interface SampleViewController ()
 
 @property (nonatomic, retain) NSArray *debugArray;
 @end
@@ -48,9 +48,13 @@
     [self.view addSubview:iv];
     
     // configure our annotation
-    self.view.fwt_annotationManager.delegate = self;
     self.view.fwt_annotationManager.annotationsContainerViewType = FWTAnnotationsContainerViewTypeRadial;
-    self.view.fwt_annotationManager.annotationsContainerView.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:.7f];
+    self.view.fwt_annotationManager.annotationsContainerView.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:.65f];
+    self.view.fwt_annotationManager.viewForAnnotationBlock = ^(FWTAnnotation *annotation){
+        CustomAnnotationView *_annotationView = [[[CustomAnnotationView alloc] init] autorelease];
+        [_annotationView setupAnimationHelperWithSuperview:self.view];
+        return _annotationView;
+    };
 }
 
 //- (void)viewDidLayoutSubviews
@@ -170,24 +174,6 @@
             pd.delay = savedDelay;
         }
     }
-}
-
-#pragma mark - FWTAnnotationManagerDelegate
-- (FWTAnnotationView *)annotationManager:(FWTAnnotationManager *)annotationManager viewForAnnotation:(FWTAnnotation *)annotation
-{
-    CustomAnnotationView *_popoverView = [[[CustomAnnotationView alloc] init] autorelease];
-    [_popoverView setupAnimationHelperWithSuperview:self.view];
-    return _popoverView;
-}
-
-- (void)annotationManager:(FWTAnnotationManager *)annotationManager
-     didTapAnnotationView:(FWTAnnotationView *)annotationView
-               annotation:(FWTAnnotation *)annotation;
-{
-    if (annotationView)
-        [annotationManager removeAnnotation:annotation];
-    else
-        [annotationManager removeAnnotations:annotationManager.model.annotations];
 }
 
 @end

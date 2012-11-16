@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "FWTAnnotation.h"
 #import "FWTAnnotationManager.h"
+#import "FWTAnnotationModel.h"
 
 @interface UIView (FWTAnnotationManager)
 

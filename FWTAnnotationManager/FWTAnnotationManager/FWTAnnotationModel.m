@@ -10,6 +10,10 @@
 #import "FWTAnnotation.h"
 #import "FWTAnnotationView.h"
 
+@interface FWTAnnotation ()
+@property (nonatomic, readonly, retain) NSString *guid;
+@end
+
 @interface FWTAnnotationModel ()
 @property (nonatomic, retain) NSMutableArray *mutableAnnotations;
 @property (nonatomic, retain) NSMutableDictionary *annotationsDictionary;

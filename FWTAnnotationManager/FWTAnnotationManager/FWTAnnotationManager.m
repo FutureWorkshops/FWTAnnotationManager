@@ -9,15 +9,10 @@
 #import "FWTAnnotationManager.h"
 #import "FWTAnnotationModel.h"
 #import "FWTRadialAnnotationsContainerView.h"
+#import "FWTAnnotationView.h"
+#import "FWTAnnotation.h"
 
 @interface FWTAnnotationManager () <FWTPopoverViewDelegate>
-{
-    struct
-    {
-        BOOL viewForAnnotation: 1;
-        BOOL didTapAnnotationView: 1;
-    } _delegateHas;
-}
 
 @property (nonatomic, readwrite, retain) UIView *annotationsContainerView;
 @property (nonatomic, retain) UITapGestureRecognizer *tapGestureRecognizer;
@@ -28,18 +23,18 @@
 @end
 
 @implementation FWTAnnotationManager
-@synthesize delegate = _delegate;
 @synthesize annotationsContainerView = _annotationsContainerView;
 @synthesize tapGestureRecognizer = _tapGestureRecognizer;
 
 - (void)dealloc
 {
     [self _unregisterFromStatusBarOrientationNotifications];
+    self.didTapAnnotationBlock = nil;
+    self.viewForAnnotationBlock = nil;
     self.model = nil;
     self.orientationObserver = nil;
     self.tapGestureRecognizer = nil;
     self.annotationsContainerView = nil;
-    self.delegate = nil;
     self.parentView = nil;
     [super dealloc];
 }
@@ -50,21 +45,13 @@
     {
         self.popoverViewDidPresentCounter = 0;
         self.annotationsContainerViewType = FWTAnnotationsContainerViewTypeDefault;
+        self.viewForAnnotationBlock = ^(FWTAnnotation *annotation){
+          return [[[FWTAnnotationView alloc] init] autorelease];
+        };
+        self.dismissOnBackgroundTouch = YES;
     }
     
     return self;
-}
-
-#pragma mark - Setters
-- (void)setDelegate:(id<FWTAnnotationManagerDelegate>)delegate
-{
-    if (self->_delegate != delegate)
-    {
-        self->_delegate = delegate;
-
-        _delegateHas.viewForAnnotation = [self->_delegate respondsToSelector:@selector(annotationManager:viewForAnnotation:)];
-        _delegateHas.didTapAnnotationView = [self->_delegate respondsToSelector:@selector(annotationManager:didTapAnnotationView:annotation:)];
-    }
 }
 
 #pragma mark - Getters
@@ -95,13 +82,17 @@
 #pragma mark - Actions
 - (void)_handleGesture:(UIGestureRecognizer *)gesture
 {
-    if (_delegateHas.didTapAnnotationView)
-    {
-        CGPoint point = [gesture locationInView:gesture.view];
-        FWTAnnotationView *_popoverView = [self.model viewAtPoint:point];
-        FWTAnnotation *_annotation = [self.model annotationForView:_popoverView];
-        [self.delegate annotationManager:self didTapAnnotationView:_popoverView annotation:_annotation];
-    }
+    FWTAnnotationView *_annotationView = [self.model viewAtPoint:[gesture locationInView:gesture.view]];
+    FWTAnnotation *_annotation = [self.model annotationForView:_annotationView];
+    
+    // give user a chance
+    if (self.didTapAnnotationBlock) self.didTapAnnotationBlock(_annotation, _annotationView);
+    
+    //
+    if (_annotationView && _annotation.dismissOnTouch)
+        [self removeAnnotation:_annotation];
+    else if (!_annotationView && self.dismissOnBackgroundTouch)
+        [self removeAnnotations:self.model.annotations];
 }
 
 #pragma mark - Private Orientation
@@ -157,18 +148,6 @@
     return rect;
 }
 
-- (FWTAnnotationView *)_createViewForAnnotation:(FWTAnnotation *)annotation
-{
-    FWTAnnotationView *_popoverView = nil;
-    if (_delegateHas.viewForAnnotation)
-        _popoverView = [self.delegate annotationManager:self viewForAnnotation:annotation];
-    else
-        _popoverView = [[[FWTAnnotationView alloc] init] autorelease];
-    
-    _popoverView.delegate = self;
-    return _popoverView;
-}
-
 - (void)_setupAnnotationsContainerView
 {
     if (!self.annotationsContainerView.superview)
@@ -204,7 +183,8 @@
     [self _registerToStatusBarOrientationNotifications];
     
     //  get an annotationView
-    FWTAnnotationView *annotationView = [self _createViewForAnnotation:annotation];
+    FWTAnnotationView *annotationView = self.viewForAnnotationBlock(annotation);
+    annotationView.delegate = self;
     
     //  configure
     if (annotation.text) annotationView.textLabel.text = annotation.text;
