@@ -7,24 +7,20 @@
 //
 
 #import "SampleViewController.h"
-#import "FWTDefaultAnnotationView.h"
 #import "StaticModel.h"
+#import "CustomAnnotationView.h"
+#import "UIView+FWTAnnotationManager.h"
 
 @interface SampleViewController ()
-{
-    NSArray *_popoverAnnotations;
-}
 
-@property (nonatomic, retain) NSArray *popoverAnnotations;
-@property (nonatomic, retain) FWTAnnotationManager *fwPopoverController;
+@property (nonatomic, retain) NSArray *debugArray;
 @end
 
 @implementation SampleViewController
 
 - (void)dealloc
 {
-    self.popoverAnnotations = nil;
-    self.fwPopoverController = nil;
+    self.debugArray = nil;
     [super dealloc];
 }
 
@@ -32,8 +28,7 @@
 {
     if ((self = [super init]))
     {
-        NSArray *items = @[@"show", @"remove"];
-        UISegmentedControl *sc = [[[UISegmentedControl alloc] initWithItems:items] autorelease];
+        UISegmentedControl *sc = [[[UISegmentedControl alloc] initWithItems:@[@"show", @"remove"]] autorelease];
         sc.segmentedControlStyle = UISegmentedControlStyleBar;
         sc.momentary = YES;
         [sc addTarget:self action:@selector(segmentedControlValueChanged:) forControlEvents:UIControlEventValueChanged];
@@ -43,18 +38,85 @@
     return self;
 }
 
+- (void)loadView
+{
+    [super loadView];
+    
+//    self.view.backgroundColor = [UIColor whiteColor];
+    
+    UIImageView *iv = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"photo.png"]] autorelease];
+    [self.view addSubview:iv];
+    
+    // configure our annotation
+    self.view.fwt_annotationManager.annotationsContainerViewType = FWTAnnotationsContainerViewTypeRadial;
+    self.view.fwt_annotationManager.annotationsContainerView.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:.65f];
+    self.view.fwt_annotationManager.viewForAnnotationBlock = ^(FWTAnnotation *annotation){
+        CustomAnnotationView *_annotationView = [[[CustomAnnotationView alloc] init] autorelease];
+        [_annotationView setupAnimationHelperWithSuperview:self.view];
+        return _annotationView;
+    };
+}
+
+//- (void)viewDidLayoutSubviews
+//{
+//    [super viewDidLayoutSubviews];
+//    
+//    return;
+//    
+//    [self.debugArray makeObjectsPerformSelector:@selector(removeFromSuperlayer)];
+//    self.debugArray = nil;
+//    
+//    NSArray *annotations = [StaticModel popoverAnnotations];
+//    NSMutableArray *tmp = [NSMutableArray arrayWithCapacity:annotations.count];
+//    
+//    //  debug
+//    __block typeof(self) myself = self;
+//    CALayer *(^debugLayerBlock)(CGPoint, CGColorRef) = ^(CGPoint centerPoint, CGColorRef borderColor) {
+//        CALayer *l = [CALayer layer];
+//        l.bounds = CGRectMake(.0f, .0f, 11.0f, 11.0f);
+//        l.position = centerPoint;
+//        l.borderWidth = 1.0f;
+//        l.borderColor = borderColor;
+//        [myself.view.layer addSublayer:l];
+//        return l;
+//    };
+//    
+//    
+//    if UIInterfaceOrientationIsLandscape(self.interfaceOrientation)
+//    {
+//        [annotations enumerateObjectsUsingBlock:^(FWTAnnotation *obj, NSUInteger idx, BOOL *stop) {
+//            CGRect rect = obj.presentingRectLandscape;
+//            CGPoint midPoint = CGPointZero;
+//            midPoint.x = CGRectGetWidth(rect) == 1.0f ? rect.origin.x : CGRectGetMidX(rect);
+//            midPoint.y = CGRectGetHeight(rect) == 1.0f ? rect.origin.y : CGRectGetMidY(rect);
+//            [tmp addObject:debugLayerBlock(midPoint, [UIColor blackColor].CGColor)];
+//        }];
+//    }
+//    else
+//    {
+//        [annotations enumerateObjectsUsingBlock:^(FWTAnnotation *obj, NSUInteger idx, BOOL *stop) {
+//            CGRect rect = obj.presentingRectPortrait;
+//            CGPoint midPoint = CGPointZero;
+//            midPoint.x = CGRectGetWidth(rect) == 1.0f ? rect.origin.x : CGRectGetMidX(rect);
+//            midPoint.y = CGRectGetHeight(rect) == 1.0f ? rect.origin.y : CGRectGetMidY(rect);
+//            [tmp addObject:debugLayerBlock(midPoint, [UIColor blackColor].CGColor)];
+//        }];
+//    }
+//    
+//    self.debugArray = tmp;
+//}
+
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
     
     [self.navigationController setToolbarHidden:NO animated:YES];
     
-    NSArray *items = @[@"0", @"1", @"2"];
-    UISegmentedControl *sc = [[[UISegmentedControl alloc] initWithItems:items] autorelease];
+    UISegmentedControl *sc = [[[UISegmentedControl alloc] initWithItems:@[@"0", @"1", @"2"]] autorelease];
     sc.segmentedControlStyle = UISegmentedControlStyleBar;
     sc.momentary = YES;
-    sc.center = CGPointMake(CGRectGetMidX(self.view.bounds), 22.0f);
-    sc.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
+    sc.frame = CGRectInset(self.navigationController.toolbar.bounds, 40.0f, 6.0f);
+    sc.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleHeight;
     [sc addTarget:self action:@selector(segmentedControlValueChanged:) forControlEvents:UIControlEventValueChanged];
     sc.tag = 0xbeef;
     [self.navigationController.toolbar addSubview:sc];
@@ -73,11 +135,10 @@
     return YES;
 }
 
-
 #pragma mark - Private
 - (void)cancel
 {
-    [self.fwPopoverController cancel];
+//    [self.fwPopoverController cancel];
     self.navigationItem.rightBarButtonItem = nil;
 }
 
@@ -88,9 +149,7 @@
     {
         if (sc.selectedSegmentIndex == 0)
         {
-            self.fwPopoverController.view = self.view;
-            
-            [self.fwPopoverController addAnnotations:[StaticModel popoverAnnotations]];
+            [self.view fwt_addAnnotations:[StaticModel popoverAnnotations]];
             
             self.navigationItem.rightBarButtonItem = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
                                                                                                     target:self
@@ -98,105 +157,22 @@
         }
         else
         {
-            [self.fwPopoverController removeAnnotations:self.fwPopoverController.annotations];
+            [self.view fwt_removeAnnotations:self.view.fwt_annotationManager.model.annotations];
             self.navigationItem.rightBarButtonItem = nil;
         }
     }
     else
-    {
-        self.fwPopoverController.view = self.view;
-                
+    {                
         FWTAnnotation *pd = [[StaticModel popoverAnnotations] objectAtIndex:sc.selectedSegmentIndex];
-        if ([self.fwPopoverController.annotations containsObject:pd])
-            [self.fwPopoverController removeAnnotation:pd];
+        if ([self.view.fwt_annotations containsObject:pd])
+            [self.view fwt_removeAnnotation:pd];
         else
         {
             CGFloat savedDelay = pd.delay;
             pd.delay = .0f;
-            [self.fwPopoverController addAnnotation:pd];
+            [self.view fwt_addAnnotation:pd];
             pd.delay = savedDelay;
         }
-    }
-}
-
-#pragma mark - Private
-- (FWTDefaultAnnotationView *)defaultPopoverView
-{
-    FWTDefaultAnnotationView *_popoverView = [[[FWTDefaultAnnotationView alloc] init] autorelease];
-    
-    //
-    _popoverView.contentSize = CGSizeMake(160.0f, 60.0f);
-    _popoverView.contentViewEdgeInsets = UIEdgeInsetsMake(5.0f, 5.0f, 5.0f, 5.0f);
-    
-    //
-    _popoverView.arrowCornerOffset = 10.0f;
-    _popoverView.arrowOffset = 10.0f;
-    //    _popoverView.animationDuration = .35f;
-    
-    //
-    _popoverView.textLabel.textAlignment = UITextAlignmentCenter;
-    _popoverView.textLabel.backgroundColor = [UIColor clearColor];
-    _popoverView.textLabel.numberOfLines = 0;
-    _popoverView.textLabel.font = [UIFont systemFontOfSize:12.0f];
-    _popoverView.textLabel.textColor = [UIColor colorWithWhite:.91f alpha:1.0f];
-    _popoverView.textLabel.shadowOffset = CGSizeMake(.0f, -.7f);
-    _popoverView.textLabel.shadowColor = [[UIColor blackColor] colorWithAlphaComponent:.5f];
-    
-
-    _popoverView.prepareToAnimationsBlock = ^{
-        _popoverView.frame = CGRectOffset(_popoverView.frame, .0f, -self.view.frame.size.height);
-    };
-    
-    _popoverView.presentAnimationsBlock = ^{
-        _popoverView.frame = CGRectOffset(_popoverView.frame, .0f, self.view.frame.size.height + 5.0f);
-    };
-    
-    _popoverView.presentCompletionBlock = ^(BOOL finished){
-        [UIView animateWithDuration:.1f animations:^{
-            _popoverView.frame = CGRectOffset(_popoverView.frame, .0f, -5.0f);
-        }];
-    };
-    
-    _popoverView.dismissAnimationsBlock = ^{
-        _popoverView.transform = ((arc4random()%1000) > 500) ? CGAffineTransformMakeRotation(M_PI*.5f):CGAffineTransformMakeRotation(-M_PI*.5f);
-        _popoverView.frame = CGRectOffset(_popoverView.frame, .0f, self.view.frame.size.height);
-    };
-
-    return _popoverView;
-}
-
-#pragma mark - Getters
-- (FWTAnnotationManager *)fwPopoverController
-{
-    if (!self->_fwPopoverController)
-    {
-        self->_fwPopoverController = [[FWTAnnotationManager alloc] init];
-        self->_fwPopoverController.delegate = self;
-    }
-    
-    return self->_fwPopoverController;
-}
-
-#pragma mark - FWTAnnotationManagerDelegate
-- (FWTAnnotationView *)annotationManager:(FWTAnnotationManager *)annotationManager viewForAnnotation:(FWTAnnotation *)annotation
-{
-    FWTDefaultAnnotationView *_popoverView = [self defaultPopoverView];
-    _popoverView.textLabel.text = annotation.text;
-
-    return _popoverView;
-}
-
-- (void)annotationManager:(FWTAnnotationManager *)annotationManager
-     didTapAnnotationView:(FWTAnnotationView *)annotationView
-               annotation:(FWTAnnotation *)annotation
-{
-    if (annotationView)
-    {
-        [annotationManager removeAnnotation:annotation];
-    }
-    else
-    {
-        [annotationManager removeAnnotations:annotationManager.annotations];
     }
 }
 

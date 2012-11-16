@@ -8,18 +8,17 @@
 
 #import "FWTAnnotation.h"
 
+@interface FWTAnnotation ()
+@property (nonatomic, readwrite, retain) NSString *guid;
+@end
+
 @implementation FWTAnnotation
-@synthesize text = _text;
-@synthesize presentingRectPortrait = _presentingRectPortrait;
-@synthesize presentingRectLandscape = _presentingRectLandscape;
-@synthesize arrowDirection = _arrowDirection;
-@synthesize delay = _delay;
-@synthesize animated = _animated;
-@synthesize desiredSize = _desiredSize;
 
 - (void)dealloc
 {
+    self.guid = nil;
     self.text = nil;
+    self.image = nil;
     [super dealloc];
 }
 
@@ -27,12 +26,26 @@
 {
     if ((self = [super init]))
     {
-        self.arrowDirection = FWTAnnotationArrowDirectionNone;
+        self.guid = [[self class] _GUID];
+        self.presentingRectPortrait = CGRectZero;
+        self.presentingRectLandscape = CGRectZero;
+        self.arrowDirection = FWTPopoverArrowDirectionNone;
         self.delay = .0f;
-        self.desiredSize = CGSizeZero;
+        self.animated = YES;
+        self.dismissOnTouch = YES;
     }
     
     return self;
+}
+
++ (NSString *)_GUID
+{
+	CFUUIDRef theUUID = CFUUIDCreate(NULL);
+	CFStringRef theString = CFUUIDCreateString(NULL, theUUID);
+	NSString *unique = [NSString stringWithString:(id)theString];
+	CFRelease(theString);
+    CFRelease(theUUID); // Cleanup
+	return unique;
 }
 
 @end

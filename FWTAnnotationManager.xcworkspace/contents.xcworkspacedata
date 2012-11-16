@@ -2,6 +2,9 @@
 <Workspace
    version = "1.0">
    <FileRef
+      location = "group:FWTPopover/FWTPopoverView/FWTPopoverView.xcodeproj">
+   </FileRef>
+   <FileRef
       location = "group:FWTAnnotationManager/FWTAnnotationManager.xcodeproj">
    </FileRef>
    <FileRef
