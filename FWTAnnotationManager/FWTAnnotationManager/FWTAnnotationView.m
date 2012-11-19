@@ -8,6 +8,9 @@
 
 #import "FWTAnnotationView.h"
 
+#define FWT_AV_SPACE_BETWEEN_IMAGE_AND_TEXT     5.0f
+#define FWT_AV_CONTENT_VIEW_EDGE_INSETS         UIEdgeInsetsMake(5.0f, 5.0f, 5.0f, 5.0f)
+
 const CGFloat FWTDefaultAnnotationViewSpaceBetweenImageViewAndTextLabel = 5.0f;
 
 @interface FWTAnnotationView ()
@@ -31,7 +34,7 @@ const CGFloat FWTDefaultAnnotationViewSpaceBetweenImageViewAndTextLabel = 5.0f;
 {
     if ((self = [super initWithFrame:frame]))
     {
-        self.contentViewEdgeInsets = UIEdgeInsetsMake(5.0f, 5.0f, 5.0f, 5.0f);
+        self.contentViewEdgeInsets = FWT_AV_CONTENT_VIEW_EDGE_INSETS;
         self.spaceBetweenImageViewAndTextLabel = FWTDefaultAnnotationViewSpaceBetweenImageViewAndTextLabel;
     }
     
@@ -101,19 +104,19 @@ const CGFloat FWTDefaultAnnotationViewSpaceBetweenImageViewAndTextLabel = 5.0f;
 {
     //  Calculate the available space and then get the size of the text
     //
-    CGFloat imageWidth = .0f;
+    CGSize imageSize = CGSizeZero;
     if (self->_imageView)
-        imageWidth = self.imageView.image.size.width + self.spaceBetweenImageViewAndTextLabel;
-
+        imageSize = self.imageView.image.size;
+    
     if (self->_textLabel)
     {
-        CGFloat widthToRemove = self.contentViewEdgeInsets.left + self.contentViewEdgeInsets.right + imageWidth;
+        CGFloat widthToRemove = self.contentViewEdgeInsets.left + self.contentViewEdgeInsets.right + imageSize.width;
         CGFloat heightToAdd = self.contentViewEdgeInsets.top + self.contentViewEdgeInsets.bottom;
         CGFloat avalaibleWidth = self.contentSize.width - widthToRemove;
         CGSize size = [self.textLabel.text sizeWithFont:self.textLabel.font constrainedToSize:CGSizeMake(avalaibleWidth, MAXFLOAT)];
         size.height += heightToAdd;
         CGSize newContentSize = self.contentSize;
-        newContentSize.height = MAX(newContentSize.height, size.height);
+        newContentSize.height = MAX(newContentSize.height, MAX(size.height, imageSize.height));
         self.contentSize = newContentSize;
     }
 

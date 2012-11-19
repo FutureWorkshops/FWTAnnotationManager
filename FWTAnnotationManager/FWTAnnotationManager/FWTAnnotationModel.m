@@ -57,8 +57,8 @@
 
 - (void)removeAnnotation:(FWTAnnotation *)annotation
 {
-    [self.mutableAnnotations removeObject:annotation];
     [self.annotationsDictionary removeObjectForKey:annotation.guid];
+    [self.mutableAnnotations removeObject:annotation];
 }
 
 - (FWTAnnotationView *)viewForAnnotation:(FWTAnnotation *)annotation
@@ -70,14 +70,14 @@
 {
     __block FWTAnnotation *toReturn = nil;
     [self.mutableAnnotations enumerateObjectsUsingBlock:^(FWTAnnotation *annotation, NSUInteger idx, BOOL *stop) {
-        FWTAnnotationView *_popoverView = [self viewForAnnotation:annotation];
-        if (_popoverView == view)
+        id annotationView = [self.annotationsDictionary objectForKey:annotation.guid];
+        if (annotationView == view)
         {
             toReturn = annotation;
             *stop = YES;
         }
     }];
-    
+
     return toReturn;
 }
 

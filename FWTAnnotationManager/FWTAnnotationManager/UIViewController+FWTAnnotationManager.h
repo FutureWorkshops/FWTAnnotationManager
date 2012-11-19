@@ -11,13 +11,14 @@
 #import "FWTAnnotationManager.h"
 #import "FWTAnnotationModel.h"
 
-@interface UIView (FWTAnnotationManager)
+@interface UIViewController (FWTAnnotationManager)
 
 @property (nonatomic, readonly) FWTAnnotationManager *fwt_annotationManager;
 @property (nonatomic, readonly, copy) NSArray *fwt_annotations;
 
 - (void)fwt_addAnnotation:(FWTAnnotation *)annotation;
 - (void)fwt_addAnnotations:(NSArray *)annotations;
+
 - (void)fwt_removeAnnotation:(FWTAnnotation *)annotation;
 - (void)fwt_removeAnnotations:(NSArray *)annotations;
 

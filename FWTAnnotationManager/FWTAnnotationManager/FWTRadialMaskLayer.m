@@ -82,9 +82,7 @@
     [bp appendPath:self.boundsBezierPath];
     CGContextAddPath(ctx, bp.CGPath);
     CGContextEOFillPath(ctx);
-    
-//    CGContextDrawImage(ctx, myRect, self.maskImageRef);
-    
+
     //
     CGContextClipToMask(ctx, myRect, self.maskImageRef);
     CGContextFillRect(ctx, rect);

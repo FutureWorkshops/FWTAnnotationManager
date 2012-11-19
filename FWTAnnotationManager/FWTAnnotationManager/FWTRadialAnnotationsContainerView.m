@@ -76,7 +76,7 @@ NSString *const keyPathFrame = @"frame";
     //
     CGContextRef ctx = UIGraphicsGetCurrentContext();
     
-    // first iteration fill the background and clear the clip path
+    // first iteration fill the background and clear the clip paths
     CGContextSetFillColorWithColor(ctx, self.realBackgroundColor.CGColor);
     CGContextFillRect(ctx, rect);
     void(^appendSubpath)(UIBezierPath *, CGRect) = ^(UIBezierPath *path, CGRect rect) {
@@ -103,7 +103,7 @@ NSString *const keyPathFrame = @"frame";
         CGContextClearRect(ctx, rect);
     }
     
-    // time to render into the context all the animation completed layers
+    // time to render layers into the context
     __block CGFloat dx = .0f;
     __block CGFloat dy = .0f;
     [self.model enumerateKeysAndObjectsUsingBlock:^(id key, FWTRadialAnnotation *radialAnnotation, BOOL *stop) {

@@ -9,7 +9,7 @@
 #import "SampleViewController.h"
 #import "StaticModel.h"
 #import "CustomAnnotationView.h"
-#import "UIView+FWTAnnotationManager.h"
+#import "UIViewController+FWTAnnotationManager.h"
 
 @interface SampleViewController ()
 
@@ -44,15 +44,17 @@
     
 //    self.view.backgroundColor = [UIColor whiteColor];
     
-    UIImageView *iv = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"photo.png"]] autorelease];
-    [self.view addSubview:iv];
+//    UIImageView *iv = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"photo.png"]] autorelease];
+//    [self.view addSubview:iv];
     
     // configure our annotation
-    self.view.fwt_annotationManager.annotationsContainerViewType = FWTAnnotationsContainerViewTypeRadial;
-    self.view.fwt_annotationManager.annotationsContainerView.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:.65f];
-    self.view.fwt_annotationManager.viewForAnnotationBlock = ^(FWTAnnotation *annotation){
+    self.fwt_annotationManager.annotationsContainerViewType = FWTAnnotationsContainerViewTypeRadial;
+    self.fwt_annotationManager.annotationsContainerView.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:.65f];
+    
+    __block typeof(self) myself = self;
+    self.fwt_annotationManager.viewForAnnotationBlock = ^(FWTAnnotation *annotation){
         CustomAnnotationView *_annotationView = [[[CustomAnnotationView alloc] init] autorelease];
-        [_annotationView setupAnimationHelperWithSuperview:self.view];
+        [_annotationView setupAnimationHelperWithSuperview:myself.view];
         return _annotationView;
     };
 }
@@ -145,11 +147,13 @@
 #pragma mark - Actions
 - (void)segmentedControlValueChanged:(UISegmentedControl *)sc
 {
+    //  add/remove all annotations
+    //
     if (sc == self.navigationItem.titleView)
     {
         if (sc.selectedSegmentIndex == 0)
         {
-            [self.view fwt_addAnnotations:[StaticModel popoverAnnotations]];
+            [self fwt_addAnnotations:[StaticModel popoverAnnotations]];
             
             self.navigationItem.rightBarButtonItem = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
                                                                                                     target:self
@@ -157,20 +161,22 @@
         }
         else
         {
-            [self.view fwt_removeAnnotations:self.view.fwt_annotationManager.model.annotations];
+            [self fwt_removeAnnotations:self.fwt_annotationManager.model.annotations];
             self.navigationItem.rightBarButtonItem = nil;
         }
     }
+    //  add/remove the single
+    //
     else
     {                
         FWTAnnotation *pd = [[StaticModel popoverAnnotations] objectAtIndex:sc.selectedSegmentIndex];
-        if ([self.view.fwt_annotations containsObject:pd])
-            [self.view fwt_removeAnnotation:pd];
+        if ([self.fwt_annotations containsObject:pd])
+            [self fwt_removeAnnotation:pd];
         else
         {
             CGFloat savedDelay = pd.delay;
             pd.delay = .0f;
-            [self.view fwt_addAnnotation:pd];
+            [self fwt_addAnnotation:pd];
             pd.delay = savedDelay;
         }
     }

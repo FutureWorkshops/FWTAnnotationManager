@@ -19,9 +19,8 @@ typedef NS_ENUM(NSInteger, FWTAnnotationsContainerViewType)
 typedef FWTAnnotationView *(^FWTAnnotationManagerViewForAnnotationBlock)(FWTAnnotation *);
 typedef void (^FWTAnnotationManagerDidTapAnnotationBlock)(FWTAnnotation *, FWTAnnotationView *);
 
-@interface FWTAnnotationManager : NSObject
+@interface FWTAnnotationManager : UIViewController
 
-@property (nonatomic, assign) UIView *parentView;
 @property (nonatomic, assign) FWTAnnotationsContainerViewType annotationsContainerViewType;     // configure the type before accessing any property
 @property (nonatomic, readonly, retain) UIView *annotationsContainerView;                       // plug with your own class or just customize the default one
 @property (nonatomic, readonly, retain) FWTAnnotationModel *model;

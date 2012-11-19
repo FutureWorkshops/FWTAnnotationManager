@@ -6,27 +6,13 @@
 //  Copyright (c) 2012 Marco Meschini. All rights reserved.
 //
 
-#import "UIView+FWTAnnotationManager.h"
+#import "UIViewController+FWTAnnotationManager.h"
 #import "FWTAnnotationManager.h"
 #import <objc/runtime.h>
 
 static char annotationManagerKey;
 
-@implementation UIView (FWTAnnotationManager)
-
-#pragma mark - Private
-- (FWTAnnotationManager *)_getAssociatedAnnotationManager
-{
-    FWTAnnotationManager *manager = objc_getAssociatedObject(self, &annotationManagerKey);
-    if (!manager)
-    {
-        manager = [[[FWTAnnotationManager alloc] init] autorelease];
-        manager.parentView = self;
-        objc_setAssociatedObject(self, &annotationManagerKey, manager, OBJC_ASSOCIATION_RETAIN);
-    }
-    
-    return manager;
-}
+@implementation UIViewController (FWTAnnotationManager)
 
 #pragma mark - Public
 - (FWTAnnotationManager *)fwt_annotationManager
@@ -35,7 +21,8 @@ static char annotationManagerKey;
     if (!manager)
     {
         manager = [[[FWTAnnotationManager alloc] init] autorelease];
-        manager.parentView = self;
+        [self addChildViewController:manager];
+        [manager didMoveToParentViewController:self];
         objc_setAssociatedObject(self, &annotationManagerKey, manager, OBJC_ASSOCIATION_RETAIN);
     }
     
