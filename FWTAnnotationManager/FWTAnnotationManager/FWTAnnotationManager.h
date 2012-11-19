@@ -27,6 +27,7 @@ typedef void (^FWTAnnotationManagerDidTapAnnotationBlock)(FWTAnnotation *, FWTAn
 @property (nonatomic, copy) FWTAnnotationManagerViewForAnnotationBlock viewForAnnotationBlock;  //
 @property (nonatomic, copy) FWTAnnotationManagerDidTapAnnotationBlock didTapAnnotationBlock;    //
 @property (nonatomic, assign) BOOL dismissOnBackgroundTouch;                                    //  default is YES
+@property (nonatomic, readonly, getter=isVisible) BOOL visible;
 
 - (void)addAnnotation:(FWTAnnotation *)annotation;
 - (void)addAnnotations:(NSArray *)annotations;
@@ -34,8 +35,6 @@ typedef void (^FWTAnnotationManagerDidTapAnnotationBlock)(FWTAnnotation *, FWTAn
 - (void)removeAnnotation:(FWTAnnotation *)annotation;
 - (void)removeAnnotations:(NSArray *)annotations;
 
-//- (void)cancel;
-
-- (BOOL)hasSuperview;
+- (void)cancel;
 
 @end

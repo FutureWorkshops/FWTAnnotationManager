@@ -140,7 +140,7 @@
 #pragma mark - Private
 - (void)cancel
 {
-//    [self.fwPopoverController cancel];
+    [self.fwt_annotationManager cancel];
     self.navigationItem.rightBarButtonItem = nil;
 }
 

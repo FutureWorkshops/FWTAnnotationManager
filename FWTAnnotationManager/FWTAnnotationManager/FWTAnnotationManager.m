@@ -15,24 +15,20 @@
 @interface FWTAnnotationManager () <FWTPopoverViewDelegate>
 
 @property (nonatomic, readwrite, retain) UIView *annotationsContainerView;
-@property (nonatomic, retain) UITapGestureRecognizer *tapGestureRecognizer;
-@property (nonatomic, assign) NSInteger popoverViewDidPresentCounter;
-@property (nonatomic, retain) id orientationObserver;
+@property (nonatomic, assign) NSInteger needsToPresentCounter;
 @property (nonatomic, readwrite, retain) FWTAnnotationModel *model;
 
 @end
 
 @implementation FWTAnnotationManager
 @synthesize annotationsContainerView = _annotationsContainerView;
-@synthesize tapGestureRecognizer = _tapGestureRecognizer;
 
 - (void)dealloc
 {
+    if (self.needsToPresentCounter > 0) [self cancel];
     self.didTapAnnotationBlock = nil;
     self.viewForAnnotationBlock = nil;
     self.model = nil;
-    self.orientationObserver = nil;
-    self.tapGestureRecognizer = nil;
     self.annotationsContainerView = nil;
     [super dealloc];
 }
@@ -41,7 +37,7 @@
 {
     if ((self = [super init]))
     {
-        self.popoverViewDidPresentCounter = 0;
+        self.needsToPresentCounter = 0;
         self.annotationsContainerViewType = FWTAnnotationsContainerViewTypeDefault;
         self.viewForAnnotationBlock = ^(FWTAnnotation *annotation){
           return [[[FWTAnnotationView alloc] init] autorelease];
@@ -74,12 +70,6 @@
     return self->_annotationsContainerView;
 }
 
-- (UITapGestureRecognizer *)tapGestureRecognizer
-{
-    if (!self->_tapGestureRecognizer) self->_tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(_handleGesture:)];
-    return self->_tapGestureRecognizer;
-}
-
 - (FWTAnnotationModel *)model
 {
     if (!self->_model) self->_model = [[FWTAnnotationModel alloc] init];
@@ -89,54 +79,12 @@
 #pragma mark - UIResponder
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
 {
-    if (self.popoverViewDidPresentCounter != 0) return;
-    
-    CGPoint point = [[touches anyObject] locationInView:self.view];
-    FWTAnnotationView *_annotationView = [self.model viewAtPoint:point];
-    FWTAnnotation *_annotation = [self.model annotationForView:_annotationView];
-    
-    // give user a chance
-    if (self.didTapAnnotationBlock) self.didTapAnnotationBlock(_annotation, _annotationView);
-    
-    //
-    if (_annotationView && _annotation.dismissOnTouch)
-        [self removeAnnotation:_annotation];
-    else if (!_annotationView && self.dismissOnBackgroundTouch)
-        [self removeAnnotations:self.model.annotations];
+    [self _didTouchAtPoint:[[touches anyObject] locationInView:self.view]];
 }
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
 {
-    if (self.popoverViewDidPresentCounter != 0) return;
-    
-    CGPoint point = [[touches anyObject] locationInView:self.view];
-    FWTAnnotationView *_annotationView = [self.model viewAtPoint:point];
-    FWTAnnotation *_annotation = [self.model annotationForView:_annotationView];
-    
-    // give user a chance
-    if (self.didTapAnnotationBlock) self.didTapAnnotationBlock(_annotation, _annotationView);
-    
-    //
-    if (_annotationView && _annotation.dismissOnTouch)
-        [self removeAnnotation:_annotation];
-    else if (!_annotationView && self.dismissOnBackgroundTouch)
-        [self removeAnnotations:self.model.annotations];
-}
-
-#pragma mark - Actions
-- (void)_handleGesture:(UIGestureRecognizer *)gesture
-{
-    FWTAnnotationView *_annotationView = [self.model viewAtPoint:[gesture locationInView:gesture.view]];
-    FWTAnnotation *_annotation = [self.model annotationForView:_annotationView];
-    
-    // give user a chance
-    if (self.didTapAnnotationBlock) self.didTapAnnotationBlock(_annotation, _annotationView);
-    
-    //
-    if (_annotationView && _annotation.dismissOnTouch)
-        [self removeAnnotation:_annotation];
-    else if (!_annotationView && self.dismissOnBackgroundTouch)
-        [self removeAnnotations:self.model.annotations];
+    [self _didTouchAtPoint:[[touches anyObject] locationInView:self.view]];
 }
 
 #pragma mark - Private 
@@ -171,16 +119,29 @@
     return self.annotationsContainerView.backgroundColor != nil;
 }
 
+- (void)_didTouchAtPoint:(CGPoint)point
+{
+    if (self.needsToPresentCounter != 0) return;
+    
+    FWTAnnotationView *_annotationView = [self.model viewAtPoint:point];
+    FWTAnnotation *_annotation = [self.model annotationForView:_annotationView];
+    
+    // give user a chance
+    if (self.didTapAnnotationBlock) self.didTapAnnotationBlock(_annotation, _annotationView);
+    
+    //
+    if (_annotationView && _annotation.dismissOnTouch)
+        [self removeAnnotation:_annotation];
+    else if (!_annotationView && self.dismissOnBackgroundTouch)
+        [self removeAnnotations:self.model.annotations];
+}
+
 #pragma mark - Public
 - (void)addAnnotation:(FWTAnnotation *)annotation
 {
     //  add the containerView if needed
     [self _setupViews];
-    
-    //  add the gesture
-//    if (!self.tapGestureRecognizer.view) [self.annotationsContainerView addGestureRecognizer:self.tapGestureRecognizer];
-//    self.tapGestureRecognizer.enabled = NO;
-    
+        
     //  get an annotationView
     FWTAnnotationView *annotationView = self.viewForAnnotationBlock(annotation);
     annotationView.delegate = self;
@@ -194,7 +155,7 @@
     [self.model addAnnotation:annotation withView:annotationView];
     
     //  update animation counter
-    self.popoverViewDidPresentCounter++;
+    self.needsToPresentCounter++;
     
     //
     if (self.annotationsContainerViewType == FWTAnnotationsContainerViewTypeRadial)
@@ -232,7 +193,24 @@
     }];
 }
 
-- (BOOL)hasSuperview
+- (void)cancel
+{
+    if (self.annotationsContainerViewType == FWTAnnotationsContainerViewTypeRadial)
+        [(FWTRadialAnnotationsContainerView *)self.annotationsContainerView cancel];
+    
+    NSArray *arrayCopy = self.model.annotations;
+    [arrayCopy enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        FWTAnnotationView *_popoverView = [self.model viewForAnnotation:obj];
+        if (_popoverView)
+        {
+            _popoverView.delegate = nil;
+            [_popoverView dismissPopoverAnimated:NO];
+        }
+        [self.model removeAnnotation:obj];
+    }];
+}
+
+- (BOOL)isVisible
 {
     return self.annotationsContainerView.superview != nil;
 }
@@ -240,11 +218,7 @@
 #pragma mark - FWTPopoverViewDelegate
 - (void)popoverViewDidPresent:(FWTPopoverView *)annotationView
 {    
-    self.popoverViewDidPresentCounter--;
-    if (self.popoverViewDidPresentCounter == 0)
-    {
-        self.tapGestureRecognizer.enabled = YES;
-    }
+    self.needsToPresentCounter--;
 }
 
 - (void)popoverViewDidDismiss:(FWTPopoverView *)annotationView

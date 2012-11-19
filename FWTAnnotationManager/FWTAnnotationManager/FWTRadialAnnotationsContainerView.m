@@ -159,6 +159,23 @@ NSString *const keyPathFrame = @"frame";
     [entry.layer performSelector:@selector(dismissAnimation:) withObject:completionBlock afterDelay:.0f];
 }
 
+- (void)cancel
+{
+    //
+    [NSObject cancelPreviousPerformRequestsWithTarget:self];
+    
+    //
+    [self.model enumerateKeysAndObjectsUsingBlock:^(id key, FWTRadialAnnotation *entry, BOOL *stop) {
+        [entry.view removeObserver:self forKeyPath:keyPathFrame];
+    }];
+    
+    //
+    [self.model removeAllObjects];
+    
+    //
+    [self setNeedsDisplay];
+}
+
 #pragma mark - Getters
 - (NSMutableDictionary *)model
 {
