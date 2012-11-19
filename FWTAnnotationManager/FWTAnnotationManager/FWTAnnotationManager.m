@@ -15,27 +15,21 @@
 @interface FWTAnnotationManager () <FWTPopoverViewDelegate>
 
 @property (nonatomic, readwrite, retain) UIView *annotationsContainerView;
-@property (nonatomic, retain) UITapGestureRecognizer *tapGestureRecognizer;
-@property (nonatomic, assign) NSInteger popoverViewDidPresentCounter;
-@property (nonatomic, retain) id orientationObserver;
+@property (nonatomic, assign) NSInteger needsToPresentCounter;
 @property (nonatomic, readwrite, retain) FWTAnnotationModel *model;
 
 @end
 
 @implementation FWTAnnotationManager
 @synthesize annotationsContainerView = _annotationsContainerView;
-@synthesize tapGestureRecognizer = _tapGestureRecognizer;
 
 - (void)dealloc
 {
-    [self _unregisterFromStatusBarOrientationNotifications];
+    if (self.needsToPresentCounter > 0) [self cancel];
     self.didTapAnnotationBlock = nil;
     self.viewForAnnotationBlock = nil;
     self.model = nil;
-    self.orientationObserver = nil;
-    self.tapGestureRecognizer = nil;
     self.annotationsContainerView = nil;
-    self.parentView = nil;
     [super dealloc];
 }
 
@@ -43,7 +37,7 @@
 {
     if ((self = [super init]))
     {
-        self.popoverViewDidPresentCounter = 0;
+        self.needsToPresentCounter = 0;
         self.annotationsContainerViewType = FWTAnnotationsContainerViewTypeDefault;
         self.viewForAnnotationBlock = ^(FWTAnnotation *annotation){
           return [[[FWTAnnotationView alloc] init] autorelease];
@@ -52,6 +46,15 @@
     }
     
     return self;
+}
+
+- (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
+{
+    __block typeof(self) myself = self;
+    [self.model enumerateAnnotationsUsingBlock:^(FWTAnnotation *annotation, NSUInteger idx, BOOL *stop) {
+        FWTAnnotationView *_popoverView = [myself.model viewForAnnotation:annotation];
+        [_popoverView adjustPositionToRect:[myself _presentingRectForAnnotation:annotation]];
+    }];
 }
 
 #pragma mark - Getters
@@ -67,22 +70,60 @@
     return self->_annotationsContainerView;
 }
 
-- (UITapGestureRecognizer *)tapGestureRecognizer
-{
-    if (!self->_tapGestureRecognizer) self->_tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(_handleGesture:)];
-    return self->_tapGestureRecognizer;
-}
-
 - (FWTAnnotationModel *)model
 {
     if (!self->_model) self->_model = [[FWTAnnotationModel alloc] init];
     return self->_model;
 }
 
-#pragma mark - Actions
-- (void)_handleGesture:(UIGestureRecognizer *)gesture
+#pragma mark - UIResponder
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
 {
-    FWTAnnotationView *_annotationView = [self.model viewAtPoint:[gesture locationInView:gesture.view]];
+    [self _didTouchAtPoint:[[touches anyObject] locationInView:self.view]];
+}
+
+- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
+{
+    [self _didTouchAtPoint:[[touches anyObject] locationInView:self.view]];
+}
+
+#pragma mark - Private 
+- (CGRect)_presentingRectForAnnotation:(FWTAnnotation *)annotation
+{
+    UIInterfaceOrientation orientation = [UIApplication sharedApplication].statusBarOrientation;
+    CGRect rect = CGRectZero;
+    rect = UIInterfaceOrientationIsLandscape(orientation) ? annotation.presentingRectLandscape : annotation.presentingRectPortrait;    
+    return rect;
+}
+
+- (void)_setupViews
+{
+    if (![self isViewLoaded] || !self.view.superview)
+    {
+        [self.parentViewController.view addSubview:self.view];
+        self.view.frame = self.parentViewController.view.bounds;
+    }
+    
+    if (!self.annotationsContainerView.superview)
+    {
+        BOOL needsAnimation = [self _annotationsContainerViewNeedsAnimation];
+        if (needsAnimation) self.annotationsContainerView.alpha = .0f;
+        [self.view addSubview:self.annotationsContainerView];
+        self.annotationsContainerView.frame = self.view.bounds;
+        if (needsAnimation) [UIView animateWithDuration:.2f animations:^{ self.annotationsContainerView.alpha = 1.0f; }];
+    }
+}
+
+- (BOOL)_annotationsContainerViewNeedsAnimation
+{
+    return self.annotationsContainerView.backgroundColor != nil;
+}
+
+- (void)_didTouchAtPoint:(CGPoint)point
+{
+    if (self.needsToPresentCounter != 0) return;
+    
+    FWTAnnotationView *_annotationView = [self.model viewAtPoint:point];
     FWTAnnotation *_annotation = [self.model annotationForView:_annotationView];
     
     // give user a chance
@@ -95,93 +136,12 @@
         [self removeAnnotations:self.model.annotations];
 }
 
-#pragma mark - Private Orientation
-- (void)_registerToStatusBarOrientationNotifications
-{
-    if (!self.orientationObserver)
-    {
-        __block typeof(self) myself = self;
-        void (^NotificationBlock)(NSNotification *) = ^(NSNotification *note){
-            int64_t delayInSeconds = .1f;   //  wait to get a consistent frame
-            dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
-            dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-                UIInterfaceOrientation orientation = [UIApplication sharedApplication].statusBarOrientation;
-                [myself _updatePopoverAnnotationsToInterfaceOrientation:orientation];
-            });
-        };
-        
-        NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
-        self.orientationObserver = [notificationCenter addObserverForName:UIApplicationDidChangeStatusBarOrientationNotification
-                                                                   object:nil
-                                                                    queue:[NSOperationQueue mainQueue]
-                                                               usingBlock:NotificationBlock];
-    }
-}
-
-- (void)_unregisterFromStatusBarOrientationNotifications
-{
-    if (self.orientationObserver)
-    {
-        [[NSNotificationCenter defaultCenter] removeObserver:self.orientationObserver
-                                                        name:UIApplicationDidChangeStatusBarOrientationNotification
-                                                      object:nil];
-        self.orientationObserver = nil;
-    }
-}
-
-- (void)_updatePopoverAnnotationsToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
-{
-    [UIView animateWithDuration:.2f animations:^{
-        [self.model enumerateAnnotationsUsingBlock:^(FWTAnnotation *annotation, NSUInteger idx, BOOL *stop) {
-            FWTAnnotationView *_popoverView = [self.model viewForAnnotation:annotation];
-            [_popoverView adjustPositionToRect:[self _presentingRectForAnnotation:annotation]];
-        }];
-    }];
-}
-
-#pragma mark - Private 
-- (CGRect)_presentingRectForAnnotation:(FWTAnnotation *)annotation
-{
-    UIInterfaceOrientation orientation = [UIApplication sharedApplication].statusBarOrientation;
-    CGRect rect = CGRectZero;
-    rect = UIInterfaceOrientationIsLandscape(orientation) ? annotation.presentingRectLandscape : annotation.presentingRectPortrait;    
-    return rect;
-}
-
-- (void)_setupAnnotationsContainerView
-{
-    if (!self.annotationsContainerView.superview)
-    {
-        BOOL needsAnimation = NO;
-        if (!CGColorEqualToColor([UIColor clearColor].CGColor, self.annotationsContainerView.backgroundColor.CGColor))
-        {
-            needsAnimation = YES;
-            self.annotationsContainerView.alpha = .0f;
-        }
-        
-        self.annotationsContainerView.frame = self.parentView.bounds;
-        [self.parentView addSubview:self.annotationsContainerView];
-        [UIView animateWithDuration:.2f animations:^{ self.annotationsContainerView.alpha = 1.0f; }];
-    }
-    else
-    {
-        self.annotationsContainerView.frame = self.parentView.bounds;
-    }
-}
-
 #pragma mark - Public
 - (void)addAnnotation:(FWTAnnotation *)annotation
 {
     //  add the containerView if needed
-    [self _setupAnnotationsContainerView];
-    
-    //  add the gesture
-    if (!self.tapGestureRecognizer.view) [self.annotationsContainerView addGestureRecognizer:self.tapGestureRecognizer];
-    self.tapGestureRecognizer.enabled = NO;
-    
-    //  orientation
-    [self _registerToStatusBarOrientationNotifications];
-    
+    [self _setupViews];
+        
     //  get an annotationView
     FWTAnnotationView *annotationView = self.viewForAnnotationBlock(annotation);
     annotationView.delegate = self;
@@ -195,7 +155,7 @@
     [self.model addAnnotation:annotation withView:annotationView];
     
     //  update animation counter
-    self.popoverViewDidPresentCounter++;
+    self.needsToPresentCounter++;
     
     //
     if (self.annotationsContainerViewType == FWTAnnotationsContainerViewTypeRadial)
@@ -227,13 +187,30 @@
 
 - (void)removeAnnotations:(NSArray *)annotations
 {    
-    NSArray *arrayCopy = [NSArray arrayWithArray:annotations];
+    NSArray *arrayCopy = self.model.annotations;
     [arrayCopy enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
         [self removeAnnotation:obj];
     }];
 }
 
-- (BOOL)hasSuperview
+- (void)cancel
+{
+    if (self.annotationsContainerViewType == FWTAnnotationsContainerViewTypeRadial)
+        [(FWTRadialAnnotationsContainerView *)self.annotationsContainerView cancel];
+    
+    NSArray *arrayCopy = self.model.annotations;
+    [arrayCopy enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        FWTAnnotationView *_popoverView = [self.model viewForAnnotation:obj];
+        if (_popoverView)
+        {
+            _popoverView.delegate = nil;
+            [_popoverView dismissPopoverAnimated:NO];
+        }
+        [self.model removeAnnotation:obj];
+    }];
+}
+
+- (BOOL)isVisible
 {
     return self.annotationsContainerView.superview != nil;
 }
@@ -241,11 +218,7 @@
 #pragma mark - FWTPopoverViewDelegate
 - (void)popoverViewDidPresent:(FWTPopoverView *)annotationView
 {    
-    self.popoverViewDidPresentCounter--;
-    if (self.popoverViewDidPresentCounter == 0)
-    {
-        self.tapGestureRecognizer.enabled = YES;
-    }
+    self.needsToPresentCounter--;
 }
 
 - (void)popoverViewDidDismiss:(FWTPopoverView *)annotationView
@@ -256,14 +229,17 @@
     //
     if (self.model.numberOfAnnotations == 0)
     {
-        [UIView animateWithDuration:.2f
-                         animations:^{
-                             self.annotationsContainerView.alpha = .0f;
-                         }
-                         completion:^(BOOL finished) {
-                             [self.annotationsContainerView removeFromSuperview];
-                             [self _unregisterFromStatusBarOrientationNotifications];
-                         }];
+        void (^completionBlock)(BOOL) = ^(BOOL finished){
+            [self.annotationsContainerView removeFromSuperview];
+            [self.view removeFromSuperview];
+        };
+        
+        if ([self _annotationsContainerViewNeedsAnimation])
+            [UIView animateWithDuration:.2f
+                             animations:^{ self.annotationsContainerView.alpha = .0f; }
+                             completion:completionBlock];
+        else
+            completionBlock(YES);
     }
 }
 

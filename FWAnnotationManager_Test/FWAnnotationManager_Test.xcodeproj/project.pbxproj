@@ -32,7 +32,6 @@
 		A93B0904163EFABF0030F227 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
 		A93B0938163FDEB50030F227 /* libFWTAnnotationManager.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libFWTAnnotationManager.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		A952C7EC1652B0C7002674DC /* photo@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "photo@2x.png"; sourceTree = "<group>"; };
-		A99009F11655161500382D13 /* CoreImage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreImage.framework; path = System/Library/Frameworks/CoreImage.framework; sourceTree = SDKROOT; };
 		A9A4AFBC1642C3770034593C /* CustomAnnotationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomAnnotationView.h; sourceTree = "<group>"; };
 		A9A4AFBD1642C3770034593C /* CustomAnnotationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomAnnotationView.m; sourceTree = "<group>"; };
 		E4C452E815DB9C8C00DD1A0F /* FWAnnotationManager_Test.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FWAnnotationManager_Test.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -101,7 +100,6 @@
 		E4C452EB15DB9C8C00DD1A0F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				A99009F11655161500382D13 /* CoreImage.framework */,
 				A93B0938163FDEB50030F227 /* libFWTAnnotationManager.a */,
 				E4C4530315DB9D0000DD1A0F /* QuartzCore.framework */,
 				E4C452EC15DB9C8C00DD1A0F /* UIKit.framework */,

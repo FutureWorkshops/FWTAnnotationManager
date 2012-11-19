@@ -13,5 +13,6 @@
 
 - (void)addAnnotationView:(FWTAnnotationView *)annotationView;
 - (void)removeAnnotationView:(FWTAnnotationView *)annotationView;
+- (void)cancel;
 
 @end

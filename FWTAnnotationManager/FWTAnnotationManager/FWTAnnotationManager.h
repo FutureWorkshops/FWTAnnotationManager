@@ -19,15 +19,15 @@ typedef NS_ENUM(NSInteger, FWTAnnotationsContainerViewType)
 typedef FWTAnnotationView *(^FWTAnnotationManagerViewForAnnotationBlock)(FWTAnnotation *);
 typedef void (^FWTAnnotationManagerDidTapAnnotationBlock)(FWTAnnotation *, FWTAnnotationView *);
 
-@interface FWTAnnotationManager : NSObject
+@interface FWTAnnotationManager : UIViewController
 
-@property (nonatomic, assign) UIView *parentView;
 @property (nonatomic, assign) FWTAnnotationsContainerViewType annotationsContainerViewType;     // configure the type before accessing any property
 @property (nonatomic, readonly, retain) UIView *annotationsContainerView;                       // plug with your own class or just customize the default one
 @property (nonatomic, readonly, retain) FWTAnnotationModel *model;
 @property (nonatomic, copy) FWTAnnotationManagerViewForAnnotationBlock viewForAnnotationBlock;  //
 @property (nonatomic, copy) FWTAnnotationManagerDidTapAnnotationBlock didTapAnnotationBlock;    //
 @property (nonatomic, assign) BOOL dismissOnBackgroundTouch;                                    //  default is YES
+@property (nonatomic, readonly, getter=isVisible) BOOL visible;
 
 - (void)addAnnotation:(FWTAnnotation *)annotation;
 - (void)addAnnotations:(NSArray *)annotations;
@@ -35,8 +35,6 @@ typedef void (^FWTAnnotationManagerDidTapAnnotationBlock)(FWTAnnotation *, FWTAn
 - (void)removeAnnotation:(FWTAnnotation *)annotation;
 - (void)removeAnnotations:(NSArray *)annotations;
 
-//- (void)cancel;
-
-- (BOOL)hasSuperview;
+- (void)cancel;
 
 @end
