@@ -10,26 +10,18 @@
 #import "FWTAnnotationView.h"
 #import "StaticModel.h"
 
-@interface TouchViewController ()
-{
-    UIView *_touchPointView;
-    UISegmentedControl *_segmentedControl;
-    FWTPopoverArrowDirection _popoverArrowDirection;
-}
-
+@interface TouchViewController () <FWTPopoverViewDelegate>
 @property (nonatomic, retain) UIView *touchPointView;
 @property (nonatomic, retain) UISegmentedControl *segmentedControl;
 @property (nonatomic, assign) FWTPopoverArrowDirection popoverArrowDirection;
-
+@property (nonatomic, retain) FWTAnnotationView *annotationView;
 @end
 
 @implementation TouchViewController
-@synthesize segmentedControl = _segmentedControl;
-@synthesize popoverArrowDirection = _popoverArrowDirection;
-@synthesize touchPointView = _touchPointView;
 
 - (void)dealloc
 {
+    self.annotationView = nil;
     self.touchPointView = nil;
     self.segmentedControl = nil;
     [super dealloc];
@@ -39,12 +31,10 @@
 {
     [super loadView];
     
-    //
     self.popoverArrowDirection = pow(2, 0);
     
-    //
     self.navigationItem.titleView = self.segmentedControl;
-    self.segmentedControl.selectedSegmentIndex = 0;
+    self.segmentedControl.selectedSegmentIndex = log2(self.popoverArrowDirection);
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
@@ -57,8 +47,7 @@
 {
     if (!self->_segmentedControl)
     {
-        NSArray *items = @[@"N", @"U", @"D", @"L", @"R"];
-        self->_segmentedControl = [[UISegmentedControl alloc] initWithItems:items];
+        self->_segmentedControl = [[UISegmentedControl alloc] initWithItems:@[@"N", @"U", @"D", @"L", @"R"]];
         self->_segmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
         self->_segmentedControl.autoresizingMask = UIViewAutoresizingFlexibleWidth;
         [self->_segmentedControl addTarget:self action:@selector(valueChangedForSegmentedControl:) forControlEvents:UIControlEventValueChanged];
@@ -72,8 +61,10 @@
 {
     if (!self->_touchPointView)
     {
-        self->_touchPointView = [[UIView alloc] initWithFrame:CGRectMake(.0f, .0f, 3.0f, 3.0f)];
+        self->_touchPointView = [[UIView alloc] initWithFrame:CGRectMake(.0f, .0f, 4.0f, 4.0f)];
+        self->_touchPointView.backgroundColor = [[UIColor redColor] colorWithAlphaComponent:.5f];
         self->_touchPointView.layer.borderWidth = 1.0f;
+        self->_touchPointView.layer.cornerRadius = 2.0f;
     }
     
     return self->_touchPointView;
@@ -85,38 +76,40 @@
     self.popoverArrowDirection = pow(2, segmentedControl.selectedSegmentIndex);
 }
 
+#pragma mark - UIResponder
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
 {
     CGPoint point = [[touches anyObject] locationInView:self.view];
     
     //
-    if (!self.touchPointView.superview) [self.view addSubview:self.touchPointView];
-    self.touchPointView.center = point;
-    
-    //
-    FWTAnnotationView *popoverView = (FWTAnnotationView *)[self.view viewWithTag:0xbeef];
-    if (!popoverView)
+    if (!self.annotationView)
     {
-        popoverView = [[self class] _defaultAnnotationView];
-        popoverView.tag = 0xbeef;
-        popoverView.textLabel.text = [StaticModel randomText];
+        self.annotationView = [[self class] _defaultAnnotationView];
+        self.annotationView.delegate = self;
+        self.annotationView.textLabel.text = [StaticModel randomText];
         id image = [StaticModel randomImage];
-        if ([image isKindOfClass:[UIImage class]]) popoverView.imageView.image = image;
-
-        [popoverView presentFromRect:CGRectMake(point.x, point.y, 1.0f, 1.0f)
-                              inView:self.view
-             permittedArrowDirection:self.popoverArrowDirection
-                            animated:YES];
+        if ([image isKindOfClass:[UIImage class]]) self.annotationView.imageView.image = image;
+        [self.annotationView presentFromRect:CGRectMake(point.x, point.y, 1.0f, 1.0f)
+                                      inView:self.view
+                     permittedArrowDirection:self.popoverArrowDirection
+                                    animated:YES];
     }
     else
-    {
-        [popoverView dismissPopoverAnimated:YES];
-    }
+        [self.annotationView dismissPopoverAnimated:YES];
     
     //
-    [self.view bringSubviewToFront:_touchPointView];
+    if (!self.touchPointView.superview) [self.view addSubview:self.touchPointView];
+    self.touchPointView.center = point;
+    [self.view bringSubviewToFront:self.touchPointView];
 }
 
+#pragma mark - FWTPopoverViewDelegate
+- (void)popoverViewDidDismiss:(FWTPopoverView *)annotationView
+{
+    self.annotationView = nil;
+}
+
+#pragma mark - Private
 + (FWTAnnotationView *)_defaultAnnotationView
 {
     //
