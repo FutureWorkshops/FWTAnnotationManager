@@ -7,22 +7,17 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "FWTAnnotationView.h"
+#import "FWTPopoverView.h"
 
 @interface FWTAnnotation : NSObject
-{
-    NSString *_text;
-    CGRect _presentingRectPortrait, _presentingRectLandscape;
-    FWTAnnotationArrowDirection _arrowDirection;
-    NSTimeInterval _delay;
-    BOOL _animated;
-    CGSize _desiredSize;
-}
+
+@property (nonatomic, assign) CGRect presentingRectPortrait, presentingRectLandscape;   // CGRectZero
+@property (nonatomic, assign) FWTPopoverArrowDirection arrowDirection;                  // FWTPopoverArrowDirectionNone
+@property (nonatomic, assign) NSTimeInterval delay;                                     // 0
+@property (nonatomic, assign) BOOL animated;                                            // YES
+@property (nonatomic, assign) BOOL dismissOnTouch;                                      // YES
 
 @property (nonatomic, retain) NSString *text;
-@property (nonatomic, assign) CGRect presentingRectPortrait, presentingRectLandscape;
-@property (nonatomic, assign) FWTAnnotationArrowDirection arrowDirection;
-@property (nonatomic, assign) NSTimeInterval delay;
-@property (nonatomic, assign) BOOL animated;
-@property (nonatomic, assign) CGSize desiredSize;
+@property (nonatomic, retain) UIImage *image;
+
 @end

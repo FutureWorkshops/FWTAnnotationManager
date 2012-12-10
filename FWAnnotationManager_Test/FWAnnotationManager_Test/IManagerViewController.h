@@ -7,10 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "FWTAnnotationManager.h"
+#import "UIViewController+FWTAnnotationManager.h"
+#import "StaticModel.h"
 
-@interface SampleViewController : UIViewController <FWTAnnotationManagerDelegate>
-{
-    FWTAnnotationManager *_fwPopoverController;
-}
+@interface IManagerViewController : UIViewController
+
+- (void)configureAnnotationsManager;
+
 @end

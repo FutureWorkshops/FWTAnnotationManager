@@ -9,5 +9,5 @@
 #import <UIKit/UIKit.h>
 
 @interface SamplePickerViewController : UITableViewController
-
+@property (nonatomic, retain) NSArray *samples;
 @end

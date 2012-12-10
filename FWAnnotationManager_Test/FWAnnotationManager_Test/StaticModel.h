@@ -9,9 +9,12 @@
 #import <Foundation/Foundation.h>
 
 @interface StaticModel : NSObject
+
 + (NSString *)randomText;
 + (UIImage *)randomImage;
 
-+ (NSArray *)popoverAnnotations;
++ (NSArray *)annotations;
+
++ (UIFont *)randomFontWithSize:(CGFloat)size;
 
 @end

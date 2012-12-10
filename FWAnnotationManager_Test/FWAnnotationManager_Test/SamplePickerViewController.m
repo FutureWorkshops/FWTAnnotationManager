@@ -7,20 +7,17 @@
 //
 
 #import "SamplePickerViewController.h"
+#import <QuartzCore/QuartzCore.h>
 
 @interface SamplePickerViewController ()
-{
-    NSArray *_items;
-}
-@property (nonatomic, retain) NSArray *items;
+
 @end
 
 @implementation SamplePickerViewController
-@synthesize items = _items;
 
 - (void)dealloc
 {
-    self.items = nil;
+    self.samples = nil;
     [super dealloc];
 }
 
@@ -29,8 +26,9 @@
     [super loadView];
     
     self.title = @"Pick a sample";
-    self.tableView.backgroundColor = [UIColor clearColor];
-    self.tableView.separatorColor = [UIColor lightGrayColor];
+    self.tableView.backgroundColor = [UIColor colorWithWhite:.91f alpha:.25f];
+    self.tableView.separatorColor = [UIColor colorWithWhite:.7f alpha:1.0f];
+    self.tableView.tableFooterView = [[[UIView alloc] init] autorelease];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
@@ -38,18 +36,10 @@
     return YES;
 }
 
-#pragma mark - Getters
-- (NSArray *)items
-{
-    if (!self->_items)
-        self->_items = [@[@"TouchViewController", @"SampleViewController"] retain];
-    
-    return self->_items;
-}
-
+#pragma mark - 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return self.items.count;
+    return self.samples.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -59,14 +49,15 @@
     if (!cell)
         cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
     
-    cell.textLabel.text = [self.items objectAtIndex:indexPath.row];
+    cell.textLabel.text = [self.samples objectAtIndex:indexPath.row];
+    cell.textLabel.backgroundColor = [UIColor clearColor];
     
     return cell;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSString *className = [self.items objectAtIndex:indexPath.row];
+    NSString *className = [self.samples objectAtIndex:indexPath.row];
     UIViewController *vc = [[[NSClassFromString(className) alloc] init] autorelease];
     [self.navigationController pushViewController:vc animated:YES];
 }

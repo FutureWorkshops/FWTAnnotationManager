@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface TouchViewController : UIViewController
+@interface AnnotationViewController : UIViewController
 
 @end

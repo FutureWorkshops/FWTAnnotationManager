@@ -7,8 +7,8 @@
 //
 
 #import "AppDelegate.h"
-#import "TouchViewController.h"
-#import "SampleViewController.h"
+#import "AnnotationViewController.h"
+#import "IManagerViewController.h"
 #import "SamplePickerViewController.h"
 
 @implementation AppDelegate
@@ -24,10 +24,11 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
-    self.window.backgroundColor = [UIColor scrollViewTexturedBackgroundColor];
+    self.window.backgroundColor = [UIColor scrollViewTexturedBackgroundColor];//
     
     //
-    UIViewController *vc = [[[SamplePickerViewController alloc] init] autorelease];
+    SamplePickerViewController *vc = [[[SamplePickerViewController alloc] init] autorelease];
+    vc.samples = @[@"AnnotationViewController", @"DefaultViewController", @"CustomViewController"];
     UINavigationController *nc = [[[UINavigationController alloc] initWithRootViewController:vc] autorelease];
     self.window.rootViewController = nc;
     
