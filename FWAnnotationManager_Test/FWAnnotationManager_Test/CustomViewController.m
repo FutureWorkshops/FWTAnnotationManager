@@ -17,7 +17,7 @@
 
 - (void)configureAnnotationsManager
 {
-    self.fwt_annotationManager.annotationsContainerViewType = FWTAnnotationsContainerViewTypeRadial;
+    self.fwt_annotationManager.annotationContainerViewType = FWTAnnotationContainerViewTypeRadial;
     __block typeof(self) myself = self;
     self.fwt_annotationManager.viewForAnnotationBlock = ^(FWTAnnotation *annotation){
         CustomAnnotationView *_annotationView = [[[CustomAnnotationView alloc] init] autorelease];

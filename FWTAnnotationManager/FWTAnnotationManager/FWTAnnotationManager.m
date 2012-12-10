@@ -14,7 +14,6 @@
 
 @interface FWTAnnotationManager () 
 
-@property (nonatomic, readwrite, retain) UIView *annotationsContainerView;
 @property (nonatomic, assign) NSInteger needsToPresentCounter;
 @property (nonatomic, readwrite, retain) FWTAnnotationModel *model;
 
@@ -38,7 +37,7 @@
     if ((self = [super init]))
     {
         self.needsToPresentCounter = 0;
-        self.annotationsContainerViewType = FWTAnnotationsContainerViewTypeDefault;
+        self.annotationContainerViewType = FWTAnnotationContainerViewTypeDefault;
         self.viewForAnnotationBlock = ^(FWTAnnotation *annotation){
           return [[[FWTAnnotationView alloc] init] autorelease];
         };
@@ -62,7 +61,8 @@
 {
     if (!self->_annotationsContainerView)
     {
-        Class class = self.annotationsContainerViewType == FWTAnnotationsContainerViewTypeDefault ? [UIView class] : [FWTRadialAnnotationsContainerView class];
+        BOOL isDefault = self.annotationContainerViewType == FWTAnnotationContainerViewTypeDefault ? YES : NO;
+        Class class = isDefault ? [FWTAnnotationContainerView class] : [FWTRadialAnnotationsContainerView class];
         self->_annotationsContainerView = [[class alloc] init];
         self->_annotationsContainerView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
     }
@@ -194,8 +194,7 @@
     self.needsToPresentCounter++;
     
     //
-    if (self.annotationsContainerViewType == FWTAnnotationsContainerViewTypeRadial)
-        [(FWTRadialAnnotationsContainerView *)self.annotationsContainerView addAnnotationView:annotationView];
+    [self.annotationsContainerView addAnnotation:annotation withView:annotationView];
     
     //  ready to present
     CGRect rect = [self _presentingRectForAnnotation:annotation];
@@ -211,13 +210,12 @@
 
 - (void)removeAnnotation:(FWTAnnotation *)annotation
 {
-    FWTAnnotationView *_popoverView = [self.model viewForAnnotation:annotation];
-    if (_popoverView)
+    FWTAnnotationView *annotationView = [self.model viewForAnnotation:annotation];
+    if (annotationView)
     {
-        if (self.annotationsContainerViewType == FWTAnnotationsContainerViewTypeRadial)
-            [(FWTRadialAnnotationsContainerView *)self.annotationsContainerView removeAnnotationView:_popoverView];
+        [self.annotationsContainerView removeAnnotation:annotation withView:annotationView];
         
-        [_popoverView dismissPopoverAnimated:annotation.animated];
+        [annotationView dismissPopoverAnimated:annotation.animated];
     }
 }
 
@@ -231,7 +229,7 @@
 
 - (void)cancel
 {
-    if (self.annotationsContainerViewType == FWTAnnotationsContainerViewTypeRadial)
+    if (self.annotationContainerViewType == FWTAnnotationContainerViewTypeRadial)
         [(FWTRadialAnnotationsContainerView *)self.annotationsContainerView cancel];
     
     NSArray *arrayCopy = self.model.annotations;

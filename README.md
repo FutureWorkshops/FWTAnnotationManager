@@ -27,19 +27,45 @@ TODO
 ##How to use it: configure
 
 ####FWTAnnotation
-TODO
+An FWTAnnotation instance coordinates the creation of an appropriate FWTAnnotationView object to handle the display. This class exposes position and presentation attributes as well as data values.
+
+* **presentingRectPortrait** the rectangle in portrait view at which to anchor the annotation
+* **presentingRectLandscape** the rectangle in landscape view at which to anchor the annotation
+* **arrowDirection** the direction in which the popover arrow is pointing
+* **delay** the minimum time before which the animation is started
+* **animated** set YES (default) to animate the presentation
+* **dismissOnTouch** set YES (default) if the annotation should be dismissed when touched
+* **text** the text of the annotation 
+* **image** the image of the annotation
 
 ####FWTAnnotationView
-TODO
+FWTAnnotationView subclass FWTPopoverView and adds the following extra properties:
+
+* **contentViewEdgeInsets** the inset or outset margins for the edges of the content view. Use this property to resize and reposition the effective rectangle
+* **textLabel** (_readonly_) the label used for the textual content of the annotation
+* **imageView** (_readonly_) the image view of the annotation
+
+FWTAnnotationView takes into account its text value and resize itself when needed respecting the current contentSize. The image is left aligned and vertically centered as in tableview cells. 
 
 ####FWTAnnotationsContainerViewType 
-TODO
+Each FWTAnnotationManager has an _annotationsContainerView_ that holds all the annotation views. The base class is FWTAnnotationContainerView and it exposes three public methods:
+* **addAnnotation:withView:**
+* **removeAnnotation:withView:**
+* **cancel**
+to make easy to extend and customize the behaviour of the container. 
+FWTAnnotationManager currently comes with two different types of container view:
+
+* **FWTAnnotationContainerViewTypeDefault**
+* **FWTAnnotationContainerViewTypeRadial**
+
+If the annotationsContainerView has a backgroundColor then the FWTAnnotationManager will fade in/fade out the view when adding the first annotation/removing the last one.
+
 
 ####FWTAnnotationManagerViewForAnnotationBlock
-TODO  
+This block returns the annotation view for the annotation passed as parameter. 
 
 ####FWTAnnotationManagerDidTapAnnotationBlock 
-TODO
+This block is executed after the user tap the view. 
 
 
 ##View hierarchy

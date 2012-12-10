@@ -123,15 +123,15 @@ NSString *const keyPathFrame = @"frame";
     }];
 }
 
-#pragma mark - Public
-- (void)addAnnotationView:(FWTAnnotationView *)annotationView
+#pragma mark - Overrides
+- (void)addAnnotation:(FWTAnnotation *)annotation withView:(FWTAnnotationView *)annotationView
 {
     CGFloat presentDelay = annotationView.animationHelper.presentDelay;
     if (presentDelay > .25) presentDelay -= .25f;   //  our animations will take 1/4 of second
     [self performSelector:@selector(_addAnnotationView:) withObject:annotationView afterDelay:presentDelay];
 }
 
-- (void)removeAnnotationView:(FWTAnnotationView *)annotationView
+- (void)removeAnnotation:(FWTAnnotation *)annotation withView:(FWTAnnotationView *)annotationView
 {
     // remove from kvo
     [annotationView removeObserver:self forKeyPath:keyPathFrame];
