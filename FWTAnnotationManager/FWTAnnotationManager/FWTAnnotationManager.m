@@ -12,7 +12,7 @@
 #import "FWTAnnotationView.h"
 #import "FWTAnnotation.h"
 
-@interface FWTAnnotationManager () <FWTPopoverViewDelegate>
+@interface FWTAnnotationManager () 
 
 @property (nonatomic, readwrite, retain) UIView *annotationsContainerView;
 @property (nonatomic, assign) NSInteger needsToPresentCounter;
@@ -130,10 +130,46 @@
     if (self.didTapAnnotationBlock) self.didTapAnnotationBlock(_annotation, _annotationView);
     
     //
-    if (_annotationView && _annotation.dismissOnTouch)
-        [self removeAnnotation:_annotation];
-    else if (!_annotationView && self.dismissOnBackgroundTouch)
-        [self removeAnnotations:self.model.annotations];
+    if (_annotationView && _annotation.dismissOnTouch) [self removeAnnotation:_annotation];
+    else if (!_annotationView && self.dismissOnBackgroundTouch) [self removeAnnotations:self.model.annotations];
+}
+
+- (FWTPopoverViewDidPresentBlock)_didPresentBlock
+{
+    __block typeof(self) myself = self;
+    FWTPopoverViewDidPresentBlock toReturn = ^(FWTPopoverView *av){
+        myself.needsToPresentCounter--;
+    };
+    
+    return [[toReturn copy] autorelease];
+}
+
+- (FWTPopoverViewDidDismissBlock)_didDismissBlock
+{
+    __block typeof(self) myself = self;
+    FWTPopoverViewDidDismissBlock toReturn = ^(FWTPopoverView *av){
+        // remove from model
+        FWTAnnotation *annotation = [myself.model annotationForView:(FWTAnnotationView *)av];
+        [myself.model removeAnnotation:annotation];
+        
+        // remove annotationsContainerView
+        if (myself.model.numberOfAnnotations == 0)
+        {
+            void (^completionBlock)(BOOL) = ^(BOOL finished){
+                [myself.annotationsContainerView removeFromSuperview];
+                [myself.view removeFromSuperview];
+            };
+            
+            if ([myself _annotationsContainerViewNeedsAnimation])
+                [UIView animateWithDuration:.2f
+                                 animations:^{ myself.annotationsContainerView.alpha = .0f; }
+                                 completion:completionBlock];
+            else
+                completionBlock(YES);
+        }
+    };
+
+    return [[toReturn copy] autorelease];
 }
 
 #pragma mark - Public
@@ -144,8 +180,8 @@
         
     //  get an annotationView
     FWTAnnotationView *annotationView = self.viewForAnnotationBlock(annotation);
-    annotationView.delegate = self;
-    
+    annotationView.didPresentBlock = [self _didPresentBlock];   // keep track of what happens
+    annotationView.didDismissBlock = [self _didDismissBlock];   //
     //  configure
     if (annotation.text) annotationView.textLabel.text = annotation.text;
     if (annotation.image) annotationView.imageView.image = annotation.image;
@@ -203,7 +239,6 @@
         FWTAnnotationView *_popoverView = [self.model viewForAnnotation:obj];
         if (_popoverView)
         {
-            _popoverView.delegate = nil;
             [_popoverView dismissPopoverAnimated:NO];
         }
         [self.model removeAnnotation:obj];
@@ -213,34 +248,6 @@
 - (BOOL)isVisible
 {
     return self.annotationsContainerView.superview != nil;
-}
-
-#pragma mark - FWTPopoverViewDelegate
-- (void)popoverViewDidPresent:(FWTPopoverView *)annotationView
-{    
-    self.needsToPresentCounter--;
-}
-
-- (void)popoverViewDidDismiss:(FWTPopoverView *)annotationView
-{
-    FWTAnnotation *annotation = [self.model annotationForView:(FWTAnnotationView *)annotationView];
-    [self.model removeAnnotation:annotation];
-
-    //
-    if (self.model.numberOfAnnotations == 0)
-    {
-        void (^completionBlock)(BOOL) = ^(BOOL finished){
-            [self.annotationsContainerView removeFromSuperview];
-            [self.view removeFromSuperview];
-        };
-        
-        if ([self _annotationsContainerViewNeedsAnimation])
-            [UIView animateWithDuration:.2f
-                             animations:^{ self.annotationsContainerView.alpha = .0f; }
-                             completion:completionBlock];
-        else
-            completionBlock(YES);
-    }
 }
 
 @end

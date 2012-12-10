@@ -12,6 +12,7 @@
 @property (nonatomic, retain) UIBezierPath *boundsBezierPath;
 @property (nonatomic, retain) CALayer *accessoryLayer;
 @property (nonatomic, assign) CGFloat maskRadius;
+@property (nonatomic, retain) CALayer *debugLayer;
 @end
 
 @implementation FWTRadialMaskLayer
@@ -97,6 +98,16 @@
         if (!self.accessoryLayer.superlayer) [self addSublayer:self.accessoryLayer];
         self.accessoryLayer.position = CGPointMake(CGRectGetMidX(self.bounds), CGRectGetMidY(self.bounds));
     }
+    
+    if (!self.debugLayer)
+    {
+        self.debugLayer = [CALayer layer];
+        self.debugLayer.backgroundColor = [UIColor redColor].CGColor;
+        self.debugLayer.bounds = CGRectMake(.0f, .0f, 3.0f, 3.0f);
+        [self addSublayer:self.debugLayer];
+    }
+    
+    self.debugLayer.position = CGPointMake(CGRectGetMidX(self.bounds), CGRectGetMidY(self.bounds));
 }
 
 #pragma mark - Getters

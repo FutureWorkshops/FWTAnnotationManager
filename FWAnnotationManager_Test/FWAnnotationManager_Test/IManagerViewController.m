@@ -6,17 +6,14 @@
 //  Copyright (c) 2012 Futureworkshops. All rights reserved.
 //
 
-#import "SampleViewController.h"
-#import "StaticModel.h"
-#import "CustomAnnotationView.h"
-#import "UIViewController+FWTAnnotationManager.h"
+#import "IManagerViewController.h"
 
-@interface SampleViewController ()
+@interface IManagerViewController ()
 
 @property (nonatomic, retain) NSArray *debugArray;
 @end
 
-@implementation SampleViewController
+@implementation IManagerViewController
 
 - (void)dealloc
 {
@@ -31,7 +28,7 @@
         UISegmentedControl *sc = [[[UISegmentedControl alloc] initWithItems:@[@"show", @"remove"]] autorelease];
         sc.segmentedControlStyle = UISegmentedControlStyleBar;
         sc.momentary = YES;
-        [sc addTarget:self action:@selector(segmentedControlValueChanged:) forControlEvents:UIControlEventValueChanged];
+        [sc addTarget:self action:@selector(_segmentedControlValueChanged:) forControlEvents:UIControlEventValueChanged];
         self.navigationItem.titleView = sc;
     }
     
@@ -42,33 +39,30 @@
 {
     [super loadView];
     
-//    self.view.backgroundColor = [UIColor whiteColor];
+    //
+    UIImageView *iv = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"photo.png"]] autorelease];
+    [self.view addSubview:iv];
     
-//    UIImageView *iv = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"photo.png"]] autorelease];
-//    [self.view addSubview:iv];
+    [self configureAnnotationsManager];
     
     // configure our annotation
-    self.fwt_annotationManager.annotationsContainerViewType = FWTAnnotationsContainerViewTypeRadial;
-    self.fwt_annotationManager.annotationsContainerView.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:.65f];
-    
-    __block typeof(self) myself = self;
-    self.fwt_annotationManager.viewForAnnotationBlock = ^(FWTAnnotation *annotation){
-        CustomAnnotationView *_annotationView = [[[CustomAnnotationView alloc] init] autorelease];
-        [_annotationView setupAnimationHelperWithSuperview:myself.view];
-        return _annotationView;
-    };
+//    self.fwt_annotationManager.annotationsContainerViewType = FWTAnnotationsContainerViewTypeRadial;
+//    __block typeof(self) myself = self;
+//    self.fwt_annotationManager.viewForAnnotationBlock = ^(FWTAnnotation *annotation){
+//        CustomAnnotationView *_annotationView = [[[CustomAnnotationView alloc] init] autorelease];
+//        [_annotationView setupAnimationHelperWithSuperview:myself.view];
+//        return _annotationView;
+//    };
 }
 
 //- (void)viewDidLayoutSubviews
 //{
 //    [super viewDidLayoutSubviews];
 //    
-//    return;
-//    
 //    [self.debugArray makeObjectsPerformSelector:@selector(removeFromSuperlayer)];
 //    self.debugArray = nil;
 //    
-//    NSArray *annotations = [StaticModel popoverAnnotations];
+//    NSArray *annotations = [StaticModel annotations];
 //    NSMutableArray *tmp = [NSMutableArray arrayWithCapacity:annotations.count];
 //    
 //    //  debug
@@ -108,28 +102,18 @@
 //    self.debugArray = tmp;
 //}
 
-- (void)viewWillAppear:(BOOL)animated
+- (void)viewDidAppear:(BOOL)animated
 {
-    [super viewWillAppear:animated];
+    [super viewDidAppear:animated];
     
-    [self.navigationController setToolbarHidden:NO animated:YES];
-    
-    UISegmentedControl *sc = [[[UISegmentedControl alloc] initWithItems:@[@"0", @"1", @"2"]] autorelease];
-    sc.segmentedControlStyle = UISegmentedControlStyleBar;
-    sc.momentary = YES;
-    sc.frame = CGRectInset(self.navigationController.toolbar.bounds, 40.0f, 6.0f);
-    sc.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleHeight;
-    [sc addTarget:self action:@selector(segmentedControlValueChanged:) forControlEvents:UIControlEventValueChanged];
-    sc.tag = 0xbeef;
-    [self.navigationController.toolbar addSubview:sc];
+    [self _toggleToolbar:YES];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
     
-    [[self.navigationController.toolbar viewWithTag:0xbeef] removeFromSuperview];
-    [self.navigationController setToolbarHidden:YES animated:animated];
+    [self _toggleToolbar:NO];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
@@ -138,14 +122,36 @@
 }
 
 #pragma mark - Private
-- (void)cancel
+- (void)_cancel
 {
     [self.fwt_annotationManager cancel];
     self.navigationItem.rightBarButtonItem = nil;
 }
 
+- (void)_toggleToolbar:(BOOL)visible
+{
+    [self.navigationController setToolbarHidden:!visible animated:YES];
+ 
+    NSInteger tag = 0xbeef;
+    if (visible)
+    {
+        UISegmentedControl *sc = [[[UISegmentedControl alloc] initWithItems:@[@"0", @"1", @"2"]] autorelease];
+        sc.segmentedControlStyle = UISegmentedControlStyleBar;
+        sc.momentary = YES;
+        sc.frame = CGRectInset(self.navigationController.toolbar.bounds, 40.0f, 6.0f);
+        sc.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleHeight;
+        [sc addTarget:self action:@selector(_segmentedControlValueChanged:) forControlEvents:UIControlEventValueChanged];
+        sc.tag = tag;
+        [self.navigationController.toolbar addSubview:sc];
+    }
+    else
+    {
+        [[self.navigationController.toolbar viewWithTag:tag] removeFromSuperview];
+    }
+}
+
 #pragma mark - Actions
-- (void)segmentedControlValueChanged:(UISegmentedControl *)sc
+- (void)_segmentedControlValueChanged:(UISegmentedControl *)sc
 {
     //  add/remove all annotations
     //
@@ -153,11 +159,10 @@
     {
         if (sc.selectedSegmentIndex == 0)
         {
-            [self fwt_addAnnotations:[StaticModel popoverAnnotations]];
-            
+            [self fwt_addAnnotations:[StaticModel annotations]];
             self.navigationItem.rightBarButtonItem = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
                                                                                                     target:self
-                                                                                                    action:@selector(cancel)] autorelease];
+                                                                                                    action:@selector(_cancel)] autorelease];
         }
         else
         {
@@ -165,11 +170,12 @@
             self.navigationItem.rightBarButtonItem = nil;
         }
     }
-    //  add/remove the single
+    
+    //  add/remove the single one
     //
     else
     {                
-        FWTAnnotation *pd = [[StaticModel popoverAnnotations] objectAtIndex:sc.selectedSegmentIndex];
+        FWTAnnotation *pd = [[StaticModel annotations] objectAtIndex:sc.selectedSegmentIndex];
         if ([self.fwt_annotations containsObject:pd])
             [self fwt_removeAnnotation:pd];
         else
@@ -180,6 +186,12 @@
             pd.delay = savedDelay;
         }
     }
+}
+
+#pragma mark - Overrides
+- (void)configureAnnotationsManager
+{
+    
 }
 
 @end

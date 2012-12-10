@@ -12,14 +12,17 @@
 #import "FWTAnnotationView.h"
 #import "FWTRadialMaskLayer.h"
 
-@interface FWTRadialAnnotation : NSObject
+#define FWT_RACV_BACKGROUND_COLOR           [[UIColor blackColor] colorWithAlphaComponent:.5f]
+#define FWT_RACV_RADIAL_GRADIENT_RADIUS     100.0f
+
+@interface FWTRadialAnnotationDescriptor : NSObject
 @property (nonatomic, retain) FWTAnnotationView *view;
 @property (nonatomic, retain) FWTRadialMaskLayer *layer;
 @property (nonatomic, assign) CGRect frame;
 @property (nonatomic, assign) BOOL needsRenderInContext;
 @end
 
-@implementation FWTRadialAnnotation
+@implementation FWTRadialAnnotationDescriptor
 - (void)dealloc
 {
     self.view = nil;
@@ -57,10 +60,10 @@ NSString *const keyPathFrame = @"frame";
         self.contentMode = UIViewContentModeRedraw;
         
         // default settings
-        self.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:.65f];
+        self.backgroundColor = FWT_RACV_BACKGROUND_COLOR;
         self.radialMaskImage = [[self class] _defaultRadialMaskImage];
         self.accessoryImage  = [[self class] _defaultAccessoryImage];
-        self.radialGradientRadius = 100.0f;
+        self.radialGradientRadius = FWT_RACV_RADIAL_GRADIENT_RADIUS;
     }
     return self;
 }
@@ -88,7 +91,7 @@ NSString *const keyPathFrame = @"frame";
     };
 
     __block UIBezierPath *bezierPath = nil;
-    [self.model enumerateKeysAndObjectsUsingBlock:^(id key, FWTRadialAnnotation *radialAnnotation, BOOL *stop) {
+    [self.model enumerateKeysAndObjectsUsingBlock:^(id key, FWTRadialAnnotationDescriptor *radialAnnotation, BOOL *stop) {
         if (!bezierPath) bezierPath = [[UIBezierPath bezierPath] retain];
         appendSubpath(bezierPath, radialAnnotation.frame);
     }];
@@ -98,7 +101,6 @@ NSString *const keyPathFrame = @"frame";
         [bezierPath closePath];
         CGContextAddPath(ctx, bezierPath.CGPath);
         [bezierPath release];
-        
         CGContextClip(ctx);
         CGContextClearRect(ctx, rect);
     }
@@ -106,7 +108,7 @@ NSString *const keyPathFrame = @"frame";
     // time to render layers into the context
     __block CGFloat dx = .0f;
     __block CGFloat dy = .0f;
-    [self.model enumerateKeysAndObjectsUsingBlock:^(id key, FWTRadialAnnotation *radialAnnotation, BOOL *stop) {
+    [self.model enumerateKeysAndObjectsUsingBlock:^(id key, FWTRadialAnnotationDescriptor *radialAnnotation, BOOL *stop) {
         if (radialAnnotation.needsRenderInContext)
         {
             // translate back
@@ -136,7 +138,7 @@ NSString *const keyPathFrame = @"frame";
     
     // update the entry
     NSString *annotationKey = [self _keyForAnnotationView:annotationView];
-    FWTRadialAnnotation *entry = [self.model objectForKey:annotationKey];
+    FWTRadialAnnotationDescriptor *entry = [self.model objectForKey:annotationKey];
     entry.needsRenderInContext = NO;
     
     // add to view hierarchy (be sure the frame is right)
@@ -165,7 +167,7 @@ NSString *const keyPathFrame = @"frame";
     [NSObject cancelPreviousPerformRequestsWithTarget:self];
     
     //
-    [self.model enumerateKeysAndObjectsUsingBlock:^(id key, FWTRadialAnnotation *entry, BOOL *stop) {
+    [self.model enumerateKeysAndObjectsUsingBlock:^(id key, FWTRadialAnnotationDescriptor *entry, BOOL *stop) {
         [entry.view removeObserver:self forKeyPath:keyPathFrame];
     }];
     
@@ -199,7 +201,7 @@ NSString *const keyPathFrame = @"frame";
     [self.layer insertSublayer:theLayer below:annotationView.layer];
     
     // create entry and add it to the model
-    FWTRadialAnnotation *entry = [[[FWTRadialAnnotation alloc] init] autorelease];
+    FWTRadialAnnotationDescriptor *entry = [[[FWTRadialAnnotationDescriptor alloc] init] autorelease];
     entry.view = annotationView;
     entry.layer = theLayer;
     entry.frame = rectForAnnotation;
@@ -238,11 +240,11 @@ NSString *const keyPathFrame = @"frame";
     }
     else if (annotationView.arrow.direction & FWTPopoverArrowDirectionLeft)
     {
-        radialRect = CGRectOffset(radialRect, -annotationView.arrow.size.width*.5f, annotationView.arrow.cornerOffset);
+        radialRect = CGRectOffset(radialRect, -annotationView.arrow.size.height*.5f, annotationView.arrow.cornerOffset);
     }
     else if (annotationView.arrow.direction & FWTPopoverArrowDirectionRight)
     {
-        radialRect = CGRectOffset(radialRect, annotationView.arrow.size.width*.5f, annotationView.arrow.cornerOffset);
+        radialRect = CGRectOffset(radialRect, annotationView.arrow.size.height*.5f, annotationView.arrow.cornerOffset);
     }
     else if (annotationView.arrow.direction & FWTPopoverArrowDirectionNone)
     {
@@ -263,7 +265,7 @@ NSString *const keyPathFrame = @"frame";
     if ([keyPath isEqualToString:keyPathFrame])
     {
         // update the frame
-        FWTRadialAnnotation *entry = [self.model objectForKey:[self _keyForAnnotationView:object]];
+        FWTRadialAnnotationDescriptor *entry = [self.model objectForKey:[self _keyForAnnotationView:object]];
         entry.frame = [self _rectForAnnotationView:object];
     }
 }
@@ -304,7 +306,7 @@ NSString *const keyPathFrame = @"frame";
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         
-        CGFloat side = 100.0f;
+        CGFloat side = FWT_RACV_RADIAL_GRADIENT_RADIUS;
         CGFloat startRadius = 16.0f;
         CGFloat endRadius   = 48.0f;
         

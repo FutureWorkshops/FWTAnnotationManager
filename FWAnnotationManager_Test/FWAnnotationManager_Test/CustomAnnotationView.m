@@ -8,21 +8,7 @@
 
 #import "CustomAnnotationView.h"
 
-@interface FWTPopoverView ()
-@property (nonatomic, retain)  UIImageView *backgroundImageView;
-@end
-
-@interface CustomAnnotationView ()
-@property (nonatomic, retain) UIImageView *ringImageView;
-@end
-
 @implementation CustomAnnotationView
-
-- (void)dealloc
-{
-    self.ringImageView = nil;
-    [super dealloc];
-}
 
 - (id)initWithFrame:(CGRect)frame
 {
@@ -34,6 +20,7 @@
         
         //
         self.arrow.cornerOffset = 10.0f;
+        self.arrow.size = CGSizeMake(18, 50);
         
         //
         self.textLabel.textAlignment = UITextAlignmentCenter;
@@ -46,7 +33,7 @@
         
         //
         self.backgroundHelper.cornerRadius = 9.0f;
-        self.backgroundHelper.drawPathBlock = ^(CGContextRef ctx, FWTPopoverBackgroundHelper *backgroundHelper){
+        self.backgroundHelper.drawPathBlock = ^(FWTPopoverBackgroundHelper *backgroundHelper, CGContextRef ctx){
             
             //  clip to current path
             CGContextSaveGState(ctx);
@@ -80,14 +67,8 @@
     };
     
     self.animationHelper.presentAnimationsBlock = ^{
-        myself.frame = CGRectOffset(myself.frame, .0f, theSuperview.frame.size.height);// + 5.0f);
+        myself.frame = CGRectOffset(myself.frame, .0f, theSuperview.frame.size.height);
     };
-    
-//    self.animationHelper.presentCompletionBlock = ^(BOOL finished){
-//        [UIView animateWithDuration:.1f animations:^{
-//            myself.frame = CGRectOffset(myself.frame, .0f, -5.0f);
-//        }];
-//    };
     
     self.animationHelper.dismissAnimationsBlock = ^{
         myself.transform = ((arc4random()%1000) > 500) ? CGAffineTransformMakeRotation(M_PI*.5f):CGAffineTransformMakeRotation(-M_PI*.5f);

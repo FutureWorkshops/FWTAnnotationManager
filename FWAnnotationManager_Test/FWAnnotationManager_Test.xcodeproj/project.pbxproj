@@ -11,6 +11,8 @@
 		A93B0906163EFABF0030F227 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = A93B0903163EFABF0030F227 /* Default.png */; };
 		A93B0907163EFABF0030F227 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A93B0904163EFABF0030F227 /* Default@2x.png */; };
 		A93B0939163FDEB50030F227 /* libFWTAnnotationManager.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A93B0938163FDEB50030F227 /* libFWTAnnotationManager.a */; };
+		A94177891668F19A002A3E53 /* DefaultViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A94177881668F19A002A3E53 /* DefaultViewController.m */; };
+		A941778D1668F1BF002A3E53 /* CustomViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A941778C1668F1BF002A3E53 /* CustomViewController.m */; };
 		A952C7ED1652B0C7002674DC /* photo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A952C7EC1652B0C7002674DC /* photo@2x.png */; };
 		A9A4AFBE1642C3770034593C /* CustomAnnotationView.m in Sources */ = {isa = PBXBuildFile; fileRef = A9A4AFBD1642C3770034593C /* CustomAnnotationView.m */; };
 		E4C452ED15DB9C8C00DD1A0F /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4C452EC15DB9C8C00DD1A0F /* UIKit.framework */; };
@@ -21,9 +23,9 @@
 		E4C452FD15DB9C8C00DD1A0F /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E4C452FC15DB9C8C00DD1A0F /* AppDelegate.m */; };
 		E4C4530415DB9D0000DD1A0F /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4C4530315DB9D0000DD1A0F /* QuartzCore.framework */; };
 		E4C4531B15DB9E2700DD1A0F /* SamplePickerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E4C4531415DB9E2700DD1A0F /* SamplePickerViewController.m */; };
-		E4C4531C15DB9E2700DD1A0F /* SampleViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E4C4531615DB9E2700DD1A0F /* SampleViewController.m */; };
+		E4C4531C15DB9E2700DD1A0F /* IManagerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E4C4531615DB9E2700DD1A0F /* IManagerViewController.m */; };
 		E4C4531D15DB9E2700DD1A0F /* StaticModel.m in Sources */ = {isa = PBXBuildFile; fileRef = E4C4531815DB9E2700DD1A0F /* StaticModel.m */; };
-		E4C4531E15DB9E2700DD1A0F /* TouchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E4C4531A15DB9E2700DD1A0F /* TouchViewController.m */; };
+		E4C4531E15DB9E2700DD1A0F /* AnnotationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E4C4531A15DB9E2700DD1A0F /* AnnotationViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -31,6 +33,10 @@
 		A93B0903163EFABF0030F227 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
 		A93B0904163EFABF0030F227 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
 		A93B0938163FDEB50030F227 /* libFWTAnnotationManager.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libFWTAnnotationManager.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		A94177871668F19A002A3E53 /* DefaultViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DefaultViewController.h; sourceTree = "<group>"; };
+		A94177881668F19A002A3E53 /* DefaultViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DefaultViewController.m; sourceTree = "<group>"; };
+		A941778B1668F1BF002A3E53 /* CustomViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomViewController.h; sourceTree = "<group>"; };
+		A941778C1668F1BF002A3E53 /* CustomViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomViewController.m; sourceTree = "<group>"; };
 		A952C7EC1652B0C7002674DC /* photo@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "photo@2x.png"; sourceTree = "<group>"; };
 		A9A4AFBC1642C3770034593C /* CustomAnnotationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomAnnotationView.h; sourceTree = "<group>"; };
 		A9A4AFBD1642C3770034593C /* CustomAnnotationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomAnnotationView.m; sourceTree = "<group>"; };
@@ -47,12 +53,12 @@
 		E4C4530315DB9D0000DD1A0F /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		E4C4531315DB9E2700DD1A0F /* SamplePickerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SamplePickerViewController.h; sourceTree = "<group>"; };
 		E4C4531415DB9E2700DD1A0F /* SamplePickerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SamplePickerViewController.m; sourceTree = "<group>"; };
-		E4C4531515DB9E2700DD1A0F /* SampleViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SampleViewController.h; sourceTree = "<group>"; };
-		E4C4531615DB9E2700DD1A0F /* SampleViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SampleViewController.m; sourceTree = "<group>"; };
+		E4C4531515DB9E2700DD1A0F /* IManagerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IManagerViewController.h; sourceTree = "<group>"; };
+		E4C4531615DB9E2700DD1A0F /* IManagerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IManagerViewController.m; sourceTree = "<group>"; };
 		E4C4531715DB9E2700DD1A0F /* StaticModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StaticModel.h; sourceTree = "<group>"; };
 		E4C4531815DB9E2700DD1A0F /* StaticModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StaticModel.m; sourceTree = "<group>"; };
-		E4C4531915DB9E2700DD1A0F /* TouchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TouchViewController.h; sourceTree = "<group>"; };
-		E4C4531A15DB9E2700DD1A0F /* TouchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TouchViewController.m; sourceTree = "<group>"; };
+		E4C4531915DB9E2700DD1A0F /* AnnotationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnnotationViewController.h; sourceTree = "<group>"; };
+		E4C4531A15DB9E2700DD1A0F /* AnnotationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AnnotationViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -71,11 +77,31 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		A941777B1668DD78002A3E53 /* Common */ = {
+			isa = PBXGroup;
+			children = (
+				E4C4531715DB9E2700DD1A0F /* StaticModel.h */,
+				E4C4531815DB9E2700DD1A0F /* StaticModel.m */,
+				E4C4531515DB9E2700DD1A0F /* IManagerViewController.h */,
+				E4C4531615DB9E2700DD1A0F /* IManagerViewController.m */,
+			);
+			name = Common;
+			sourceTree = "<group>";
+		};
+		A941777C1668ECD7002A3E53 /* Sample - Manager (default) */ = {
+			isa = PBXGroup;
+			children = (
+				A94177871668F19A002A3E53 /* DefaultViewController.h */,
+				A94177881668F19A002A3E53 /* DefaultViewController.m */,
+			);
+			name = "Sample - Manager (default)";
+			sourceTree = "<group>";
+		};
 		A9A4AFBB1642BFBC0034593C /* Sample - Touch */ = {
 			isa = PBXGroup;
 			children = (
-				E4C4531915DB9E2700DD1A0F /* TouchViewController.h */,
-				E4C4531A15DB9E2700DD1A0F /* TouchViewController.m */,
+				E4C4531915DB9E2700DD1A0F /* AnnotationViewController.h */,
+				E4C4531A15DB9E2700DD1A0F /* AnnotationViewController.m */,
 			);
 			name = "Sample - Touch";
 			sourceTree = "<group>";
@@ -116,8 +142,10 @@
 				E4C452FC15DB9C8C00DD1A0F /* AppDelegate.m */,
 				E4C4531315DB9E2700DD1A0F /* SamplePickerViewController.h */,
 				E4C4531415DB9E2700DD1A0F /* SamplePickerViewController.m */,
+				A941777B1668DD78002A3E53 /* Common */,
 				A9A4AFBB1642BFBC0034593C /* Sample - Touch */,
-				E4C4539D15DBBA8600DD1A0F /* Sample */,
+				A941777C1668ECD7002A3E53 /* Sample - Manager (default) */,
+				E4C4539D15DBBA8600DD1A0F /* Sample - Manager (custom) */,
 				E4C452F315DB9C8C00DD1A0F /* Supporting Files */,
 			);
 			path = FWAnnotationManager_Test;
@@ -138,17 +166,15 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		E4C4539D15DBBA8600DD1A0F /* Sample */ = {
+		E4C4539D15DBBA8600DD1A0F /* Sample - Manager (custom) */ = {
 			isa = PBXGroup;
 			children = (
+				A941778B1668F1BF002A3E53 /* CustomViewController.h */,
+				A941778C1668F1BF002A3E53 /* CustomViewController.m */,
 				A9A4AFBC1642C3770034593C /* CustomAnnotationView.h */,
 				A9A4AFBD1642C3770034593C /* CustomAnnotationView.m */,
-				E4C4531515DB9E2700DD1A0F /* SampleViewController.h */,
-				E4C4531615DB9E2700DD1A0F /* SampleViewController.m */,
-				E4C4531715DB9E2700DD1A0F /* StaticModel.h */,
-				E4C4531815DB9E2700DD1A0F /* StaticModel.m */,
 			);
-			name = Sample;
+			name = "Sample - Manager (custom)";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -220,10 +246,12 @@
 				E4C452F915DB9C8C00DD1A0F /* main.m in Sources */,
 				E4C452FD15DB9C8C00DD1A0F /* AppDelegate.m in Sources */,
 				E4C4531B15DB9E2700DD1A0F /* SamplePickerViewController.m in Sources */,
-				E4C4531C15DB9E2700DD1A0F /* SampleViewController.m in Sources */,
+				E4C4531C15DB9E2700DD1A0F /* IManagerViewController.m in Sources */,
 				E4C4531D15DB9E2700DD1A0F /* StaticModel.m in Sources */,
-				E4C4531E15DB9E2700DD1A0F /* TouchViewController.m in Sources */,
+				E4C4531E15DB9E2700DD1A0F /* AnnotationViewController.m in Sources */,
 				A9A4AFBE1642C3770034593C /* CustomAnnotationView.m in Sources */,
+				A94177891668F19A002A3E53 /* DefaultViewController.m in Sources */,
+				A941778D1668F1BF002A3E53 /* CustomViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
