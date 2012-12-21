@@ -39,7 +39,7 @@ An FWTAnnotation instance coordinates the creation of an appropriate FWTAnnotati
 * **image** the image of the annotation
 
 ####FWTAnnotationView
-FWTAnnotationView subclass FWTPopoverView and adds the following extra properties:
+FWTAnnotationView subclasses FWTPopoverView and adds the following extra properties:
 
 * **contentViewEdgeInsets** the inset or outset margins for the edges of the content view. Use this property to resize and reposition the effective rectangle
 * **textLabel** (_readonly_) the label used for the textual content of the annotation
