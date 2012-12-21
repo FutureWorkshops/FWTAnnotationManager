@@ -99,15 +99,15 @@
         self.accessoryLayer.position = CGPointMake(CGRectGetMidX(self.bounds), CGRectGetMidY(self.bounds));
     }
     
-    if (!self.debugLayer)
-    {
-        self.debugLayer = [CALayer layer];
-        self.debugLayer.backgroundColor = [UIColor redColor].CGColor;
-        self.debugLayer.bounds = CGRectMake(.0f, .0f, 3.0f, 3.0f);
-        [self addSublayer:self.debugLayer];
-    }
-    
-    self.debugLayer.position = CGPointMake(CGRectGetMidX(self.bounds), CGRectGetMidY(self.bounds));
+//    if (!self.debugLayer)
+//    {
+//        self.debugLayer = [CALayer layer];
+//        self.debugLayer.backgroundColor = [UIColor redColor].CGColor;
+//        self.debugLayer.bounds = CGRectMake(.0f, .0f, 3.0f, 3.0f);
+//        [self addSublayer:self.debugLayer];
+//    }
+//    
+//    self.debugLayer.position = CGPointMake(CGRectGetMidX(self.bounds), CGRectGetMidY(self.bounds));
 }
 
 #pragma mark - Getters

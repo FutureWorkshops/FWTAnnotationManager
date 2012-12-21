@@ -75,8 +75,8 @@
     CGPoint point = [[touches anyObject] locationInView:self.view];
     
     //
-//    if (!self.annotationView)
-//    {
+    if (!self.annotationView)
+    {
         self.annotationView = [[self class] _defaultAnnotationView];
         __block typeof(self) myself = self;
         self.annotationView.didDismissBlock = ^(FWTPopoverView *av){ myself.annotationView = nil; };
@@ -84,9 +84,9 @@
                                       inView:self.view
                      permittedArrowDirection:self.popoverArrowDirection
                                     animated:YES];
-//    }
-//    else
-//        [self.annotationView dismissPopoverAnimated:YES];
+    }
+    else
+        [self.annotationView dismissPopoverAnimated:YES];
     
     //
     if (!self.touchPointView.superview) [self.view addSubview:self.touchPointView];

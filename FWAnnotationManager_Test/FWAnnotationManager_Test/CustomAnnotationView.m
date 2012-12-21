@@ -20,7 +20,7 @@
         
         //
         self.arrow.cornerOffset = 10.0f;
-        self.arrow.size = CGSizeMake(18, 50);
+        self.arrow.size = CGSizeMake(18, 30);
         
         //
         self.textLabel.textAlignment = UITextAlignmentCenter;

@@ -7,12 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "FWTAnnotationContainerView.h"
 
-@class FWTAnnotationView;
-@interface FWTRadialAnnotationsContainerView : UIView
-
-- (void)addAnnotationView:(FWTAnnotationView *)annotationView;
-- (void)removeAnnotationView:(FWTAnnotationView *)annotationView;
-- (void)cancel;
+@interface FWTRadialAnnotationsContainerView : FWTAnnotationContainerView
 
 @end

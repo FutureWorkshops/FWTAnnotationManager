@@ -7,13 +7,15 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "FWTAnnotation.h"
+#import "FWTAnnotationView.h"
+#import "FWTAnnotationModel.h"
+#import "FWTAnnotationContainerView.h"
 
-@class FWTAnnotation, FWTAnnotationView, FWTAnnotationModel;
-
-typedef NS_ENUM(NSInteger, FWTAnnotationsContainerViewType)
+typedef NS_ENUM(NSInteger, FWTAnnotationContainerViewType)
 {
-    FWTAnnotationsContainerViewTypeDefault,
-    FWTAnnotationsContainerViewTypeRadial,
+    FWTAnnotationContainerViewTypeDefault,
+    FWTAnnotationContainerViewTypeRadial,
 };
 
 typedef FWTAnnotationView *(^FWTAnnotationManagerViewForAnnotationBlock)(FWTAnnotation *);
@@ -21,8 +23,8 @@ typedef void (^FWTAnnotationManagerDidTapAnnotationBlock)(FWTAnnotation *, FWTAn
 
 @interface FWTAnnotationManager : UIViewController
 
-@property (nonatomic, assign) FWTAnnotationsContainerViewType annotationsContainerViewType;     // configure the type before accessing any property
-@property (nonatomic, readonly, retain) UIView *annotationsContainerView;                       // plug with your own class or just customize the default one
+@property (nonatomic, assign) FWTAnnotationContainerViewType annotationContainerViewType;       // configure the type before accessing any property
+@property (nonatomic, retain) FWTAnnotationContainerView *annotationsContainerView;             // plug with your own class or just customize the default one
 @property (nonatomic, readonly, retain) FWTAnnotationModel *model;
 @property (nonatomic, copy) FWTAnnotationManagerViewForAnnotationBlock viewForAnnotationBlock;  //
 @property (nonatomic, copy) FWTAnnotationManagerDidTapAnnotationBlock didTapAnnotationBlock;    //
@@ -35,6 +37,22 @@ typedef void (^FWTAnnotationManagerDidTapAnnotationBlock)(FWTAnnotation *, FWTAn
 - (void)removeAnnotation:(FWTAnnotation *)annotation;
 - (void)removeAnnotations:(NSArray *)annotations;
 
+- (void)cancel;
+
+@end
+
+@interface FWTAnnotationModel (Public)
+
+- (FWTAnnotationView *)viewForAnnotation:(FWTAnnotation *)annotation;
+- (FWTAnnotation *)annotationForView:(FWTAnnotationView *)view;
+- (FWTAnnotationView *)viewAtPoint:(CGPoint)point;
+
+@end
+
+@interface FWTAnnotationContainerView (Public)
+
+- (void)addAnnotation:(FWTAnnotation *)annotation withView:(FWTAnnotationView *)annotationView;
+- (void)removeAnnotation:(FWTAnnotation *)annotation withView:(FWTAnnotationView *)annotationView;
 - (void)cancel;
 
 @end

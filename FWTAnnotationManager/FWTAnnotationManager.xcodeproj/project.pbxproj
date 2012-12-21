@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		A90CD557164D3887002EB0C0 /* FWTAnnotationModel.m in Sources */ = {isa = PBXBuildFile; fileRef = A90CD556164D3887002EB0C0 /* FWTAnnotationModel.m */; };
 		A90CD58F164D5B4A002EB0C0 /* FWTRadialAnnotationsContainerView.m in Sources */ = {isa = PBXBuildFile; fileRef = A90CD58E164D5B4A002EB0C0 /* FWTRadialAnnotationsContainerView.m */; };
+		A90EADCE167618B6008395D7 /* FWTAnnotationContainerView.m in Sources */ = {isa = PBXBuildFile; fileRef = A90EADCD167618B6008395D7 /* FWTAnnotationContainerView.m */; };
 		A918A97C1650209600B126E4 /* FWTRadialMaskLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = A918A97B1650209600B126E4 /* FWTRadialMaskLayer.m */; };
 		A93B0972163FF9C70030F227 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A93B0971163FF9C70030F227 /* QuartzCore.framework */; };
 		A93B0975163FF9CE0030F227 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A93B0974163FF9CD0030F227 /* UIKit.framework */; };
@@ -38,6 +39,8 @@
 		A90CD556164D3887002EB0C0 /* FWTAnnotationModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FWTAnnotationModel.m; sourceTree = "<group>"; };
 		A90CD58D164D5B4A002EB0C0 /* FWTRadialAnnotationsContainerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FWTRadialAnnotationsContainerView.h; sourceTree = "<group>"; };
 		A90CD58E164D5B4A002EB0C0 /* FWTRadialAnnotationsContainerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FWTRadialAnnotationsContainerView.m; sourceTree = "<group>"; };
+		A90EADCC167618B6008395D7 /* FWTAnnotationContainerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FWTAnnotationContainerView.h; sourceTree = "<group>"; };
+		A90EADCD167618B6008395D7 /* FWTAnnotationContainerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FWTAnnotationContainerView.m; sourceTree = "<group>"; };
 		A918A97A1650209600B126E4 /* FWTRadialMaskLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FWTRadialMaskLayer.h; sourceTree = "<group>"; };
 		A918A97B1650209600B126E4 /* FWTRadialMaskLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FWTRadialMaskLayer.m; sourceTree = "<group>"; };
 		A93B0971163FF9C70030F227 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
@@ -78,6 +81,8 @@
 			children = (
 				A90CD555164D3887002EB0C0 /* FWTAnnotationModel.h */,
 				A90CD556164D3887002EB0C0 /* FWTAnnotationModel.m */,
+				A90EADCC167618B6008395D7 /* FWTAnnotationContainerView.h */,
+				A90EADCD167618B6008395D7 /* FWTAnnotationContainerView.m */,
 				A90CD58D164D5B4A002EB0C0 /* FWTRadialAnnotationsContainerView.h */,
 				A90CD58E164D5B4A002EB0C0 /* FWTRadialAnnotationsContainerView.m */,
 				A918A97A1650209600B126E4 /* FWTRadialMaskLayer.h */,
@@ -198,6 +203,7 @@
 				A90CD58F164D5B4A002EB0C0 /* FWTRadialAnnotationsContainerView.m in Sources */,
 				A918A97C1650209600B126E4 /* FWTRadialMaskLayer.m in Sources */,
 				A9900A2916556B1A00382D13 /* UIViewController+FWTAnnotationManager.m in Sources */,
+				A90EADCE167618B6008395D7 /* FWTAnnotationContainerView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
