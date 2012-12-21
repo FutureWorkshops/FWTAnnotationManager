@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "FWTAnnotationManager"
-  s.version      = "1.1.2"
+  s.version      = "1.2.0"
   s.summary      = "FWTAnnotationManager makes easy to manage custom annotations for each screen of your app."
   s.homepage     = "https://github.com/FutureWorkshops/FWTAnnotationManager"
   s.license      = { :type => 'Apache License Version 2.0', :file => 'LICENSE' }
