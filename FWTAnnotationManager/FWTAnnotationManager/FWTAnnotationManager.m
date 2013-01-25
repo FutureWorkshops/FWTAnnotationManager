@@ -54,7 +54,7 @@
     __block typeof(self) myself = self;
     [self.model enumerateAnnotationsUsingBlock:^(FWTAnnotation *annotation, NSUInteger idx, BOOL *stop) {
         FWTAnnotationView *_popoverView = [myself.model viewForAnnotation:annotation];
-        [_popoverView adjustPositionToRect:[myself _presentingRectForAnnotation:annotation]];
+        [_popoverView adjustPositionToRect:[annotation presentingRectForInterfaceOrientation:toInterfaceOrientation]];
     }];
 }
 
@@ -146,14 +146,6 @@
 }
 
 #pragma mark - Private 
-- (CGRect)_presentingRectForAnnotation:(FWTAnnotation *)annotation
-{
-    UIInterfaceOrientation orientation = [UIApplication sharedApplication].statusBarOrientation;
-    CGRect rect = CGRectZero;
-    rect = UIInterfaceOrientationIsLandscape(orientation) ? annotation.presentingRectLandscape : annotation.presentingRectPortrait;    
-    return rect;
-}
-
 - (void)_setupViews
 {
     if (![self isViewLoaded] || !self.view.superview)
@@ -219,8 +211,10 @@
     [self.annotationsContainerView addAnnotation:annotation withView:annotationView];
     
     //  ready to present
-    CGRect rect = [self _presentingRectForAnnotation:annotation];
-    [annotationView presentFromRect:rect inView:self.annotationsContainerView permittedArrowDirection:annotation.arrowDirection animated:annotation.animated];
+    [annotationView presentFromRect:[annotation presentingRectForInterfaceOrientation:self.interfaceOrientation]
+                             inView:self.annotationsContainerView
+            permittedArrowDirection:annotation.arrowDirection
+                           animated:annotation.animated];
 }
 
 - (void)addAnnotations:(NSArray *)annotations
@@ -236,7 +230,6 @@
     if (annotationView)
     {
         [self.annotationsContainerView removeAnnotation:annotation withView:annotationView];
-        
         [annotationView dismissPopoverAnimated:annotation.animated];
     }
 }

@@ -48,4 +48,10 @@
 	return unique;
 }
 
+#pragma mark - Public
+- (CGRect)presentingRectForInterfaceOrientation:(UIInterfaceOrientation)orientation
+{
+    return UIInterfaceOrientationIsLandscape(orientation) ? self.presentingRectLandscape : self.presentingRectPortrait;
+}
+
 @end
