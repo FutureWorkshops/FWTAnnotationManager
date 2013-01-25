@@ -28,6 +28,8 @@
 - (void)dealloc
 {
     if (self.needsToPresentCounter > 0) [self cancel];
+    self.didEndDismissBlock = nil;
+    self.didEndPresentBlock = nil;
     self.didDismissBlock = nil;
     self.didPresentBlock = nil;
     self.didTapAnnotationBlock = nil;
@@ -95,6 +97,10 @@
         __block typeof(self) myself = self;
         self->_didPresentBlock = [^(FWTPopoverView *av){
             myself.needsToPresentCounter--;
+            
+            if (myself.needsToPresentCounter == 0 && self.didEndPresentBlock)
+                self.didEndPresentBlock();
+               
         } copy];
     }
     
@@ -119,6 +125,7 @@
                     [myself.view removeFromSuperview];
                     
                     myself.view.userInteractionEnabled = YES;
+                    if (self.didEndDismissBlock) self.didEndDismissBlock();
                 };
                 
                 if ([myself _annotationsContainerViewNeedsAnimation])

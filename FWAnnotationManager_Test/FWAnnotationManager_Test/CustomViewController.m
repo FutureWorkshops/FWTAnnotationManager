@@ -24,6 +24,9 @@
         [_annotationView setupAnimationHelperWithSuperview:myself.view];
         return _annotationView;
     };
+    
+    self.fwt_annotationManager.didEndPresentBlock = ^(){NSLog(@"didEndPresentBlock");};
+    self.fwt_annotationManager.didEndDismissBlock = ^(){NSLog(@"didEndDismissBlock");};
 }
 
 @end
