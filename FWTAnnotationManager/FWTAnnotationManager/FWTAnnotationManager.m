@@ -14,7 +14,7 @@
 
 @interface FWTAnnotationManager () 
 
-@property (nonatomic, assign) NSInteger needsToPresentCounter;
+@property (nonatomic, assign) NSInteger needsToPresentCounter, needsToDismissCounter;
 @property (nonatomic, readwrite, retain) FWTAnnotationModel *model;
 
 @property (nonatomic, copy) FWTPopoverViewDidPresentBlock didPresentBlock;
@@ -117,8 +117,10 @@
             FWTAnnotation *annotation = [myself.model annotationForView:(FWTAnnotationView *)av];
             [myself.model removeAnnotation:annotation];
             
+            myself.needsToDismissCounter--;
+            
             // remove annotationsContainerView
-            if (myself.model.numberOfAnnotations == 0)
+            if (myself.model.numberOfAnnotations == 0 && myself.needsToDismissCounter == 0)
             {
                 void (^completionBlock)(BOOL) = ^(BOOL finished){
                     [myself.annotationsContainerView removeFromSuperview];
@@ -135,6 +137,11 @@
                 else
                     completionBlock(YES);
             }
+            else if (myself.needsToDismissCounter == 0)
+            {
+                myself.view.userInteractionEnabled = YES;
+            }
+            
         } copy];
     }
     
@@ -189,8 +196,16 @@
     if (self.didTapAnnotationBlock) self.didTapAnnotationBlock(_annotation, _annotationView);
     
     //
-    if (_annotationView && _annotation.dismissOnTouch) [self removeAnnotation:_annotation];
-    else if (!_annotationView && self.dismissOnBackgroundTouch) [self removeAnnotations:self.model.annotations];
+    if (_annotationView && _annotation.dismissOnTouch)
+    {
+        self.needsToDismissCounter = 1;
+        [self removeAnnotation:_annotation];
+    }
+    else if (!_annotationView && self.dismissOnBackgroundTouch)
+    {
+        self.needsToDismissCounter = self.model.numberOfAnnotations;
+        [self removeAnnotations:self.model.annotations];
+    }
 }
 
 #pragma mark - Public
@@ -251,8 +266,7 @@
 
 - (void)cancel
 {
-    if (self.annotationContainerViewType == FWTAnnotationContainerViewTypeRadial)
-        [(FWTRadialAnnotationsContainerView *)self.annotationsContainerView cancel];
+    [self.annotationsContainerView cancel];
     
     NSArray *arrayCopy = self.model.annotations;
     [arrayCopy enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {

@@ -29,9 +29,6 @@
 {
     [super loadView];
     
-    //
-    self.view.backgroundColor = [UIColor colorWithWhite:.91f alpha:.25f];
-    
     self.popoverArrowDirection = pow(2, 0); //  store the selected arrow type
     
     //  allow to change arrow type

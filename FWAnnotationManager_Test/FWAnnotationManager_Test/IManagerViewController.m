@@ -130,8 +130,6 @@
 
 - (void)_toggleToolbar:(BOOL)visible
 {
-    [self.navigationController setToolbarHidden:!visible animated:YES];
- 
     NSInteger tag = 0xbeef;
     if (visible)
     {
