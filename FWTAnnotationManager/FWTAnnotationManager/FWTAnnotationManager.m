@@ -14,8 +14,11 @@
 
 @interface FWTAnnotationManager () 
 
-@property (nonatomic, assign) NSInteger needsToPresentCounter;
+@property (nonatomic, assign) NSInteger needsToPresentCounter, needsToDismissCounter;
 @property (nonatomic, readwrite, retain) FWTAnnotationModel *model;
+
+@property (nonatomic, copy) FWTPopoverViewDidPresentBlock didPresentBlock;
+@property (nonatomic, copy) FWTPopoverViewDidDismissBlock didDismissBlock;
 
 @end
 
@@ -25,6 +28,10 @@
 - (void)dealloc
 {
     if (self.needsToPresentCounter > 0) [self cancel];
+    self.didEndDismissBlock = nil;
+    self.didEndPresentBlock = nil;
+    self.didDismissBlock = nil;
+    self.didPresentBlock = nil;
     self.didTapAnnotationBlock = nil;
     self.viewForAnnotationBlock = nil;
     self.model = nil;
@@ -38,9 +45,6 @@
     {
         self.needsToPresentCounter = 0;
         self.annotationContainerViewType = FWTAnnotationContainerViewTypeDefault;
-        self.viewForAnnotationBlock = ^(FWTAnnotation *annotation){
-          return [[[FWTAnnotationView alloc] init] autorelease];
-        };
         self.dismissOnBackgroundTouch = YES;
     }
     
@@ -52,7 +56,7 @@
     __block typeof(self) myself = self;
     [self.model enumerateAnnotationsUsingBlock:^(FWTAnnotation *annotation, NSUInteger idx, BOOL *stop) {
         FWTAnnotationView *_popoverView = [myself.model viewForAnnotation:annotation];
-        [_popoverView adjustPositionToRect:[myself _presentingRectForAnnotation:annotation]];
+        [_popoverView adjustPositionToRect:[annotation presentingRectForInterfaceOrientation:toInterfaceOrientation]];
     }];
 }
 
@@ -76,6 +80,74 @@
     return self->_model;
 }
 
+- (FWTAnnotationManagerViewForAnnotationBlock)viewForAnnotationBlock
+{
+    if (!self->_viewForAnnotationBlock)
+        self->_viewForAnnotationBlock = [^(FWTAnnotation *annotation){
+            return [[[FWTAnnotationView alloc] init] autorelease];
+        } copy];
+    
+    return self->_viewForAnnotationBlock;
+}
+
+- (FWTPopoverViewDidPresentBlock)didPresentBlock
+{
+    if (!self->_didPresentBlock)
+    {
+        __block typeof(self) myself = self;
+        self->_didPresentBlock = [^(FWTPopoverView *av){
+            myself.needsToPresentCounter--;
+            
+            if (myself.needsToPresentCounter == 0 && self.didEndPresentBlock)
+                self.didEndPresentBlock();
+               
+        } copy];
+    }
+    
+    return self->_didPresentBlock;
+}
+
+- (FWTPopoverViewDidDismissBlock)didDismissBlock
+{
+    if (!self->_didDismissBlock)
+    {
+        __block typeof(self) myself = self;
+        self->_didDismissBlock = [^(FWTPopoverView *av){
+            // remove from model
+            FWTAnnotation *annotation = [myself.model annotationForView:(FWTAnnotationView *)av];
+            [myself.model removeAnnotation:annotation];
+            
+            myself.needsToDismissCounter--;
+            
+            // remove annotationsContainerView
+            if (myself.model.numberOfAnnotations == 0 && myself.needsToDismissCounter == 0)
+            {
+                void (^completionBlock)(BOOL) = ^(BOOL finished){
+                    [myself.annotationsContainerView removeFromSuperview];
+                    [myself.view removeFromSuperview];
+                    
+                    myself.view.userInteractionEnabled = YES;
+                    if (self.didEndDismissBlock) self.didEndDismissBlock();
+                };
+                
+                if ([myself _annotationsContainerViewNeedsAnimation])
+                    [UIView animateWithDuration:.2f
+                                     animations:^{ myself.annotationsContainerView.alpha = .0f; }
+                                     completion:completionBlock];
+                else
+                    completionBlock(YES);
+            }
+            else if (myself.needsToDismissCounter == 0)
+            {
+                myself.view.userInteractionEnabled = YES;
+            }
+            
+        } copy];
+    }
+    
+    return self->_didDismissBlock;
+}
+
 #pragma mark - UIResponder
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
 {
@@ -88,14 +160,6 @@
 }
 
 #pragma mark - Private 
-- (CGRect)_presentingRectForAnnotation:(FWTAnnotation *)annotation
-{
-    UIInterfaceOrientation orientation = [UIApplication sharedApplication].statusBarOrientation;
-    CGRect rect = CGRectZero;
-    rect = UIInterfaceOrientationIsLandscape(orientation) ? annotation.presentingRectLandscape : annotation.presentingRectPortrait;    
-    return rect;
-}
-
 - (void)_setupViews
 {
     if (![self isViewLoaded] || !self.view.superview)
@@ -121,8 +185,10 @@
 
 - (void)_didTouchAtPoint:(CGPoint)point
 {
-    if (self.needsToPresentCounter != 0) return;
+    if (self.needsToPresentCounter != 0 || !self.view.userInteractionEnabled) return;
+    self.view.userInteractionEnabled = NO;
     
+    //
     FWTAnnotationView *_annotationView = [self.model viewAtPoint:point];
     FWTAnnotation *_annotation = [self.model annotationForView:_annotationView];
     
@@ -130,46 +196,16 @@
     if (self.didTapAnnotationBlock) self.didTapAnnotationBlock(_annotation, _annotationView);
     
     //
-    if (_annotationView && _annotation.dismissOnTouch) [self removeAnnotation:_annotation];
-    else if (!_annotationView && self.dismissOnBackgroundTouch) [self removeAnnotations:self.model.annotations];
-}
-
-- (FWTPopoverViewDidPresentBlock)_didPresentBlock
-{
-    __block typeof(self) myself = self;
-    FWTPopoverViewDidPresentBlock toReturn = ^(FWTPopoverView *av){
-        myself.needsToPresentCounter--;
-    };
-    
-    return [[toReturn copy] autorelease];
-}
-
-- (FWTPopoverViewDidDismissBlock)_didDismissBlock
-{
-    __block typeof(self) myself = self;
-    FWTPopoverViewDidDismissBlock toReturn = ^(FWTPopoverView *av){
-        // remove from model
-        FWTAnnotation *annotation = [myself.model annotationForView:(FWTAnnotationView *)av];
-        [myself.model removeAnnotation:annotation];
-        
-        // remove annotationsContainerView
-        if (myself.model.numberOfAnnotations == 0)
-        {
-            void (^completionBlock)(BOOL) = ^(BOOL finished){
-                [myself.annotationsContainerView removeFromSuperview];
-                [myself.view removeFromSuperview];
-            };
-            
-            if ([myself _annotationsContainerViewNeedsAnimation])
-                [UIView animateWithDuration:.2f
-                                 animations:^{ myself.annotationsContainerView.alpha = .0f; }
-                                 completion:completionBlock];
-            else
-                completionBlock(YES);
-        }
-    };
-
-    return [[toReturn copy] autorelease];
+    if (_annotationView && _annotation.dismissOnTouch)
+    {
+        self.needsToDismissCounter = 1;
+        [self removeAnnotation:_annotation];
+    }
+    else if (!_annotationView && self.dismissOnBackgroundTouch)
+    {
+        self.needsToDismissCounter = self.model.numberOfAnnotations;
+        [self removeAnnotations:self.model.annotations];
+    }
 }
 
 #pragma mark - Public
@@ -180,8 +216,8 @@
         
     //  get an annotationView
     FWTAnnotationView *annotationView = self.viewForAnnotationBlock(annotation);
-    annotationView.didPresentBlock = [self _didPresentBlock];   // keep track of what happens
-    annotationView.didDismissBlock = [self _didDismissBlock];   //
+    annotationView.didPresentBlock = self.didPresentBlock;   // keep track of what happens
+    annotationView.didDismissBlock = self.didDismissBlock;   //
     //  configure
     if (annotation.text) annotationView.textLabel.text = annotation.text;
     if (annotation.image) annotationView.imageView.image = annotation.image;
@@ -197,8 +233,10 @@
     [self.annotationsContainerView addAnnotation:annotation withView:annotationView];
     
     //  ready to present
-    CGRect rect = [self _presentingRectForAnnotation:annotation];
-    [annotationView presentFromRect:rect inView:self.annotationsContainerView permittedArrowDirection:annotation.arrowDirection animated:annotation.animated];
+    [annotationView presentFromRect:[annotation presentingRectForInterfaceOrientation:self.interfaceOrientation]
+                             inView:self.annotationsContainerView
+            permittedArrowDirection:annotation.arrowDirection
+                           animated:annotation.animated];
 }
 
 - (void)addAnnotations:(NSArray *)annotations
@@ -214,7 +252,6 @@
     if (annotationView)
     {
         [self.annotationsContainerView removeAnnotation:annotation withView:annotationView];
-        
         [annotationView dismissPopoverAnimated:annotation.animated];
     }
 }
@@ -229,8 +266,7 @@
 
 - (void)cancel
 {
-    if (self.annotationContainerViewType == FWTAnnotationContainerViewTypeRadial)
-        [(FWTRadialAnnotationsContainerView *)self.annotationsContainerView cancel];
+    [self.annotationsContainerView cancel];
     
     NSArray *arrayCopy = self.model.annotations;
     [arrayCopy enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {

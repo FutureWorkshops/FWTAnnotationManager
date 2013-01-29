@@ -29,9 +29,10 @@
     //
     SamplePickerViewController *vc = [[[SamplePickerViewController alloc] init] autorelease];
     vc.samples = @[@"AnnotationViewController", @"DefaultViewController", @"CustomViewController"];
-    UINavigationController *nc = [[[UINavigationController alloc] initWithRootViewController:vc] autorelease];
-    self.window.rootViewController = nc;
     
+    UINavigationController *nc = [[[UINavigationController alloc] initWithRootViewController:vc] autorelease];
+    nc.toolbarHidden = NO;
+    self.window.rootViewController = nc;
     [self.window makeKeyAndVisible];
     return YES;
 }

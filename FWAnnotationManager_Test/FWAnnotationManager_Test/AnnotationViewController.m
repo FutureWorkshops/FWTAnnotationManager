@@ -29,9 +29,6 @@
 {
     [super loadView];
     
-    //
-    self.view.backgroundColor = [UIColor colorWithWhite:.91f alpha:.25f];
-    
     self.popoverArrowDirection = pow(2, 0); //  store the selected arrow type
     
     //  allow to change arrow type
@@ -110,8 +107,6 @@
     toReturn.textLabel.textColor = [UIColor colorWithWhite:.91f alpha:1.0f];
     toReturn.textLabel.shadowOffset = CGSizeMake(.0f, -.7f);
     toReturn.textLabel.shadowColor = [[UIColor blackColor] colorWithAlphaComponent:.5f];
-    
-//    toReturn.textLabel.font = [StaticModel randomFontWithSize:12.0f];
     toReturn.textLabel.font = [UIFont boldSystemFontOfSize:12.0f];
     toReturn.textLabel.text = [StaticModel randomText];
     id image = [StaticModel randomImage];

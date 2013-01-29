@@ -20,6 +20,8 @@ typedef NS_ENUM(NSInteger, FWTAnnotationContainerViewType)
 
 typedef FWTAnnotationView *(^FWTAnnotationManagerViewForAnnotationBlock)(FWTAnnotation *);
 typedef void (^FWTAnnotationManagerDidTapAnnotationBlock)(FWTAnnotation *, FWTAnnotationView *);
+typedef void (^FWTAnnotationManagerDidEndPresentBlock)();
+typedef void (^FWTAnnotationManagerDidEndDismissBlock)();
 
 @interface FWTAnnotationManager : UIViewController
 
@@ -28,6 +30,8 @@ typedef void (^FWTAnnotationManagerDidTapAnnotationBlock)(FWTAnnotation *, FWTAn
 @property (nonatomic, readonly, retain) FWTAnnotationModel *model;
 @property (nonatomic, copy) FWTAnnotationManagerViewForAnnotationBlock viewForAnnotationBlock;  //
 @property (nonatomic, copy) FWTAnnotationManagerDidTapAnnotationBlock didTapAnnotationBlock;    //
+@property (nonatomic, copy) FWTAnnotationManagerDidEndPresentBlock didEndPresentBlock;
+@property (nonatomic, copy) FWTAnnotationManagerDidEndDismissBlock didEndDismissBlock;
 @property (nonatomic, assign) BOOL dismissOnBackgroundTouch;                                    //  default is YES
 @property (nonatomic, readonly, getter=isVisible) BOOL visible;
 

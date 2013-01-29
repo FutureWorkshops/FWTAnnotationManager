@@ -8,18 +8,7 @@
 
 #import "IManagerViewController.h"
 
-@interface IManagerViewController ()
-
-@property (nonatomic, retain) NSArray *debugArray;
-@end
-
 @implementation IManagerViewController
-
-- (void)dealloc
-{
-    self.debugArray = nil;
-    [super dealloc];
-}
 
 - (id)init
 {
@@ -44,63 +33,7 @@
     [self.view addSubview:iv];
     
     [self configureAnnotationsManager];
-    
-    // configure our annotation
-//    self.fwt_annotationManager.annotationsContainerViewType = FWTAnnotationsContainerViewTypeRadial;
-//    __block typeof(self) myself = self;
-//    self.fwt_annotationManager.viewForAnnotationBlock = ^(FWTAnnotation *annotation){
-//        CustomAnnotationView *_annotationView = [[[CustomAnnotationView alloc] init] autorelease];
-//        [_annotationView setupAnimationHelperWithSuperview:myself.view];
-//        return _annotationView;
-//    };
 }
-
-//- (void)viewDidLayoutSubviews
-//{
-//    [super viewDidLayoutSubviews];
-//    
-//    [self.debugArray makeObjectsPerformSelector:@selector(removeFromSuperlayer)];
-//    self.debugArray = nil;
-//    
-//    NSArray *annotations = [StaticModel annotations];
-//    NSMutableArray *tmp = [NSMutableArray arrayWithCapacity:annotations.count];
-//    
-//    //  debug
-//    __block typeof(self) myself = self;
-//    CALayer *(^debugLayerBlock)(CGPoint, CGColorRef) = ^(CGPoint centerPoint, CGColorRef borderColor) {
-//        CALayer *l = [CALayer layer];
-//        l.bounds = CGRectMake(.0f, .0f, 11.0f, 11.0f);
-//        l.position = centerPoint;
-//        l.borderWidth = 1.0f;
-//        l.borderColor = borderColor;
-//        [myself.view.layer addSublayer:l];
-//        return l;
-//    };
-//    
-//    
-//    if UIInterfaceOrientationIsLandscape(self.interfaceOrientation)
-//    {
-//        [annotations enumerateObjectsUsingBlock:^(FWTAnnotation *obj, NSUInteger idx, BOOL *stop) {
-//            CGRect rect = obj.presentingRectLandscape;
-//            CGPoint midPoint = CGPointZero;
-//            midPoint.x = CGRectGetWidth(rect) == 1.0f ? rect.origin.x : CGRectGetMidX(rect);
-//            midPoint.y = CGRectGetHeight(rect) == 1.0f ? rect.origin.y : CGRectGetMidY(rect);
-//            [tmp addObject:debugLayerBlock(midPoint, [UIColor blackColor].CGColor)];
-//        }];
-//    }
-//    else
-//    {
-//        [annotations enumerateObjectsUsingBlock:^(FWTAnnotation *obj, NSUInteger idx, BOOL *stop) {
-//            CGRect rect = obj.presentingRectPortrait;
-//            CGPoint midPoint = CGPointZero;
-//            midPoint.x = CGRectGetWidth(rect) == 1.0f ? rect.origin.x : CGRectGetMidX(rect);
-//            midPoint.y = CGRectGetHeight(rect) == 1.0f ? rect.origin.y : CGRectGetMidY(rect);
-//            [tmp addObject:debugLayerBlock(midPoint, [UIColor blackColor].CGColor)];
-//        }];
-//    }
-//    
-//    self.debugArray = tmp;
-//}
 
 - (void)viewDidAppear:(BOOL)animated
 {
@@ -130,8 +63,6 @@
 
 - (void)_toggleToolbar:(BOOL)visible
 {
-    [self.navigationController setToolbarHidden:!visible animated:YES];
- 
     NSInteger tag = 0xbeef;
     if (visible)
     {

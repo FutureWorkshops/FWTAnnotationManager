@@ -20,4 +20,6 @@
 @property (nonatomic, retain) NSString *text;
 @property (nonatomic, retain) UIImage *image;
 
+- (CGRect)presentingRectForInterfaceOrientation:(UIInterfaceOrientation)orientation;
+
 @end
