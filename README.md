@@ -14,7 +14,7 @@ The FWTAnnotationManager can be considered an extension of a UIViewController in
 * iOS 5.0
 
 ##Features
-Each FWTAnnotationManager has a container view that holds all the annotation views and a model object that stores annotations and exposes, as a MKMapView, few public methods to retrieve views/annotations. The container view comes in two distinct types: default and radial. The latter is a sleeker and more advanced example for one of the possible ways in which the FWTAnnotationManager can be customised: for each annotation the container view creates a spotlight (a small hole) in the background, matching the position of the annotation view.       
+Each FWTAnnotationManager has a container view that holds all the annotation views and a model object that stores annotations and exposes, as a MKMapView, few public methods to retrieve views/annotations. The container view comes in two distinct types: default and radial. The latter is a sleeker and more advanced example for one of the possible ways in which the FWTAnnotationManager can be customised: for each annotation the container view creates a spotlight (a small gap) in the background, matching the position of the annotation view.       
  
 This project is not yet ARC-ready.
 
@@ -28,7 +28,7 @@ You don't need to initialize an FWTAnnotationManager instance directly. Instead 
 This category exposes the associated FWTAnnotationManager instance and a basic interface to add and remove annotations.
 
 ####FWTAnnotation
-An FWTAnnotation instance coordinates the creation of an appropriate FWTAnnotationView object to handle the display. This class exposes position and presentation attributes as well as data values.
+An FWTAnnotation instance coordinates the creation of an appropriate FWTAnnotationView object to handle the display. This class contains position and presentation attributes as well as data values.
 
 * **presentingRectPortrait** the rectangle to anchor the annotation in, portrait view
 * **presentingRectLandscape** the rectangle to anchor the annotation in, landscape view
@@ -43,17 +43,17 @@ An FWTAnnotation instance coordinates the creation of an appropriate FWTAnnotati
 FWTAnnotationView subclasses FWTPopoverView and adds the following extra properties:
 
 * **contentViewEdgeInsets** the inset or outset margins for the edges of the content view. Use this property to resize and reposition the effective rectangle
-* **textLabel** (_readonly_) the label used for the textual content of the annotation
-* **imageView** (_readonly_) the image view of the annotation
+* **textLabel** (*readonly*) the label used for the textual content of the annotation
+* **imageView** (*readonly*) the image view of the annotation
 
 FWTAnnotationView takes into account its text value and resize itself when needed respecting the current contentSize. The image is left aligned and vertically centered as in tableview cells. 
 
 ####FWTAnnotationManager
 
-FWTAnnotationManager replaces the standard delegate pattern with a faster block approach (optional). There are two customizable blocks: the first one returns the FWTAnnotationView instance/subclass for the particular annotation object and the latter one is called when a particular annotation is tapped. 
-The FWTAnnotationManager, as default behaviour, dismisses itself when the user tap the background and no animations are currently running.  
+FWTAnnotationManager replaces the standard delegate pattern with a faster block approach (optional). It consists of two customisable blocks: the first one returns the FWTAnnotationView instance/subclass for the particular annotation object, and the second one is called whenever a particular annotation is tapped. 
+The default behaviour of the FWTAnnotationManager is to be dismissed whenever the user taps on any area of the background, given that no animations are running at the time.     
 
-* **annotationContainerViewType** 
+* **annotationContainerViewType** the type of the container view (see below)
 * **annotationsContainerView** the superview for annotation views displayed by the receiver
 * **model**
 * **viewForAnnotationBlock** a block object that returns the annotation view for the given annotation 
@@ -64,7 +64,7 @@ The FWTAnnotationManager, as default behaviour, dismisses itself when the user t
 * **visible** a boolean value that determines wheter the receiver is visible
 
 ####FWTAnnotationContainerView 
-Each FWTAnnotationManager has an _annotationsContainerView_ that holds all the annotation views. The base class is FWTAnnotationContainerView and it exposes three public methods:
+Each FWTAnnotationManager has an *annotationsContainerView* that holds all the annotation views. The base class is FWTAnnotationContainerView and it exposes three public methods:
 
 * **addAnnotation:withView:**
 * **removeAnnotation:withView:**
