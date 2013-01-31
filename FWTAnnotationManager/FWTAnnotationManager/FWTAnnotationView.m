@@ -322,7 +322,7 @@
         //
         [UIView animateWithDuration:self.animationDuration
                               delay:.0f
-                            options:UIViewAnimationCurveEaseIn
+                            options:UIViewAnimationOptionCurveEaseIn
                          animations:self.presentAnimationsBlock
                          completion:self.presentCompletionBlock];
     }
@@ -333,7 +333,7 @@
     //
     [UIView animateWithDuration:self.animationDuration
                           delay:.0f
-                        options:UIViewAnimationCurveEaseIn
+                        options:UIViewAnimationOptionCurveEaseIn
                      animations:self.dismissAnimationsBlock
                      completion:self.dismissCompletionBlock];
 }
