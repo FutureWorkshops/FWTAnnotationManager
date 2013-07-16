@@ -14,6 +14,8 @@
 
 @interface FWTAnnotationManager () 
 
+@property (nonatomic, readwrite, retain) UIViewController *annotationsParentViewController;
+
 @property (nonatomic, assign) NSInteger needsToPresentCounter, needsToDismissCounter;
 @property (nonatomic, readwrite, retain) FWTAnnotationModel *model;
 
@@ -36,16 +38,18 @@
     self.viewForAnnotationBlock = nil;
     self.model = nil;
     self.annotationsContainerView = nil;
+    self.annotationsParentViewController = nil;
     [super dealloc];
 }
 
-- (id)init
+- (id)initWithAnnotationsParentViewController:(UIViewController *)annotationsParentViewController
 {
     if ((self = [super init]))
     {
         self.needsToPresentCounter = 0;
         self.annotationContainerViewType = FWTAnnotationContainerViewTypeDefault;
         self.dismissOnBackgroundTouch = YES;
+        self.annotationsParentViewController = annotationsParentViewController;
     }
     
     return self;
@@ -98,8 +102,8 @@
         self->_didPresentBlock = [^(FWTPopoverView *av){
             myself.needsToPresentCounter--;
             
-            if (myself.needsToPresentCounter == 0 && self.didEndPresentBlock)
-                self.didEndPresentBlock();
+            if (myself.needsToPresentCounter == 0 && myself.didEndPresentBlock)
+                myself.didEndPresentBlock();
                
         } copy];
     }
@@ -124,10 +128,12 @@
             {
                 void (^completionBlock)(BOOL) = ^(BOOL finished){
                     [myself.annotationsContainerView removeFromSuperview];
+                    [myself willMoveToParentViewController:nil];
                     [myself.view removeFromSuperview];
+                    [myself removeFromParentViewController];
                     
                     myself.view.userInteractionEnabled = YES;
-                    if (self.didEndDismissBlock) self.didEndDismissBlock();
+                    if (myself.didEndDismissBlock) myself.didEndDismissBlock();
                 };
                 
                 if ([myself _annotationsContainerViewNeedsAnimation])
@@ -164,8 +170,10 @@
 {
     if (![self isViewLoaded] || !self.view.superview)
     {
-        [self.parentViewController.view addSubview:self.view];
-        self.view.frame = self.parentViewController.view.bounds;
+        [self.annotationsParentViewController addChildViewController:self];
+        [self.annotationsParentViewController.view addSubview:self.view];
+        self.view.frame = self.annotationsParentViewController.view.bounds;
+        [self didMoveToParentViewController:self.annotationsParentViewController];
     }
     
     if (!self.annotationsContainerView.superview)
