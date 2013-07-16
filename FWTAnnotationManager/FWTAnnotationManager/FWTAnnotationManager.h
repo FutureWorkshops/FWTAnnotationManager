@@ -25,6 +25,8 @@ typedef void (^FWTAnnotationManagerDidEndDismissBlock)();
 
 @interface FWTAnnotationManager : UIViewController
 
+@property (nonatomic, readonly, retain) UIViewController *annotationsParentViewController;
+
 @property (nonatomic, assign) FWTAnnotationContainerViewType annotationContainerViewType;       // configure the type before accessing any property
 @property (nonatomic, retain) FWTAnnotationContainerView *annotationsContainerView;             // plug with your own class or just customize the default one
 @property (nonatomic, readonly, retain) FWTAnnotationModel *model;
@@ -34,6 +36,8 @@ typedef void (^FWTAnnotationManagerDidEndDismissBlock)();
 @property (nonatomic, copy) FWTAnnotationManagerDidEndDismissBlock didEndDismissBlock;
 @property (nonatomic, assign) BOOL dismissOnBackgroundTouch;                                    //  default is YES
 @property (nonatomic, readonly, getter=isVisible) BOOL visible;
+
+- (id)initWithAnnotationsParentViewController:(UIViewController *)annotationsParentViewController;
 
 - (void)addAnnotation:(FWTAnnotation *)annotation;
 - (void)addAnnotations:(NSArray *)annotations;

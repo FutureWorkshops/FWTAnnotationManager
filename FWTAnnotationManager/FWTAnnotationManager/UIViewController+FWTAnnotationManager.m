@@ -20,9 +20,7 @@ static char annotationManagerKey;
     FWTAnnotationManager *manager = objc_getAssociatedObject(self, &annotationManagerKey);
     if (!manager)
     {
-        manager = [[[FWTAnnotationManager alloc] init] autorelease];
-        [self addChildViewController:manager];
-        [manager didMoveToParentViewController:self];
+        manager = [[[FWTAnnotationManager alloc] initWithAnnotationsParentViewController:self] autorelease];
         objc_setAssociatedObject(self, &annotationManagerKey, manager, OBJC_ASSOCIATION_RETAIN);
     }
     
